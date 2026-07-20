@@ -1,0 +1,10 @@
+Flask>=3.1,<4
+Flask-SQLAlchemy>=3.1,<4
+Flask-Login>=0.6.3,<1
+cryptography>=46,<48
+openpyxl>=3.1,<4
+requests>=2.32,<3
+python-dotenv>=1.0,<2
+gunicorn>=23,<24
+psycopg[binary]>=3.2,<4
+pytest>=8,<9

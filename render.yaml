@@ -1,0 +1,36 @@
+databases:
+  - name: marjon-platform-db
+    databaseName: marjon_platform
+    user: marjon_platform
+
+services:
+  - type: web
+    name: marjon-platform
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 2 --threads 4 --timeout 120
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SESSION_COOKIE_SECURE
+        value: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: marjon-platform-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATA_ENCRYPTION_KEY
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: PHARMACIST_PASSWORD
+        sync: false
+      - key: COURIER_PASSWORD
+        sync: false
+      - key: ACCOUNTANT_PASSWORD
+        sync: false
+      - key: REQUIRE_SMS_OTP
+        value: false

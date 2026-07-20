@@ -1,0 +1,23 @@
+MARJON PLATFORM — TEST NATIJASI
+Sana: 2026-07-20
+
+✅ Python modullar sintaksisi tekshirildi.
+✅ Asosiy va tashqi JavaScript fayllari sintaksisi tekshirildi.
+✅ HTML ichidagi 6 ta JavaScript bloki tekshirildi.
+✅ Bemor ro‘yxatdan o‘tishi va login tekshirildi.
+✅ CSRF himoyasi tekshirildi.
+✅ Rol bo‘yicha ruxsatlar tekshirildi.
+✅ Buyurtma yaratish, server narxi va ombor jarayoni tekshirildi.
+✅ Farmatsevt statuslari va kuryer biriktirish tekshirildi.
+✅ Kuryer GPS uzatishi va boshqa qurilmadan kuzatuv tekshirildi.
+✅ Ochiq kuzatuv tokenida telefon, aniq manzil, tannarx va foyda yashirilishi tekshirildi.
+✅ Bemor API javobida ichki tannarx va foyda ko‘rinmasligi tekshirildi.
+✅ Sog‘liq pasporti shifrlangan holda saqlanishi tekshirildi.
+✅ Dori eslatmalari va oila ma’lumotlari shifrlangan patient-vault’da saqlanishi tekshirildi.
+✅ Retsept fayli haqiqiy PNG/PDF/JPG signaturasi bilan tekshiriladi.
+✅ Soxta JPG kengaytmali fayl rad etilishi tekshirildi.
+✅ Retsept fayli faqat ruxsatli foydalanuvchiga ochilishi tekshirildi.
+✅ Haqiqiy Excel .xlsx hisoboti yaratilib ochilishi tekshirildi.
+✅ Production maxfiy kalitlari va xavfsizlik talablari tekshirildi.
+
+Avtomatik test: 2 passed.
