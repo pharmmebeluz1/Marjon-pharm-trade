@@ -1,6 +1,7 @@
-1. Ushbu papka ichidagi barcha fayllarni belgilang.
-2. GitHub → Marjon-pharm-trade → Add file → Upload files.
-3. Fayllarni yuklang va Commit changes bosing.
-4. 2–10 daqiqa kuting.
-5. Saytni ?v=3 bilan oching yoki Chrome keshini yangilang.
-6. ZIP faylning o‘zini GitHubga yuklamang.
+1. ZIP faylni Extract / Извлечь qiling.
+2. Ichidagi Marjon_Farm_Trade_PLATFORM_KURYER_LIVE papkasiga kiring.
+3. Papka ichidagi hamma faylni Ctrl + A bilan belgilang.
+4. GitHub → Marjon-pharm-trade → Add file → Upload files.
+5. Fayllarni yuklang va Commit changes bosing.
+6. Yashil belgi chiqqach saytni ?v=5 bilan oching.
+7. ZIP faylning o‘zini GitHubga yuklamang.

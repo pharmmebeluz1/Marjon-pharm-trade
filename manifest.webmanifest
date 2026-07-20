@@ -1,7 +1,7 @@
 {
-  "name": "Marjon Farm Trade PLATFORM PRO",
-  "short_name": "Marjon Platform",
-  "description": "3 tilli bemor buyurtmasi, lokatsiya, dorixona rollari va Excel hisobot demo PWA.",
+  "name": "Marjon Farm Trade — Live Courier",
+  "short_name": "Marjon Live",
+  "description": "3 tilli dorixona platformasi, Excel va kuryerni jonli xaritada kuzatish PWA shabloni.",
   "id": "./?source=pwa",
   "start_url": "./index.html?source=pwa",
   "scope": "./",

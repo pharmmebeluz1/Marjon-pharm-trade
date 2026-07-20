@@ -1,14 +1,14 @@
-MARJON FARM TRADE — PLATFORM PRO DEMO
-Versiya: 3.0.0-template
+MARJON FARM TRADE — PLATFORM PRO + LIVE KURYER
+Versiya: 5.0.0-template
 Sana: 20.07.2026
 
-Qo‘shildi:
-- Bemor ro‘yxatdan o‘tishi va 3 til
-- Lokatsiyani foydalanuvchi ruxsati bilan olish
-- Farmatsevt, kuryer, buxgalter va rahbar kabinetlari
-- Naqd, Click, Payme, Uzcard/Humo, terminal, bank va qarz to‘lovlari
-- Ko‘p varaqli Excel (.xls) hisoboti
-- Buyurtma statusini bosqichma-bosqich o‘zgartirish
-- Server va umumiy bazaga ulashga tayyor frontend tuzilmasi
+Yangi qo‘shildi:
+- Bemor uchun Yandex uslubidagi jonli kuryer xaritasi
+- Kuryer belgisi marshrut bo‘ylab harakatlanadi
+- Qayerga burilgani va keyingi harakat ko‘rinadi
+- Taxminiy yetib kelish vaqti, masofa, tezlik va GPS aniqligi
+- Kuryerga qo‘ng‘iroq va xabar tugmalari
+- Kuryer kabinetida demo uzatish va telefon GPSini yuborish
+- Bir brauzer oynalari o‘rtasida localStorage orqali yangilanish
 
-MUHIM: Bu demo ma’lumotlarni faqat bitta brauzer localStorage xotirasida saqlaydi.
+MUHIM: Kuryer va bemor turli telefonlarda haqiqiy jonli ko‘rishi uchun server + WebSocket + xarita API talab qilinadi.

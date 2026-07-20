@@ -1,12 +1,12 @@
-MARJON FARM TRADE — SERVERGA ULASH REJASI
+MARJON FARM TRADE — HAQIQIY JONLI KURYER SERVER REJASI
 
-1. Backend API: Python Flask/FastAPI yoki Node.js
-2. Ma’lumotlar bazasi: PostgreSQL
-3. Rollar: Bemor, Farmatsevt, Kuryer, Buxgalter, Rahbar, Admin
-4. Kirish: telefon + SMS OTP
-5. Lokatsiya: faqat foydalanuvchi ruxsati bilan
-6. To‘lov: Click/Payme/Uzcard-Humo provayderlarining rasmiy APIlari
-7. Excel: serverdan sana, filial va xodim filtrlari bilan
-8. Xavfsizlik: HTTPS, parol xeshi, audit jurnali, ruxsatlar, zaxira nusxa
-9. DMED: faqat rasmiy shartnoma va API ruxsati bilan
-10. Bemor ma’lumotlari: ochiq GitHub fayllarida saqlanmaydi
+1. Kuryer ilovasi navigator.geolocation.watchPosition bilan koordinatani oladi.
+2. Koordinata HTTPS orqali server APIga yuboriladi.
+3. Server Redis/PostgreSQLda oxirgi holat va tarixni saqlaydi.
+4. WebSocket bemor telefoniga joylashuvni 2–5 soniyada uzatadi.
+5. Yandex Maps yoki Google Maps API haqiqiy yo‘l, tirbandlik, burilish va ETAni hisoblaydi.
+6. Buyurtmaga maxfiy kuzatuv tokeni beriladi; boshqa bemor ko‘ra olmaydi.
+7. Kuryer navbatchilikni tugatsa GPS uzatish avtomatik to‘xtaydi.
+8. Lokatsiya faqat buyurtma faol paytda va kuryer roziligi bilan olinadi.
+9. Admin xaritada barcha faol kuryerlarni ko‘radi.
+10. Audit, HTTPS, rollar va shaxsiy ma’lumotlarni himoya qilish majburiy.
