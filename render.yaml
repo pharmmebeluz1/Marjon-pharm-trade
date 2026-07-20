@@ -2,13 +2,15 @@ databases:
   - name: marjon-platform-db
     databaseName: marjon_platform
     user: marjon_platform
+    plan: free
 
 services:
   - type: web
     name: marjon-platform
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --workers 2 --threads 4 --timeout 120
+    startCommand: gunicorn wsgi:app --workers 1 --threads 4 --timeout 120
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
