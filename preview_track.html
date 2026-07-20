@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Marjon DMED">
-  <title>Marjon Farm Trade — PLATFORM PRO + LIVE KURYER + INTRO MUSIQA</title>
+  <title>Marjon Farm Trade — PLATFORM PRO + LIVE KURYER</title>
   <style>
 :root{
   --cyan:#22c7d4;
@@ -81,11 +81,6 @@ img{display:block;max-width:100%}
 .orbit-b{width:760px;height:760px;animation-delay:.8s}
 .splash-light{position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(120,104,220,.24);filter:blur(55px);right:8%;top:10%}
 #skipSplash{position:absolute;right:22px;bottom:20px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);color:#fff;padding:10px 14px;border-radius:13px}
-#introSoundToggle{position:absolute;left:22px;bottom:20px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);backdrop-filter:blur(10px);color:#fff;padding:10px 14px;border-radius:13px;display:flex;align-items:center;gap:7px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.10)}
-#introSoundToggle:hover,#skipSplash:hover{background:rgba(255,255,255,.20)}
-#introSoundToggle.sound-off{opacity:.72}
-#introSoundHint{min-height:17px}
-@media(max-width:520px){#introSoundToggle{left:12px;bottom:12px;padding:9px 11px;font-size:12px}#skipSplash{right:12px;bottom:12px;padding:9px 11px;font-size:12px}}
 
 /* Header */
 .header{
@@ -917,13 +912,9 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
       <h1>MARJON</h1>
       <p>FARM TRADE</p>
       <div class="splash-progress"><span></span></div>
-      <small id="introSoundHint">Sog‘lig‘ingiz uchun zamonaviy xizmat</small>
+      <small>Sog‘lig‘ingiz uchun zamonaviy xizmat</small>
     </div>
 
-    <audio id="marjonIntroAudio" preload="auto" playsinline>
-      <source src="assets/marjon-intro.mp3" type="audio/mpeg">
-    </audio>
-    <button id="introSoundToggle" type="button" aria-label="Ochilish musiqasini yoqish yoki o‘chirish"><span id="introSoundIcon">🔊</span><span id="introSoundText">Musiqa</span></button>
     <button id="skipSplash" type="button">O‘tkazib yuborish</button>
   </div>
 
@@ -2842,39 +2833,6 @@ document.addEventListener("DOMContentLoaded", function () {
   <script>
     (function () {
       var splash = document.getElementById("splash");
-      var audio = document.getElementById("marjonIntroAudio");
-      var toggle = document.getElementById("introSoundToggle");
-      var icon = document.getElementById("introSoundIcon");
-      var soundText = document.getElementById("introSoundText");
-      var hint = document.getElementById("introSoundHint");
-      var soundEnabled = true;
-      var started = false;
-      try { soundEnabled = localStorage.getItem("marjonIntroSound") !== "off"; } catch (e) {}
-
-      function updateSoundButton() {
-        if (!toggle) return;
-        toggle.classList.toggle("sound-off", !soundEnabled);
-        if (icon) icon.textContent = soundEnabled ? "🔊" : "🔇";
-        if (soundText) soundText.textContent = soundEnabled ? "Musiqa" : "Ovoz o‘chiq";
-      }
-
-      function playIntro() {
-        if (!audio || !soundEnabled || started) return;
-        audio.volume = 0.42;
-        var result = audio.play();
-        if (result && typeof result.then === "function") {
-          result.then(function () {
-            started = true;
-            if (hint) hint.textContent = "Sog‘lig‘ingiz uchun zamonaviy xizmat";
-          }).catch(function () {
-            if (hint) hint.textContent = "Musiqani eshitish uchun ekranga bir marta teging";
-          });
-        } else { started = true; }
-      }
-
-      function unlockIntro() {
-        if (!started && soundEnabled) playIntro();
-      }
 
       function closeSplash() {
         if (!splash) return;
@@ -2884,26 +2842,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 700);
       }
 
-      updateSoundButton();
-      playIntro();
-      window.addEventListener("load", playIntro, {once:true});
-      document.addEventListener("pointerdown", unlockIntro, {once:true});
-      document.addEventListener("keydown", unlockIntro, {once:true});
-
-      if (toggle) toggle.onclick = function (event) {
-        event.stopPropagation();
-        soundEnabled = !soundEnabled;
-        try { localStorage.setItem("marjonIntroSound", soundEnabled ? "on" : "off"); } catch (e) {}
-        if (!soundEnabled && audio) { audio.pause(); audio.currentTime = 0; started = false; }
-        updateSoundButton();
-        if (soundEnabled) playIntro();
-      };
-
-      var seenSplash = false;
-      try { seenSplash = localStorage.getItem("marjonSplashSeen"); localStorage.setItem("marjonSplashSeen", "1"); } catch (e) {}
-      window.setTimeout(closeSplash, seenSplash ? 1550 : 2450);
-      var skip = document.getElementById("skipSplash");
-      if (skip) skip.onclick = closeSplash;
+      var seenSplash = false; try{seenSplash = localStorage.getItem("marjonSplashSeen");localStorage.setItem("marjonSplashSeen", "1");}catch(e){}
+      window.setTimeout(closeSplash, seenSplash ? 450 : 1900);
+      document.getElementById("skipSplash").onclick = closeSplash;
     })();
   </script>
 
@@ -3087,5 +3028,6 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 })();
 </script>
 
+<script>window.addEventListener("load",function(){setTimeout(function(){var b=document.querySelector('[data-platform-role="patient"]');if(b)b.click();setTimeout(function(){var t=document.querySelector('[data-track-order]');if(t)t.click();},700);},3200);});</script>
 </body>
 </html>

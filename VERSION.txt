@@ -1,14 +1,12 @@
-MARJON FARM TRADE — PLATFORM PRO + LIVE KURYER
-Versiya: 5.0.0-template
+MARJON FARM TRADE — PLATFORM PRO + LIVE KURYER + INTRO MUSIQA
+Versiya: 6.0.0-template
 Sana: 20.07.2026
 
 Yangi qo‘shildi:
-- Bemor uchun Yandex uslubidagi jonli kuryer xaritasi
-- Kuryer belgisi marshrut bo‘ylab harakatlanadi
-- Qayerga burilgani va keyingi harakat ko‘rinadi
-- Taxminiy yetib kelish vaqti, masofa, tezlik va GPS aniqligi
-- Kuryerga qo‘ng‘iroq va xabar tugmalari
-- Kuryer kabinetida demo uzatish va telefon GPSini yuborish
-- Bir brauzer oynalari o‘rtasida localStorage orqali yangilanish
+- Dastur ochilganda 2.6 soniyalik original yumshoq intro musiqa
+- Musiqani yoqish/o‘chirish tugmasi
+- Android Chrome avtomatik ovozni bloklasa, birinchi tegishda musiqa ishga tushadi
+- Ovoz tanlovi telefon xotirasida saqlanadi
+- Bemor uchun jonli kuryer xaritasi va avvalgi barcha funksiyalar saqlandi
 
-MUHIM: Kuryer va bemor turli telefonlarda haqiqiy jonli ko‘rishi uchun server + WebSocket + xarita API talab qilinadi.
+MUHIM: Telefon brauzerlari foydalanuvchi tegmasdan ovozni ba’zan bloklaydi. Bunday paytda ochilish ekraniga bir marta tegish kifoya.

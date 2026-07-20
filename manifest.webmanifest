@@ -1,7 +1,7 @@
 {
-  "name": "Marjon Farm Trade — Live Courier",
+  "name": "Marjon Farm Trade — Live Courier + Intro",
   "short_name": "Marjon Live",
-  "description": "3 tilli dorixona platformasi, Excel va kuryerni jonli xaritada kuzatish PWA shabloni.",
+  "description": "3 tilli dorixona platformasi, Excel va kuryerni jonli xaritada kuzatish va ochilish musiqasi mavjud PWA shabloni.",
   "id": "./?source=pwa",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
