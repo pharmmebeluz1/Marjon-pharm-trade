@@ -1,4 +1,4 @@
-const CACHE = "marjon-secure-platform-v8";
+const CACHE = "marjon-secure-platform-v9";
 const STATIC_ASSETS = [
   "/", "/offline.html", "/manifest.webmanifest", "/static/secure.css", "/static/secure-client.js",
   "/assets/marjon-logo.jpg", "/assets/icon-192.png", "/assets/icon-512.png", "/assets/marjon-intro.mp3"
