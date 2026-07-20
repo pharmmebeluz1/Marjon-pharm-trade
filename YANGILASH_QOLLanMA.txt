@@ -1,0 +1,7 @@
+MARJON FARM TRADE — GLOBAL PRO
+
+GitHub’dagi Marjon-pharm-trade reposiga ushbu papka ichidagi HAMMA faylni yuklang.
+Eski fayl nomlari bir xil bo‘lsa, Replace/Commit changes qiling.
+Keyin GitHub Pages o‘zi yangi versiyani chiqaradi. Telefon eski ko‘rinishni ko‘rsatsa: Chrome → sayt sozlamalari → Clear & reset, yoki ilovani yopib qayta oching.
+
+MUHIM: Bu demo. Haqiqiy bemor ma’lumotlari, AI API kaliti, DMED kaliti va to‘lov kalitlarini HTML ichiga yozmang.

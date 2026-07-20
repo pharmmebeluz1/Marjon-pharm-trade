@@ -1,15 +1,76 @@
 {
-  "name": "Marjon Farm Trade — DMED",
-  "short_name": "Marjon DMED",
-  "description": "Marjon Farm Trade va DMED elektron retsept demo dasturi",
-  "start_url": "./index.html",
+  "name": "Marjon Farm Trade — GLOBAL PRO",
+  "short_name": "Marjon PRO",
+  "description": "AI, elektron retsept, DMED demo, telefarmatsiya va oilaviy sog‘liq PWA platformasi",
+  "id": "./?source=pwa",
+  "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0c314b",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#071f32",
+  "theme_color": "#071f32",
   "lang": "uz",
+  "categories": [
+    "medical",
+    "health",
+    "shopping",
+    "lifestyle"
+  ],
   "icons": [
-    {"src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dori qidirish",
+      "short_name": "Qidirish",
+      "url": "./index.html#catalog",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "DMED retsept",
+      "short_name": "DMED",
+      "url": "./index.html#dmedIntegration",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "AI yordamchi",
+      "short_name": "AI",
+      "url": "./index.html#aiAssistant",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }

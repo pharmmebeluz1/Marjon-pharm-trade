@@ -1,26 +1,14 @@
-const CACHE = 'marjon-dmed-v1';
-const FILES = [
-  './',
-  './index.html',
-  './1_BOSING_MARJON_DMED.html',
-  './manifest.webmanifest',
-  './assets/marjon-logo.jpg',
-  './assets/icon-192.png',
-  './assets/icon-512.png'
-];
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
-  self.skipWaiting();
-});
-self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request).then(response => {
-    const copy = response.clone();
-    caches.open(CACHE).then(cache => cache.put(event.request, copy));
-    return response;
-  }).catch(() => caches.match('./index.html'))));
+const CACHE='marjon-global-pro-v3';
+const CORE=['./','./index.html','./1_BOSING_MARJON_DMED.html','./offline.html','./manifest.webmanifest','./assets/marjon-logo.jpg','./assets/icon-192.png','./assets/icon-512.png'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();});
+self.addEventListener('fetch',event=>{
+ if(event.request.method!=='GET')return;
+ const req=event.request;
+ if(req.mode==='navigate'){
+   event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',copy));return res;}).catch(()=>caches.match('./index.html').then(x=>x||caches.match('./offline.html'))));
+   return;
+ }
+ event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(res=>{if(res&&res.status===200&&res.type==='basic'){const copy=res.clone();caches.open(CACHE).then(c=>c.put(req,copy));}return res;}).catch(()=>caches.match('./offline.html'))));
 });

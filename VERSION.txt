@@ -1,0 +1,15 @@
+Marjon Farm Trade GLOBAL PRO
+Version: 2.0.0-demo
+Build date: 2026-07-20
+
+Asosiy yangiliklar:
+- GLOBAL PRO aqlli sog‘liq ekotizimi
+- Shaxsiy sog‘liq pasporti
+- AI xavfsizlik yo‘naltiruvchisi
+- UZ/RU/EN katalog
+- Tungi rejim
+- Oflayn PWA va yangilanish xabari
+- Ilovani o‘rnatish tugmasi
+- Maxfiylik rejimi
+- Yangilangan mobil navigatsiya
+- DMED sandbox va mavjud funksiyalar saqlangan

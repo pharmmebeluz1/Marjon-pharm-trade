@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0c314b">
-  <meta name="description" content="Marjon Farm Trade va DMED integratsiyasi uchun telefonda ochiladigan demo">
+  <meta name="theme-color" content="#071f32">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Marjon Farm Trade GLOBAL PRO — AI, elektron retsept, DMED demo, telefarmatsiya va oilaviy sog‘liq platformasi">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icon-192.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Marjon DMED">
-  <title>Marjon Farm Trade — Telefon demo</title>
+  <title>Marjon Farm Trade — GLOBAL PRO</title>
   <style>
 :root{
   --cyan:#22c7d4;
@@ -841,8 +842,30 @@ button,a,input,select,textarea{touch-action:manipulation}
 }
 
 </style>
+
+<style id="global-pro-styles">
+:root{--gp-green:#14b887;--gp-gold:#f6b84b;--gp-glass:rgba(255,255,255,.76);--gp-radius:26px}
+.skip-link{position:fixed;left:12px;top:-60px;z-index:10050;background:#fff;color:#071f32;padding:12px 16px;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.18);font-weight:800}.skip-link:focus{top:12px}
+.gp-network-bar{min-height:34px;background:#071f32;color:#d9faff;display:flex;align-items:center;justify-content:center;gap:14px;padding:7px 16px;font-size:12px;font-weight:700;letter-spacing:.02em}.gp-network-bar.offline{background:#8a4d00;color:#fff6df}.gp-network-dot{width:8px;height:8px;border-radius:50%;background:#27e4a8;box-shadow:0 0 0 5px rgba(39,228,168,.12)}.gp-network-bar.offline .gp-network-dot{background:#ffbf4b}.gp-network-bar button{border:0;background:transparent;color:inherit;text-decoration:underline;font-weight:800;padding:0}
+.gp-install-button,.gp-theme-button{height:46px;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:14px;padding:0 14px;font-weight:900;white-space:nowrap}.gp-install-button{background:linear-gradient(135deg,var(--navy),#0c6d83);color:#fff;border:0;box-shadow:0 10px 28px rgba(12,49,75,.18)}.gp-install-button[hidden]{display:none}.gp-theme-button{font-size:18px;min-width:46px}
+.gp-section{position:relative;overflow:hidden;padding:92px 0;background:linear-gradient(145deg,#061d2f 0%,#0c314b 55%,#0b667a 100%);color:#fff}.gp-section:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-190px;top:-220px;background:radial-gradient(circle,rgba(34,199,212,.35),transparent 68%)}.gp-section:after{content:"";position:absolute;width:440px;height:440px;border-radius:50%;left:-230px;bottom:-260px;background:radial-gradient(circle,rgba(120,104,220,.28),transparent 68%)}.gp-section .container{position:relative;z-index:2}.gp-heading{display:grid;grid-template-columns:1fr auto;align-items:end;gap:30px;margin-bottom:34px}.gp-kicker{display:flex;align-items:center;gap:10px;color:#73eaf3;font-size:12px;font-weight:900;letter-spacing:.16em}.gp-kicker i{width:30px;height:2px;background:#73eaf3}.gp-heading h2{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0 12px;max-width:820px}.gp-heading p{max-width:720px;color:#c3dae5;line-height:1.75;margin:0}.gp-live-pill{align-self:start;display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);padding:12px 15px;border-radius:99px;color:#d9faff;font-size:12px;font-weight:900;backdrop-filter:blur(15px)}.gp-live-pill i{width:8px;height:8px;border-radius:50%;background:#27e4a8;box-shadow:0 0 0 6px rgba(39,228,168,.12)}
+.gp-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}.gp-card{border:1px solid rgba(255,255,255,.14);background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));box-shadow:0 28px 80px rgba(0,0,0,.18);backdrop-filter:blur(20px);border-radius:var(--gp-radius);padding:26px}.gp-card-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}.gp-card-head>div{display:flex;align-items:center;gap:14px}.gp-card-icon{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#22c7d4,#7868dc);font-size:25px;box-shadow:0 14px 34px rgba(34,199,212,.18)}.gp-card small{display:block;color:#8eeaf1;font-size:10px;font-weight:900;letter-spacing:.13em;margin-bottom:5px}.gp-card h3{font-size:23px;margin:0}.gp-outline-button{border:1px solid rgba(255,255,255,.20);background:rgba(255,255,255,.07);color:#fff;border-radius:14px;padding:11px 14px;font-weight:900}.gp-profile-layout{display:grid;grid-template-columns:132px 1fr;gap:24px;align-items:center}.gp-ring{width:124px;height:124px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#27e4a8 var(--progress,18%),rgba(255,255,255,.12) 0);position:relative}.gp-ring:after{content:"";position:absolute;inset:11px;border-radius:50%;background:#0c314b}.gp-ring strong,.gp-ring span{position:relative;z-index:1;text-align:center}.gp-ring strong{font-size:27px}.gp-ring span{font-size:10px;color:#b9d3df}.gp-profile-summary h4{font-size:22px;margin:0 0 8px}.gp-profile-summary p{margin:0 0 18px;color:#bed3dc;line-height:1.6}.gp-tags{display:flex;gap:8px;flex-wrap:wrap}.gp-tags span{font-size:11px;font-weight:800;padding:8px 10px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10)}
+.gp-safety-form{display:grid;grid-template-columns:1fr auto;gap:10px}.gp-safety-form input{height:52px;border:1px solid rgba(255,255,255,.16);background:rgba(4,22,36,.38);color:#fff;border-radius:16px;padding:0 16px;outline:0}.gp-safety-form input::placeholder{color:#9eb9c6}.gp-safety-form button{border:0;border-radius:16px;padding:0 20px;background:linear-gradient(135deg,#22c7d4,#7868dc);color:#fff;font-weight:900}.gp-safety-result{min-height:76px;margin-top:14px;border-radius:17px;padding:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);color:#c7dce5;line-height:1.55}.gp-safety-result.warning{background:rgba(246,184,75,.12);border-color:rgba(246,184,75,.35);color:#fff4d9}.gp-safety-result.danger{background:rgba(216,61,84,.17);border-color:rgba(255,115,134,.45);color:#fff}.gp-safety-result a{display:inline-flex;margin-top:10px;background:#fff;color:#b21f39;border-radius:12px;padding:9px 13px;font-weight:900}.gp-quick-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.gp-quick-row button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#d9edf4;border-radius:99px;padding:8px 11px;font-size:11px;font-weight:800}
+.gp-feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}.gp-feature{min-height:174px;border-radius:22px;padding:20px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.11);transition:.25s}.gp-feature:hover{transform:translateY(-5px);background:rgba(255,255,255,.11)}.gp-feature span{font-size:28px}.gp-feature h4{font-size:17px;margin:16px 0 8px}.gp-feature p{font-size:12px;line-height:1.6;color:#bcd1da;margin:0}.gp-feature b{display:inline-block;margin-top:13px;font-size:10px;color:#70e8f1;letter-spacing:.08em}
+.gp-trust{padding:76px 0;background:#f5fafc}.gp-trust-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:34px;align-items:center}.gp-trust-copy h2{font-size:clamp(30px,4vw,48px);margin:10px 0 14px;color:#0c314b}.gp-trust-copy p{color:#657884;line-height:1.75}.gp-trust-points{display:grid;gap:12px}.gp-trust-point{display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:center;padding:17px;border-radius:20px;background:#fff;border:1px solid #e0ebef;box-shadow:0 14px 35px rgba(12,49,75,.07)}.gp-trust-point>span{width:48px;height:48px;border-radius:16px;background:#edf9fb;display:grid;place-items:center;font-size:21px}.gp-trust-point h4{margin:0 0 5px;color:#17384d}.gp-trust-point p{margin:0;font-size:12px;color:#738490}.gp-trust-point b{font-size:10px;padding:7px 9px;border-radius:99px;background:#e6f8f2;color:#0b8a65}.gp-privacy-toggle{display:flex;align-items:center;gap:9px;margin-top:22px;font-weight:800;color:#29485b}.gp-privacy-toggle input{width:20px;height:20px}
+.gp-modal-card{max-width:820px}.gp-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.gp-form-grid .full{grid-column:1/-1}.gp-form-grid input,.gp-form-grid select,.gp-form-grid textarea{width:100%;min-height:50px;border:1px solid #dfe9ed;border-radius:14px;padding:12px 14px;background:#fff;color:#203342}.gp-form-grid textarea{min-height:90px;resize:vertical}.gp-form-grid label span{display:block;font-size:11px;font-weight:900;color:#5c7180;margin:0 0 6px}.gp-consent-box{display:flex;gap:10px;padding:13px;border-radius:15px;background:#f4fafc;color:#506874;font-size:12px;line-height:1.5}.gp-modal-status{margin-top:13px}.gp-global-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.gp-global-actions button{min-height:47px;border-radius:14px;padding:0 16px;font-weight:900;border:0}.gp-save{background:linear-gradient(135deg,#0c314b,#0c778c);color:#fff}.gp-clear{background:#eef5f7;color:#365568}
+.gp-toast{position:fixed;left:50%;bottom:94px;z-index:10020;transform:translate(-50%,30px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:12px;max-width:min(520px,calc(100% - 28px));padding:13px 16px;border-radius:17px;background:#071f32;color:#fff;box-shadow:0 20px 65px rgba(0,0,0,.30);transition:.28s}.gp-toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}.gp-toast button{border:0;border-radius:10px;background:#22c7d4;color:#05283a;padding:8px 10px;font-weight:900}
+.gp-privacy-on .sensitive-data{filter:blur(7px);user-select:none}.gp-privacy-on .gp-profile-summary:after{content:"Maxfiylik rejimi yoqilgan";display:inline-block;margin-top:10px;color:#f6c665;font-size:11px;font-weight:900}
+html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="dark"] .header{background:rgba(5,23,35,.90);border-color:rgba(255,255,255,.08)}html[data-theme="dark"] .brand strong,html[data-theme="dark"] .desktop-nav a,html[data-theme="dark"] .lang-button,html[data-theme="dark"] .cart-button,html[data-theme="dark"] .gp-theme-button{color:#e8f8fb}html[data-theme="dark"] .lang-button,html[data-theme="dark"] .cart-button,html[data-theme="dark"] .gp-theme-button{background:#0c2a3d;border-color:#1c4358}html[data-theme="dark"] .hero,html[data-theme="dark"] .catalog,html[data-theme="dark"] .services,html[data-theme="dark"] .branches,html[data-theme="dark"] .smart-services,html[data-theme="dark"] .unique-section,html[data-theme="dark"] .bundle-section{background:#071c29;color:#dcebf1}html[data-theme="dark"] .product-card,html[data-theme="dark"] .smart-card,html[data-theme="dark"] .unique-card,html[data-theme="dark"] .branch-card{background:#0c293b;border-color:#1a4054;color:#e5f4f8}html[data-theme="dark"] .product-info h3,html[data-theme="dark"] .section-heading h2,html[data-theme="dark"] .smart-card h3{color:#e7f5f8}html[data-theme="dark"] .gp-trust{background:#071c29}html[data-theme="dark"] .gp-trust-copy h2{color:#e7f5f8}html[data-theme="dark"] .gp-trust-copy p,html[data-theme="dark"] .gp-privacy-toggle{color:#a9c2cd}html[data-theme="dark"] .gp-trust-point{background:#0c293b;border-color:#1a4054}html[data-theme="dark"] .gp-trust-point h4{color:#e7f5f8}html[data-theme="dark"] footer{background:#041520}
+:focus-visible{outline:3px solid rgba(34,199,212,.55);outline-offset:3px}
+@media(max-width:980px){.gp-grid,.gp-trust-grid{grid-template-columns:1fr}.gp-feature-grid{grid-template-columns:1fr 1fr}.gp-heading{grid-template-columns:1fr}.gp-live-pill{justify-self:start}.gp-install-button{display:none}.header-actions .gp-theme-button{display:grid;place-items:center}.gp-section{padding:68px 0}.gp-trust{padding:58px 0}}
+@media(max-width:680px){.gp-network-bar{font-size:10px;justify-content:flex-start}.gp-heading h2{font-size:35px}.gp-card{padding:19px;border-radius:21px}.gp-card-head{align-items:flex-start}.gp-card-head .gp-outline-button{padding:9px 10px}.gp-profile-layout{grid-template-columns:1fr;text-align:center}.gp-ring{margin:auto}.gp-tags{justify-content:center}.gp-safety-form{grid-template-columns:1fr}.gp-safety-form button{height:48px}.gp-feature-grid{grid-template-columns:1fr}.gp-feature{min-height:auto}.gp-form-grid{grid-template-columns:1fr}.gp-form-grid .full{grid-column:auto}.gp-trust-point{grid-template-columns:44px 1fr}.gp-trust-point>b{grid-column:2;justify-self:start}.gp-toast{bottom:84px}.mobile-nav{padding-bottom:calc(7px + env(safe-area-inset-bottom));height:calc(68px + env(safe-area-inset-bottom))}.floating-health-actions{bottom:calc(80px + env(safe-area-inset-bottom))}.floating-ai{display:none!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+</style>
+
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Asosiy mazmunga o‘tish</a>
 
   <div id="splash" class="splash">
     <div class="splash-orbit orbit-a"></div>
@@ -862,6 +885,7 @@ button,a,input,select,textarea{touch-action:manipulation}
     <button id="skipSplash" type="button">O‘tkazib yuborish</button>
   </div>
 
+  <div id="gpNetworkBar" class="gp-network-bar"><span class="gp-network-dot"></span><span id="gpNetworkText">Xavfsiz ulanish • Onlayn</span><button id="gpUpdateButton" type="button" hidden>Yangilash</button></div>
   <header class="header">
     <div class="container header-inner">
       <a class="brand" href="#home">
@@ -883,6 +907,8 @@ button,a,input,select,textarea{touch-action:manipulation}
       </nav>
 
       <div class="header-actions">
+          <button id="gpThemeButton" class="gp-theme-button" type="button" aria-label="Tungi rejim">☾</button>
+          <button id="gpInstallButton" class="gp-install-button" type="button">＋ Ilovani o‘rnatish</button>
         <button id="langButton" class="lang-button" type="button">UZ</button>
         <button id="favoritesButton" class="favorite-top" type="button">♡ <b id="favoriteCount">0</b></button>
         <button class="cart-button open-cart" type="button">
@@ -893,7 +919,7 @@ button,a,input,select,textarea{touch-action:manipulation}
     </div>
   </header>
 
-  <main>
+  <main id="mainContent">
     <section id="home" class="hero">
       <div class="hero-shape shape-one"></div>
       <div class="hero-shape shape-two"></div>
@@ -1303,6 +1329,64 @@ button,a,input,select,textarea{touch-action:manipulation}
     </section>
 
 
+
+    <section id="globalPro" class="gp-section">
+      <div class="container">
+        <div class="gp-heading">
+          <div>
+            <div class="gp-kicker"><i></i><span data-gp-i18n="kicker">GLOBAL PRO • SMART HEALTH ECOSYSTEM</span></div>
+            <h2 data-gp-i18n="title">Dorixona emas — oilangiz uchun aqlli sog‘liq ekotizimi</h2>
+            <p data-gp-i18n="subtitle">Sog‘liq pasporti, xavfsiz yo‘naltirish, telefarmatsiya, elektron retsept va shaxsiy eslatmalar bitta himoyalangan kabinetda.</p>
+          </div>
+          <div class="gp-live-pill"><i></i><span>24/7 platforma tayyor</span></div>
+        </div>
+        <div class="gp-grid">
+          <article class="gp-card">
+            <div class="gp-card-head">
+              <div><span class="gp-card-icon">🛡</span><div><small>HEALTH ID</small><h3 data-gp-i18n="passport">Shaxsiy sog‘liq pasporti</h3></div></div>
+              <button id="gpOpenPassport" class="gp-outline-button" type="button" data-gp-i18n="manage">Boshqarish</button>
+            </div>
+            <div class="gp-profile-layout">
+              <div id="gpProfileRing" class="gp-ring" style="--progress:18%"><div><strong id="gpProfilePercent">18%</strong><br><span>to‘ldirilgan</span></div></div>
+              <div class="gp-profile-summary sensitive-data">
+                <h4 id="gpProfileName">Mehmon profili</h4>
+                <p id="gpProfileText">Allergiya, doimiy dori, qon guruhi va favqulodda kontaktni xavfsiz saqlang.</p>
+                <div class="gp-tags"><span>🔒 Qurilmada saqlanadi</span><span>👨‍👩‍👧 Oila profillari</span><span>📄 PDF pasport</span></div>
+              </div>
+            </div>
+          </article>
+          <article class="gp-card">
+            <div class="gp-card-head"><div><span class="gp-card-icon">✦</span><div><small>SAFE ROUTING</small><h3 data-gp-i18n="safety">AI xavfsizlik yo‘naltiruvchisi</h3></div></div></div>
+            <div class="gp-safety-form"><input id="gpSafetyInput" type="text" placeholder="Belgini yoki savolni yozing"><button id="gpSafetyButton" type="button">Tekshirish</button></div>
+            <div id="gpSafetyResult" class="gp-safety-result">Bu vosita tashxis qo‘ymaydi. Xavf belgilarini ajratib, farmatsevt, shifokor yoki 103 ga xavfsiz yo‘naltiradi.</div>
+            <div class="gp-quick-row"><button type="button" data-gp-safety="nafas olishi qiyin">Nafas qiyin</button><button type="button" data-gp-safety="dori haqida savol">Dori savoli</button><button type="button" data-gp-safety="retseptni tekshirish">Retsept</button></div>
+          </article>
+        </div>
+        <div class="gp-feature-grid">
+          <article class="gp-feature"><span>🎥</span><h4>Telefarmatsiya</h4><p>Farmatsevt bilan chat, qo‘ng‘iroq yoki videoaloqa. AI javobidan mutaxassisga bir bosishda o‘tish.</p><b>HUMAN-IN-THE-LOOP</b></article>
+          <article class="gp-feature"><span>🌍</span><h4>UZ • RU • EN</h4><p>Uch tildagi katalog va asosiy interfeys. Keyin mamlakat, valyuta hamda mahalliy xizmatlar qo‘shiladi.</p><b>GLOBAL READY</b></article>
+          <article class="gp-feature"><span>📡</span><h4>Oflayn PWA</h4><p>Ilova bosh ekranga o‘rnatiladi, asosiy sahifalar internet sust bo‘lsa ham ochiladi va yangilanishni bildiradi.</p><b>INSTALLABLE</b></article>
+          <article class="gp-feature"><span>🔗</span><h4>DMED Sandbox</h4><p>QR, bemor roziligi, audit jurnali va farmatsevt tasdig‘i bilan rasmiy API ulanishiga tayyor demo oqimi.</p><b>API READY</b></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="trustCenter" class="gp-trust">
+      <div class="container gp-trust-grid">
+        <div class="gp-trust-copy">
+          <span class="section-label">TRUST & SAFETY CENTER</span>
+          <h2>Sog‘liq ma’lumoti — eng katta ishonch</h2>
+          <p>GLOBAL PRO shablonida rozilik, foydalanuvchi rollari, audit jurnali, ma’lumotni yashirish va tibbiy AI uchun qat’iy xavfsizlik chegaralari markazga qo‘yildi.</p>
+          <label class="gp-privacy-toggle"><input id="gpPrivacyToggle" type="checkbox"> Ekrandagi shaxsiy ma’lumotlarni yashirish</label>
+        </div>
+        <div class="gp-trust-points">
+          <article class="gp-trust-point"><span>✓</span><div><h4>Rozilik asosida ishlash</h4><p>Retsept va sog‘liq profili faqat foydalanuvchi tasdig‘idan keyin ko‘riladi.</p></div><b>READY</b></article>
+          <article class="gp-trust-point"><span>☷</span><div><h4>Audit va javobgarlik</h4><p>Retseptni kim, qachon va qanday holatda tekshirganini qayd etish oqimi.</p></div><b>LOGGED</b></article>
+          <article class="gp-trust-point"><span>⚕</span><div><h4>AI mutaxassisni almashtirmaydi</h4><p>AI tashxis yoki retsept bermaydi; xavfli holatda 103 va shifokorga yo‘naltiradi.</p></div><b>SAFE</b></article>
+        </div>
+      </div>
+    </section>
+
     <section id="management" class="management-section">
       <div class="container">
         <div class="section-heading">
@@ -1364,12 +1448,12 @@ button,a,input,select,textarea{touch-action:manipulation}
     </div>
   </footer>
 
-  <nav class="mobile-nav">
-    <a href="#home"><span>⌂</span>Asosiy</a>
-    <a href="#catalog"><span>⌕</span>Katalog</a>
-    <button class="open-cart" type="button"><span>🛒</span>Savat</button>
-    <a href="#branches"><span>⌖</span>Filial</a>
-    <button id="cabinetButton" type="button"><span>♙</span>Kabinet</button>
+  <nav class="mobile-nav gp-mobile-nav" aria-label="Mobil navigatsiya">
+    <a href="#home"><span>⌂</span><b>Asosiy</b></a>
+    <a href="#catalog"><span>⌕</span><b>Katalog</b></a>
+    <button id="gpMobileAi" type="button" class="gp-mobile-ai"><span>✦</span><b>AI</b></button>
+    <a href="#dmedIntegration"><span>▣</span><b>DMED</b></a>
+    <button id="cabinetButton" type="button"><span>♙</span><b>Kabinet</b></button>
   </nav>
 
 
@@ -1628,26 +1712,49 @@ button,a,input,select,textarea{touch-action:manipulation}
     </div>
   </div>
 
+
+  <div id="gpPassportModal" class="modal">
+    <div class="modal-card gp-modal-card">
+      <button id="gpClosePassport" class="modal-close" type="button">×</button>
+      <div class="modal-icon">🛡</div>
+      <span class="section-label">GLOBAL HEALTH ID • DEMO</span>
+      <h2>Shaxsiy sog‘liq pasporti</h2>
+      <p>Ma’lumotlar hozircha faqat shu qurilmaning brauzerida saqlanadi. Haqiqiy tizimda server, shifrlash va ruxsat nazorati talab qilinadi.</p>
+      <div class="gp-form-grid">
+        <label><span>Ism va familiya</span><input id="gpPassName" type="text" placeholder="Ismingiz"></label>
+        <label><span>Tug‘ilgan sana</span><input id="gpPassBirth" type="date"></label>
+        <label><span>Qon guruhi</span><select id="gpPassBlood"><option value="">Tanlang</option><option>O+</option><option>O−</option><option>A+</option><option>A−</option><option>B+</option><option>B−</option><option>AB+</option><option>AB−</option></select></label>
+        <label><span>Favqulodda kontakt</span><input id="gpPassPhone" type="tel" placeholder="+998 ..."></label>
+        <label class="full"><span>Allergiyalar</span><textarea id="gpPassAllergy" placeholder="Dori yoki modda nomlari"></textarea></label>
+        <label class="full"><span>Doimiy qabul qilinadigan dorilar</span><textarea id="gpPassMedicines" placeholder="Dori nomi va jadvali"></textarea></label>
+        <label class="full gp-consent-box"><input id="gpPassConsent" type="checkbox"><span>Ushbu demo qurilmada ma’lumotlarni saqlashga roziman. Bu tibbiy tashxis yoki rasmiy tibbiy karta emas.</span></label>
+      </div>
+      <div id="gpPassportStatus" class="status hidden gp-modal-status"></div>
+      <div class="gp-global-actions"><button id="gpSavePassport" class="gp-save" type="button">Pasportni saqlash</button><button id="gpClearPassport" class="gp-clear" type="button">Ma’lumotni tozalash</button></div>
+    </div>
+  </div>
+  <div id="gpToast" class="gp-toast"><span id="gpToastText">Yangi versiya tayyor.</span><button id="gpToastAction" type="button" hidden>Yangilash</button></div>
+
   <script>
 var categories = [
-  {id:"all", icon:"✦", uz:"Barchasi", ru:"Все"},
-  {id:"cold", icon:"🤧", uz:"Shamollash", ru:"Простуда"},
-  {id:"vitamin", icon:"🍊", uz:"Vitaminlar", ru:"Витамины"},
-  {id:"pain", icon:"💊", uz:"Og‘riq qoldiruvchi", ru:"Обезболивающие"},
-  {id:"children", icon:"🧸", uz:"Bolalar uchun", ru:"Для детей"},
-  {id:"medical", icon:"🩺", uz:"Tibbiy jihozlar", ru:"Медтехника"},
-  {id:"care", icon:"🧴", uz:"Parvarish", ru:"Уход"}
+  {id:"all", icon:"✦", uz:"Barchasi", en:"All", ru:"Все"},
+  {id:"cold", icon:"🤧", uz:"Shamollash", en:"Cold & flu", ru:"Простуда"},
+  {id:"vitamin", icon:"🍊", uz:"Vitaminlar", en:"Vitamins", ru:"Витамины"},
+  {id:"pain", icon:"💊", uz:"Og‘riq qoldiruvchi", en:"Pain relief", ru:"Обезболивающие"},
+  {id:"children", icon:"🧸", uz:"Bolalar uchun", en:"For children", ru:"Для детей"},
+  {id:"medical", icon:"🩺", uz:"Tibbiy jihozlar", en:"Medical devices", ru:"Медтехника"},
+  {id:"care", icon:"🧴", uz:"Parvarish", en:"Personal care", ru:"Уход"}
 ];
 
 var products = [
-  {id:1,category:"cold",uz:"Teraflyu kukun №10",ru:"Терафлю порошок №10",price:90000,old:94500,emoji:"🍋",badge:"Aksiya"},
-  {id:2,category:"pain",uz:"Tenoten tabletka №40",ru:"Тенотен таблетки №40",price:41000,old:43500,emoji:"💊",badge:"Dolzarb"},
-  {id:3,category:"children",uz:"Pikovit sirop 150 ml",ru:"Пиковит сироп 150 мл",price:65000,old:0,emoji:"🧸",badge:"Top"},
-  {id:4,category:"vitamin",uz:"B-Complex vitaminlari",ru:"Витамины B-Complex",price:78000,old:83000,emoji:"🍊",badge:"Aksiya"},
-  {id:5,category:"medical",uz:"Elektron tonometr",ru:"Электронный тонометр",price:340000,old:369000,emoji:"🩺",badge:"Top"},
-  {id:6,category:"children",uz:"Bolalar tagligi 24 dona",ru:"Подгузники 24 шт.",price:118000,old:125000,emoji:"👶",badge:"Aksiya"},
-  {id:7,category:"care",uz:"Antiseptik gel 100 ml",ru:"Антисептик-гель 100 мл",price:22000,old:0,emoji:"🧴",badge:"Yangi"},
-  {id:8,category:"cold",uz:"Paratsetamol 500 mg №10",ru:"Парацетамол 500 мг №10",price:8000,old:0,emoji:"🌡️",badge:"Dolzarb"}
+  {id:1,category:"cold",uz:"Teraflyu kukun №10",en:"Theraflu powder No.10",ru:"Терафлю порошок №10",price:90000,old:94500,emoji:"🍋",badge:"Aksiya"},
+  {id:2,category:"pain",uz:"Tenoten tabletka №40",en:"Tenoten tablets No.40",ru:"Тенотен таблетки №40",price:41000,old:43500,emoji:"💊",badge:"Dolzarb"},
+  {id:3,category:"children",uz:"Pikovit sirop 150 ml",en:"Pikovit syrup 150 ml",ru:"Пиковит сироп 150 мл",price:65000,old:0,emoji:"🧸",badge:"Top"},
+  {id:4,category:"vitamin",uz:"B-Complex vitaminlari",en:"B-Complex vitamins",ru:"Витамины B-Complex",price:78000,old:83000,emoji:"🍊",badge:"Aksiya"},
+  {id:5,category:"medical",uz:"Elektron tonometr",en:"Digital blood pressure monitor",ru:"Электронный тонометр",price:340000,old:369000,emoji:"🩺",badge:"Top"},
+  {id:6,category:"children",uz:"Bolalar tagligi 24 dona",en:"Baby diapers 24 pcs",ru:"Подгузники 24 шт.",price:118000,old:125000,emoji:"👶",badge:"Aksiya"},
+  {id:7,category:"care",uz:"Antiseptik gel 100 ml",en:"Antiseptic gel 100 ml",ru:"Антисептик-гель 100 мл",price:22000,old:0,emoji:"🧴",badge:"Yangi"},
+  {id:8,category:"cold",uz:"Paratsetamol 500 mg №10",en:"Paracetamol 500 mg No.10",ru:"Парацетамол 500 мг №10",price:8000,old:0,emoji:"🌡️",badge:"Dolzarb"}
 ];
 
 var branches = [
@@ -1660,7 +1767,7 @@ var branches = [
 
 var selectedCategory = "all";
 var searchText = "";
-var currentLang = "uz";
+var currentLang = (function(){try{return localStorage.getItem("marjonLang") || "uz";}catch(e){return "uz";}})();
 var currentLocation = null;
 var cart = {};
 var favorites = {};
@@ -1691,7 +1798,7 @@ function getCategoryName(id) {
     if (categories[i].id === id) item = categories[i];
   }
   if (!item) return "";
-  return currentLang === "uz" ? item.uz : item.ru;
+  return currentLang === "uz" ? item.uz : (currentLang === "ru" ? item.ru : (item.en || item.uz));
 }
 
 function renderCategories() {
@@ -1704,7 +1811,7 @@ function renderCategories() {
       (selectedCategory === categories[i].id ? "active" : "") +
       '" onclick="selectCategory(\'' + categories[i].id + '\')">' +
       '<span>' + categories[i].icon + '</span><b>' +
-      (currentLang === "uz" ? categories[i].uz : categories[i].ru) +
+      (currentLang === "uz" ? categories[i].uz : (currentLang === "ru" ? categories[i].ru : (categories[i].en || categories[i].uz))) +
       '</b></button>';
   }
 
@@ -1717,7 +1824,7 @@ function filteredProducts() {
   var text;
 
   for (i = 0; i < products.length; i++) {
-    text = (products[i].uz + " " + products[i].ru).toLowerCase();
+    text = (products[i].uz + " " + products[i].ru + " " + (products[i].en || "")).toLowerCase();
 
     if (
       (selectedCategory === "all" || products[i].category === selectedCategory) &&
@@ -1748,7 +1855,7 @@ function renderProducts() {
       '</div>' +
       '<div class="product-info">' +
       '<small>' + getCategoryName(product.category) + '</small>' +
-      '<h3>' + (currentLang === "uz" ? product.uz : product.ru) + '</h3>' +
+      '<h3>' + (currentLang === "uz" ? product.uz : (currentLang === "ru" ? product.ru : (product.en || product.uz))) + '</h3>' +
       '<div class="price-row">' +
       '<div><strong>' + formatMoney(product.price) + '</strong>' +
       (product.old ? '<del>' + formatMoney(product.old) + '</del>' : '') +
@@ -1833,7 +1940,7 @@ function renderCart() {
 
     html += '<div class="cart-item">' +
       '<div class="cart-emoji">' + product.emoji + '</div>' +
-      '<div><h4>' + (currentLang === "uz" ? product.uz : product.ru) + '</h4>' +
+      '<div><h4>' + (currentLang === "uz" ? product.uz : (currentLang === "ru" ? product.ru : (product.en || product.uz))) + '</h4>' +
       '<small>' + formatMoney(product.price) + '</small>' +
       '<div class="qty">' +
       '<button onclick="changeQuantity(' + product.id + ',-1)">−</button>' +
@@ -2164,8 +2271,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("manualLocation").onclick = useManualCity;
 
   document.getElementById("langButton").onclick = function () {
-    currentLang = currentLang === "uz" ? "ru" : "uz";
+    currentLang = currentLang === "uz" ? "ru" : (currentLang === "ru" ? "en" : "uz");
+    try{localStorage.setItem("marjonLang", currentLang);}catch(e){}
     this.textContent = currentLang.toUpperCase();
+    if (typeof applyGlobalLanguage === "function") applyGlobalLanguage();
     renderCategories();
     renderProducts();
     renderCart();
@@ -2630,10 +2739,107 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 700);
       }
 
-      window.setTimeout(closeSplash, 3200);
+      var seenSplash = false; try{seenSplash = localStorage.getItem("marjonSplashSeen");localStorage.setItem("marjonSplashSeen", "1");}catch(e){}
+      window.setTimeout(closeSplash, seenSplash ? 450 : 1900);
       document.getElementById("skipSplash").onclick = closeSplash;
     })();
   </script>
+
+
+<script id="global-pro-script">
+(function(){
+  var deferredInstallPrompt = null;
+  var passportKey = "marjonGlobalHealthPassport";
+  function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function safeRemove(k){try{localStorage.removeItem(k)}catch(e){}}
+  var translations = {
+    uz:{kicker:"GLOBAL PRO • SMART HEALTH ECOSYSTEM",title:"Dorixona emas — oilangiz uchun aqlli sog‘liq ekotizimi",subtitle:"Sog‘liq pasporti, xavfsiz yo‘naltirish, telefarmatsiya, elektron retsept va shaxsiy eslatmalar bitta himoyalangan kabinetda.",passport:"Shaxsiy sog‘liq pasporti",manage:"Boshqarish",safety:"AI xavfsizlik yo‘naltiruvchisi"},
+    ru:{kicker:"GLOBAL PRO • УМНАЯ ЭКОСИСТЕМА ЗДОРОВЬЯ",title:"Не просто аптека — умная экосистема здоровья семьи",subtitle:"Паспорт здоровья, безопасная маршрутизация, телефармация, электронные рецепты и напоминания в одном защищённом кабинете.",passport:"Личный паспорт здоровья",manage:"Управлять",safety:"Безопасная AI-навигация"},
+    en:{kicker:"GLOBAL PRO • SMART HEALTH ECOSYSTEM",title:"More than a pharmacy — a smart family health ecosystem",subtitle:"Health ID, safe routing, telepharmacy, e-prescriptions and personal reminders in one protected account.",passport:"Personal Health ID",manage:"Manage",safety:"AI safety navigator"}
+  };
+  function el(id){return document.getElementById(id)}
+  function showToast(text, actionText, action){
+    var toast=el("gpToast"), button=el("gpToastAction");
+    if(!toast)return; el("gpToastText").textContent=text;
+    if(actionText){button.hidden=false;button.textContent=actionText;button.onclick=action||function(){};}else button.hidden=true;
+    toast.classList.add("show"); clearTimeout(window.__gpToastTimer); window.__gpToastTimer=setTimeout(function(){toast.classList.remove("show")},5200);
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme",theme);
+    safeSet("marjonTheme",theme);
+    if(el("gpThemeButton"))el("gpThemeButton").textContent=theme==="dark"?"☀":"☾";
+  }
+  function preferredTheme(){return safeGet("marjonTheme")||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}
+  function updateNetwork(){
+    var online=navigator.onLine,bar=el("gpNetworkBar"); if(!bar)return;
+    bar.classList.toggle("offline",!online); el("gpNetworkText").textContent=online?"Xavfsiz ulanish • Onlayn":"Oflayn rejim • Keshlangan sahifa";
+  }
+  function openPassport(){var m=el("gpPassportModal");if(m)m.classList.add("open");loadPassportForm()}
+  function closePassport(){var m=el("gpPassportModal");if(m)m.classList.remove("open")}
+  function readPassport(){try{return JSON.parse(safeGet(passportKey)||"null")||{}}catch(e){return {}}}
+  function passportProgress(p){var fields=[p.name,p.birth,p.blood,p.phone,p.allergy,p.medicines],filled=fields.filter(function(x){return String(x||"").trim()}).length;return Math.max(18,Math.round(filled/fields.length*100))}
+  function updatePassportCard(){
+    var p=readPassport(),percent=passportProgress(p);
+    if(el("gpProfileRing"))el("gpProfileRing").style.setProperty("--progress",percent+"%");
+    if(el("gpProfilePercent"))el("gpProfilePercent").textContent=percent+"%";
+    if(el("gpProfileName"))el("gpProfileName").textContent=p.name||"Mehmon profili";
+    var details=[];if(p.blood)details.push("Qon guruhi: "+p.blood);if(p.allergy)details.push("Allergiya qayd etilgan");if(p.phone)details.push("Favqulodda kontakt bor");
+    if(el("gpProfileText"))el("gpProfileText").textContent=details.length?details.join(" • "):"Allergiya, doimiy dori, qon guruhi va favqulodda kontaktni xavfsiz saqlang.";
+  }
+  function loadPassportForm(){var p=readPassport();[["gpPassName","name"],["gpPassBirth","birth"],["gpPassBlood","blood"],["gpPassPhone","phone"],["gpPassAllergy","allergy"],["gpPassMedicines","medicines"]].forEach(function(x){if(el(x[0]))el(x[0]).value=p[x[1]]||""});if(el("gpPassConsent"))el("gpPassConsent").checked=!!p.consent}
+  function savePassport(){
+    var status=el("gpPassportStatus");if(!el("gpPassConsent").checked){status.className="status error gp-modal-status";status.textContent="Saqlash uchun rozilikni tasdiqlang.";return}
+    var p={name:el("gpPassName").value.trim(),birth:el("gpPassBirth").value,blood:el("gpPassBlood").value,phone:el("gpPassPhone").value.trim(),allergy:el("gpPassAllergy").value.trim(),medicines:el("gpPassMedicines").value.trim(),consent:true,updatedAt:new Date().toISOString()};
+    safeSet(passportKey,JSON.stringify(p));status.className="status gp-modal-status";status.textContent="Sog‘liq pasporti ushbu qurilmada saqlandi.";updatePassportCard();showToast("Sog‘liq pasporti saqlandi.");
+  }
+  function clearPassport(){if(!confirm("Sog‘liq pasportidagi demo ma’lumotlarni tozalaysizmi?"))return;safeRemove(passportKey);loadPassportForm();updatePassportCard();showToast("Sog‘liq pasporti tozalandi.")}
+  function safetyCheck(value){
+    var q=String(value||"").toLowerCase().trim(),box=el("gpSafetyResult");if(!q){box.className="gp-safety-result warning";box.textContent="Belgini yoki savolni yozing.";return}
+    var urgent=["nafas","hush","qon ket","ko‘krak","insult","tutqanoq","bo‘g‘il","allergiya kuchli","yuz shish","suicide","o‘zimga zarar","не дыш","без созн","кровотеч","chest pain","unconscious","severe bleeding"];
+    var urgentHit=urgent.some(function(w){return q.indexOf(w)>-1});
+    if(urgentHit){box.className="gp-safety-result danger";box.innerHTML="<b>Shoshilinch holat bo‘lishi mumkin.</b><br>AI maslahatini kutmang. Xavfsiz joyda bo‘ling va tez tibbiy yordamga qo‘ng‘iroq qiling.<br><a href=\"tel:103\">103 ga qo‘ng‘iroq</a>";return}
+    if(q.indexOf("retsept")>-1||q.indexOf("рецепт")>-1||q.indexOf("prescription")>-1){box.className="gp-safety-result";box.innerHTML="Retsept bo‘yicha yakuniy qarorni farmatsevt beradi. <button type=\"button\" class=\"gp-outline-button\" onclick=\"openDmed('code')\">DMED demo oynasi</button>";return}
+    box.className="gp-safety-result warning";box.innerHTML="Bu savol shoshilinch belgi sifatida aniqlanmadi, lekin tashxis qo‘yilmadi. Dori dozasi yoki mosligi uchun farmatsevt/shifokor bilan bog‘laning. <button type=\"button\" class=\"gp-outline-button\" onclick=\"openModal('pharmacistModal')\">Farmatsevtga ulanish</button>";
+  }
+  window.applyGlobalLanguage=function(){
+    var lang=window.currentLang||"uz",dict=translations[lang]||translations.uz;
+    document.querySelectorAll("[data-gp-i18n]").forEach(function(node){var key=node.getAttribute("data-gp-i18n");if(dict[key])node.textContent=dict[key]});
+    if(el("langButton"))el("langButton").textContent=lang.toUpperCase();
+    document.documentElement.lang=lang;
+  };
+  function setupInstall(){
+    window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredInstallPrompt=e;if(el("gpInstallButton"))el("gpInstallButton").hidden=false;showToast("Marjon GLOBAL PRO telefoningizga o‘rnatishga tayyor.","O‘rnatish",installApp)});
+    window.addEventListener("appinstalled",function(){deferredInstallPrompt=null;if(el("gpInstallButton"))el("gpInstallButton").hidden=true;showToast("Ilova muvaffaqiyatli o‘rnatildi.")});
+  }
+  function installApp(){
+    if(deferredInstallPrompt){deferredInstallPrompt.prompt();deferredInstallPrompt.userChoice.finally(function(){deferredInstallPrompt=null})}
+    else{showToast("Chrome menyusi → “Bosh ekranga qo‘shish” yoki “Ilovani o‘rnatish” ni tanlang.")}
+  }
+  function setupServiceWorkerUpdates(){
+    if(!("serviceWorker" in navigator))return;
+    navigator.serviceWorker.addEventListener("controllerchange",function(){if(window.__gpReloading)return;window.__gpReloading=true;location.reload()});
+    navigator.serviceWorker.ready.then(function(reg){
+      reg.addEventListener("updatefound",function(){var worker=reg.installing;if(!worker)return;worker.addEventListener("statechange",function(){if(worker.state==="installed"&&navigator.serviceWorker.controller){showToast("GLOBAL PRO yangi versiyasi tayyor.","Yangilash",function(){worker.postMessage({type:"SKIP_WAITING"})})}})});
+    }).catch(function(){});
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    applyTheme(preferredTheme());updateNetwork();updatePassportCard();applyGlobalLanguage();setupInstall();setupServiceWorkerUpdates();
+    window.addEventListener("online",updateNetwork);window.addEventListener("offline",updateNetwork);
+    if(el("gpThemeButton"))el("gpThemeButton").onclick=function(){applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
+    if(el("gpInstallButton"))el("gpInstallButton").onclick=installApp;
+    if(el("gpOpenPassport"))el("gpOpenPassport").onclick=openPassport;if(el("gpClosePassport"))el("gpClosePassport").onclick=closePassport;
+    if(el("gpPassportModal"))el("gpPassportModal").onclick=function(e){if(e.target===this)closePassport()};
+    if(el("gpSavePassport"))el("gpSavePassport").onclick=savePassport;if(el("gpClearPassport"))el("gpClearPassport").onclick=clearPassport;
+    if(el("gpSafetyButton"))el("gpSafetyButton").onclick=function(){safetyCheck(el("gpSafetyInput").value)};
+    if(el("gpSafetyInput"))el("gpSafetyInput").onkeydown=function(e){if(e.key==="Enter")safetyCheck(this.value)};
+    document.querySelectorAll("[data-gp-safety]").forEach(function(btn){btn.onclick=function(){el("gpSafetyInput").value=this.getAttribute("data-gp-safety");safetyCheck(el("gpSafetyInput").value)}});
+    if(el("gpPrivacyToggle")){el("gpPrivacyToggle").checked=safeGet("marjonPrivacyMode")==="1";document.body.classList.toggle("gp-privacy-on",el("gpPrivacyToggle").checked);el("gpPrivacyToggle").onchange=function(){document.body.classList.toggle("gp-privacy-on",this.checked);safeSet("marjonPrivacyMode",this.checked?"1":"0")}}
+    if(el("gpMobileAi"))el("gpMobileAi").onclick=function(){if(typeof openAiChat==="function")openAiChat()};
+    document.querySelectorAll("img").forEach(function(img){if(!img.hasAttribute("loading")&&!img.closest(".splash"))img.loading="lazy"});
+  });
+})();
+</script>
 
 <script>
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
