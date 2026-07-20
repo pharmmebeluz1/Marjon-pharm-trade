@@ -1,0 +1,6 @@
+1. Ushbu papka ichidagi barcha fayllarni belgilang.
+2. GitHub → Marjon-pharm-trade → Add file → Upload files.
+3. Fayllarni yuklang va Commit changes bosing.
+4. 2–10 daqiqa kuting.
+5. Saytni ?v=3 bilan oching yoki Chrome keshini yangilang.
+6. ZIP faylning o‘zini GitHubga yuklamang.

@@ -1,0 +1,12 @@
+MARJON FARM TRADE — SERVERGA ULASH REJASI
+
+1. Backend API: Python Flask/FastAPI yoki Node.js
+2. Ma’lumotlar bazasi: PostgreSQL
+3. Rollar: Bemor, Farmatsevt, Kuryer, Buxgalter, Rahbar, Admin
+4. Kirish: telefon + SMS OTP
+5. Lokatsiya: faqat foydalanuvchi ruxsati bilan
+6. To‘lov: Click/Payme/Uzcard-Humo provayderlarining rasmiy APIlari
+7. Excel: serverdan sana, filial va xodim filtrlari bilan
+8. Xavfsizlik: HTTPS, parol xeshi, audit jurnali, ruxsatlar, zaxira nusxa
+9. DMED: faqat rasmiy shartnoma va API ruxsati bilan
+10. Bemor ma’lumotlari: ochiq GitHub fayllarida saqlanmaydi

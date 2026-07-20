@@ -1,7 +1,7 @@
 {
-  "name": "Marjon Farm Trade — GLOBAL PRO",
-  "short_name": "Marjon PRO",
-  "description": "AI, elektron retsept, DMED demo, telefarmatsiya va oilaviy sog‘liq PWA platformasi",
+  "name": "Marjon Farm Trade PLATFORM PRO",
+  "short_name": "Marjon Platform",
+  "description": "3 tilli bemor buyurtmasi, lokatsiya, dorixona rollari va Excel hisobot demo PWA.",
   "id": "./?source=pwa",
   "start_url": "./index.html?source=pwa",
   "scope": "./",

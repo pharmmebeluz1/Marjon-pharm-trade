@@ -1,15 +1,14 @@
-Marjon Farm Trade GLOBAL PRO
-Version: 2.0.0-demo
-Build date: 2026-07-20
+MARJON FARM TRADE — PLATFORM PRO DEMO
+Versiya: 3.0.0-template
+Sana: 20.07.2026
 
-Asosiy yangiliklar:
-- GLOBAL PRO aqlli sog‘liq ekotizimi
-- Shaxsiy sog‘liq pasporti
-- AI xavfsizlik yo‘naltiruvchisi
-- UZ/RU/EN katalog
-- Tungi rejim
-- Oflayn PWA va yangilanish xabari
-- Ilovani o‘rnatish tugmasi
-- Maxfiylik rejimi
-- Yangilangan mobil navigatsiya
-- DMED sandbox va mavjud funksiyalar saqlangan
+Qo‘shildi:
+- Bemor ro‘yxatdan o‘tishi va 3 til
+- Lokatsiyani foydalanuvchi ruxsati bilan olish
+- Farmatsevt, kuryer, buxgalter va rahbar kabinetlari
+- Naqd, Click, Payme, Uzcard/Humo, terminal, bank va qarz to‘lovlari
+- Ko‘p varaqli Excel (.xls) hisoboti
+- Buyurtma statusini bosqichma-bosqich o‘zgartirish
+- Server va umumiy bazaga ulashga tayyor frontend tuzilmasi
+
+MUHIM: Bu demo ma’lumotlarni faqat bitta brauzer localStorage xotirasida saqlaydi.
