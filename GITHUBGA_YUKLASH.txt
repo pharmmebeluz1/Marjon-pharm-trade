@@ -1,9 +1,6 @@
-MARJON FARM TRADE — MUSIQALI VERSIYANI GITHUBGA YUKLASH
-
-1. Ushbu papka ichidagi HAMMA fayl va assets papkasini belgilang.
+MARJON PLATFORM PRO — BOLALAR MUSIQA REJIMI
+1. Shu papka ichidagi HAMMA fayl va assets papkasini belgilang.
 2. GitHub > Marjon-pharm-trade > Add file > Upload files.
-3. Fayllarni yuklang va Commit changes ni bosing.
-4. Yashil belgi chiqqach saytni ?v=6 bilan oching.
-5. assets/marjon-intro.mp3 fayli albatta yuklangan bo‘lishi kerak.
-
-ZIP faylning o‘zini GitHubga yuklamang.
+3. Fayllarni tashlang va Commit changes bosing.
+4. Yashil belgi chiqqach: https://pharmmebeluz1.github.io/Marjon-pharm-trade/?v=7
+5. Eski ko‘rinish chiqsa Chrome keshini yangilang yoki ?v=7 havolani yangi oynada oching.

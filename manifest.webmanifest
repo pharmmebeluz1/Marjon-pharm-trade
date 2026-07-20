@@ -1,7 +1,7 @@
 {
-  "name": "Marjon Farm Trade — Live Courier + Intro",
-  "short_name": "Marjon Live",
-  "description": "3 tilli dorixona platformasi, Excel va kuryerni jonli xaritada kuzatish va ochilish musiqasi mavjud PWA shabloni.",
+  "name": "Marjon Farm Trade — Child Music + Live Courier",
+  "short_name": "Marjon Health",
+  "description": "3 tilli dorixona PWA: bemor kabineti, bolalar dori musiqasi, Excel, DMED va kuryerni jonli kuzatish.",
   "id": "./?source=pwa",
   "start_url": "./index.html?source=pwa",
   "scope": "./",

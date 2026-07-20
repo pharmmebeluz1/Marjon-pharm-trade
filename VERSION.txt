@@ -1,12 +1,14 @@
-MARJON FARM TRADE — PLATFORM PRO + LIVE KURYER + INTRO MUSIQA
-Versiya: 6.0.0-template
+MARJON FARM TRADE — PLATFORM PRO + BOLALAR MUSIQA REJIMI
+Versiya: 7.0.0-template
 Sana: 20.07.2026
 
 Yangi qo‘shildi:
-- Dastur ochilganda 2.6 soniyalik original yumshoq intro musiqa
-- Musiqani yoqish/o‘chirish tugmasi
-- Android Chrome avtomatik ovozni bloklasa, birinchi tegishda musiqa ishga tushadi
-- Ovoz tanlovi telefon xotirasida saqlanadi
-- Bemor uchun jonli kuryer xaritasi va avvalgi barcha funksiyalar saqlandi
+- Bemor kabinetiga kirganda qisqa original klinika chime ovozi
+- Bolalar uchun 30 soniyalik dori ichirish musiqa rejimi
+- Rangli taymer, yulduzlar va “Qahramon bo‘lding!” rag‘bati
+- Musiqani boshlash, to‘xtatish va yakunlash tugmalari
+- O‘zbek, rus va ingliz tilidagi bolalar oynasi
+- Kirish ovozini yoqish/o‘chirish va tanlovni telefonda eslab qolish
+- Mualliflik huquqli qo‘shiq ishlatilmagan; ohang Web Audio orqali original yaratiladi
 
-MUHIM: Telefon brauzerlari foydalanuvchi tegmasdan ovozni ba’zan bloklaydi. Bunday paytda ochilish ekraniga bir marta tegish kifoya.
+MUHIM: dori faqat shifokor/farmatsevt ko‘rsatmasi va katta odam nazoratida beriladi.

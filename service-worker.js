@@ -1,4 +1,4 @@
-const CACHE='marjon-global-pro-v4-intro';
+const CACHE='marjon-platform-v7-child-music';
 const CORE=['./','./index.html','./1_BOSING_MARJON_DMED.html','./offline.html','./manifest.webmanifest','./assets/marjon-logo.jpg','./assets/icon-192.png','./assets/icon-512.png','./assets/marjon-intro.mp3'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
