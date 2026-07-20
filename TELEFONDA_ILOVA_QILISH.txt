@@ -1,0 +1,7 @@
+ENG QULAY USUL:
+1. Shu papkani GitHub Pages yoki Netlify orqali internetga joylang.
+2. Telefonda chiqqan havolani Google Chrome orqali oching.
+3. Chrome menyusi (uch nuqta) -> "Bosh ekranga qo‘shish" / "Add to Home screen" ni bosing.
+4. Marjon DMED telefon bosh ekranida oddiy ilova kabi ochiladi.
+
+Eslatma: dizayn va funksiyalar o‘zgartirilmagan. PWA o‘rnatish fayllari qo‘shildi.
