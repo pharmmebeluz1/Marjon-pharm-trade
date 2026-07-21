@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#082f49" />
+  <meta name="description" content="Marjon Pharm mijoz kabineti uchun yurish, qadam, kaloriya, GPS va velosiped faolligi demo moduli" />
+  <title>Marjon Pharm — Faollik va salomatlik</title>
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    :root{
+      --navy:#082f49;
+      --navy2:#0c4a6e;
+      --cyan:#06b6d4;
+      --mint:#10b981;
+      --purple:#7c3aed;
+      --orange:#f59e0b;
+      --red:#ef4444;
+      --ink:#122230;
+      --muted:#6b7d8a;
+      --line:#dfe9ee;
+      --soft:#f3f9fb;
+      --white:#fff;
+      --shadow:0 20px 60px rgba(8,47,73,.13);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(180deg,#eef9fc 0,#fff 36%);color:var(--ink);font-family:Inter,Arial,Helvetica,sans-serif;padding-bottom:90px}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    .app{width:min(1180px,calc(100% - 28px));margin:auto}
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(223,233,238,.9)}
+    .topbar-inner{height:76px;width:min(1180px,calc(100% - 28px));margin:auto;display:flex;align-items:center;gap:13px}
+    .logo{width:49px;height:49px;border-radius:16px;background:linear-gradient(145deg,var(--cyan),var(--purple));color:#fff;display:grid;place-items:center;font-weight:950;font-size:22px;box-shadow:0 10px 28px rgba(6,182,212,.25)}
+    .brand{display:flex;flex-direction:column;line-height:1}.brand b{letter-spacing:.08em;color:var(--navy);font-size:17px}.brand small{margin-top:6px;color:var(--cyan);font-weight:800;font-size:10px;letter-spacing:.08em}
+    .top-actions{margin-left:auto;display:flex;gap:8px}
+    .icon-btn{border:1px solid var(--line);background:#fff;color:var(--navy);height:43px;border-radius:13px;padding:0 13px;font-weight:800}
+    .hero{margin-top:22px;border-radius:30px;padding:29px;background:linear-gradient(135deg,var(--navy),#075985 58%,#0e7490);color:#fff;position:relative;overflow:hidden;box-shadow:0 30px 75px rgba(8,47,73,.22)}
+    .hero:after{content:"10000";position:absolute;right:-20px;top:-30px;font-size:150px;font-weight:950;color:rgba(255,255,255,.055)}
+    .hero-grid{display:grid;grid-template-columns:1fr auto;align-items:center;gap:28px;position:relative;z-index:2}
+    .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:900;color:#a5f3fc}.hero h1{font-size:clamp(31px,5vw,53px);letter-spacing:-.045em;margin:9px 0 10px}.hero p{max-width:650px;color:rgba(255,255,255,.72);line-height:1.65;margin:0}
+    .goal-ring{--p:76;width:170px;height:170px;border-radius:50%;background:conic-gradient(#67e8f9 calc(var(--p)*1%),rgba(255,255,255,.16) 0);display:grid;place-items:center;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+    .goal-ring:before{content:"";position:absolute;inset:14px;background:linear-gradient(145deg,#0b496b,#075985);border-radius:50%}.ring-copy{position:relative;text-align:center}.ring-copy b{display:block;font-size:31px}.ring-copy small{color:#bae6fd;font-size:11px}
+    .sync-note{margin-top:15px;display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.1);font-size:11px;color:#dffaff}.sync-note i{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 5px rgba(52,211,153,.14)}
+    .section{margin-top:22px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}.section-head h2{margin:0;color:var(--navy);font-size:24px;letter-spacing:-.025em}.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.text-btn{border:0;background:transparent;color:var(--purple);font-weight:900}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:21px;padding:19px;box-shadow:0 12px 34px rgba(8,47,73,.07);position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;width:75px;height:75px;border-radius:50%;right:-30px;bottom:-34px;background:linear-gradient(145deg,rgba(6,182,212,.13),rgba(124,58,237,.12))}.kpi .icon{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#e0f7fb,#f0eafe);display:grid;place-items:center;font-size:20px}.kpi b{display:block;font-size:27px;color:var(--navy);margin-top:14px;letter-spacing:-.04em}.kpi span{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}.kpi em{display:block;font-style:normal;font-size:10px;color:var(--mint);font-weight:900;margin-top:9px}
+    .control-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+    .mode-row{display:flex;gap:8px;flex-wrap:wrap}.mode-btn{border:1px solid var(--line);background:#fff;color:#5d7180;border-radius:14px;padding:11px 15px;font-weight:850}.mode-btn.active{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-color:transparent}.track-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.primary,.secondary,.danger{min-height:48px;border-radius:14px;padding:0 18px;border:0;font-weight:900}.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;box-shadow:0 13px 30px rgba(6,182,212,.2)}.secondary{background:#eef7fa;color:var(--navy)}.danger{background:#fff0f1;color:#b91c1c;border:1px solid #fecdd3}.primary:disabled,.secondary:disabled,.danger:disabled{opacity:.46;cursor:not-allowed}
+    .live-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}.live-item{padding:13px;background:var(--soft);border:1px solid #e2eef2;border-radius:15px;text-align:center}.live-item b{display:block;color:var(--navy);font-size:18px}.live-item span{display:block;color:var(--muted);font-size:10px;margin-top:4px;font-weight:700}
+    .layout{display:grid;grid-template-columns:1.18fr .82fr;gap:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 14px 42px rgba(8,47,73,.07)}
+    #map{height:365px;border-radius:18px;background:linear-gradient(135deg,#eaf7fb,#f2edff);overflow:hidden;position:relative}.map-fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#56707f;padding:25px;background-image:linear-gradient(#cde3e9 1px,transparent 1px),linear-gradient(90deg,#cde3e9 1px,transparent 1px);background-size:36px 36px}.map-fallback b{display:block;color:var(--navy);font-size:20px;margin-bottom:7px}.map-fallback small{display:block;max-width:330px;line-height:1.5}.map-status{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:11px;font-size:11px;color:var(--muted)}
+    .privacy{padding:14px;border-radius:16px;background:#f7fbfc;border:1px solid var(--line);margin-top:12px}.privacy label{display:flex;align-items:center;gap:9px;font-size:12px;color:#526976;font-weight:750}.privacy input{width:17px;height:17px}
+    .week-bars{height:230px;display:flex;align-items:flex-end;gap:10px;padding:14px 5px 0}.daybar{flex:1;text-align:center;min-width:0}.bar-track{height:170px;background:#f0f6f8;border-radius:13px;display:flex;align-items:flex-end;padding:5px;overflow:hidden}.bar-fill{width:100%;min-height:4px;border-radius:10px;background:linear-gradient(180deg,var(--cyan),var(--purple));transition:.4s}.daybar b{display:block;font-size:10px;color:var(--navy);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.daybar span{display:block;font-size:9px;color:var(--muted);margin-top:3px}
+    .week-total{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.week-total div{background:var(--soft);border-radius:14px;padding:12px;text-align:center}.week-total b{display:block;color:var(--navy);font-size:18px}.week-total span{font-size:10px;color:var(--muted)}
+    .speed-list{max-height:330px;overflow:auto}.speed-row{display:grid;grid-template-columns:68px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #edf2f4}.speed-time{font-size:11px;color:var(--muted);font-weight:800}.speed-track{height:8px;border-radius:99px;background:#edf3f5;overflow:hidden}.speed-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--cyan))}.speed-value{font-size:12px;color:var(--navy);font-weight:900}.empty{padding:35px 15px;text-align:center;color:var(--muted);font-size:13px}
+    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.report-metric{padding:15px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#f8fbfc)}.report-metric b{display:block;color:var(--navy);font-size:20px}.report-metric span{display:block;color:var(--muted);font-size:10px;margin-top:4px}.report-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:15px}.field label{display:block;font-size:10px;font-weight:900;color:#506774;margin-bottom:6px}.field input,.field select{width:100%;height:44px;border:1px solid var(--line);border-radius:13px;padding:0 12px;background:#fff;color:var(--navy);outline:0}.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(6,182,212,.12)}
+    .notice{margin-top:12px;border-radius:15px;padding:13px 15px;background:#fff8e8;color:#835a05;border:1px solid #fde3a7;font-size:11px;line-height:1.55}
+    .toast{position:fixed;left:50%;bottom:96px;z-index:100;transform:translate(-50%,30px);opacity:0;pointer-events:none;max-width:min(440px,calc(100% - 30px));background:#082f49;color:#fff;padding:13px 17px;border-radius:14px;box-shadow:0 20px 55px rgba(0,0,0,.23);font-size:12px;font-weight:750;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .bottom-nav{position:fixed;z-index:60;left:0;right:0;bottom:0;height:74px;background:rgba(255,255,255,.96);backdrop-filter:blur(15px);border-top:1px solid var(--line);display:none;grid-template-columns:repeat(4,1fr);padding-bottom:max(4px,env(safe-area-inset-bottom))}.bottom-nav button{border:0;background:transparent;color:#6d808d;font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.bottom-nav span{font-size:20px}.bottom-nav button.active{color:var(--purple)}
+    .modal{position:fixed;inset:0;z-index:120;background:rgba(4,24,38,.62);display:grid;place-items:center;padding:17px;opacity:0;visibility:hidden;transition:.2s}.modal.open{opacity:1;visibility:visible}.modal-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:25px;padding:25px;box-shadow:0 35px 90px rgba(0,0,0,.28)}.modal-card h3{margin:0;color:var(--navy);font-size:24px}.modal-card p{font-size:12px;line-height:1.6;color:var(--muted)}.pin-grid{display:grid;grid-template-columns:repeat(3,70px);gap:10px;justify-content:center;margin-top:15px}.pin-grid button{height:57px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--navy);font-size:20px;font-weight:900}.pin-dots{display:flex;justify-content:center;gap:9px;margin:16px 0}.pin-dots i{width:12px;height:12px;border-radius:50%;background:#d8e3e8}.pin-dots i.on{background:var(--purple)}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.goal-ring{width:145px;height:145px}.live-strip{grid-template-columns:repeat(3,1fr)}.report-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){body{padding-bottom:86px}.topbar-inner{height:68px}.brand b{font-size:14px}.brand small{font-size:8px}.top-actions .icon-btn:first-child{display:none}.app{width:min(100% - 18px,1180px)}.hero{padding:21px;border-radius:24px}.hero h1{font-size:34px}.goal-ring{margin:auto}.kpi-grid{gap:8px}.kpi{padding:15px;border-radius:18px}.kpi b{font-size:23px}.section-head h2{font-size:21px}.control-card,.panel{padding:15px;border-radius:20px}.live-strip{grid-template-columns:repeat(2,1fr)}.field-row{grid-template-columns:1fr}.report-grid{grid-template-columns:repeat(2,1fr)}.week-bars{gap:5px}.bottom-nav{display:grid}.pin-grid{grid-template-columns:repeat(3,65px)}}
+    @media print{.topbar,.bottom-nav,.track-actions,.mode-row,.report-actions,.privacy,.notice,.icon-btn{display:none!important}body{background:#fff;padding:0}.hero{box-shadow:none}.section{break-inside:avoid}.app{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">M+</div>
+      <div class="brand"><b>MARJON PHARM</b><small>FAOLLIK VA SALOMATLIK</small></div>
+      <div class="top-actions">
+        <a class="icon-btn" href="./index.html" style="display:inline-flex;align-items:center;text-decoration:none">← Asosiy sahifa</a>
+        <button class="icon-btn" id="demoDataBtn">Namuna ma’lumot</button>
+        <button class="icon-btn" id="profileBtn">⚙ Profil</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="hero" id="overviewSection">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">MIJOZ SHAXSIY KABINETI</span>
+          <h1>Bugungi harakatingiz</h1>
+          <p>Qadam, masofa, kaloriya, yurish va velosiped tezligini bir joyda kuzating. Kunlik maqsad: 10 000 qadam.</p>
+          <div class="sync-note"><i></i><span id="syncText">Telefon ma’lumotlari namuna rejimida</span></div>
+        </div>
+        <div class="goal-ring" id="goalRing" style="--p:0">
+          <div class="ring-copy"><b id="ringPercent">0%</b><small>kunlik maqsad</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Bugungi natija</h2><p id="todayLabel">Bugungi jami ko‘rsatkichlar</p></div><button class="text-btn" id="addStepsBtn">+ 1 000 namuna qadam</button></div>
+      <div class="kpi-grid">
+        <article class="kpi"><div class="icon">👣</div><b id="stepsKpi">0</b><span>Qadam</span><em id="stepsDelta">Maqsadgacha 10 000</em></article>
+        <article class="kpi"><div class="icon">📍</div><b id="distanceKpi">0 km</b><span>Masofa</span><em>Yurish + velosiped</em></article>
+        <article class="kpi"><div class="icon">🔥</div><b id="calorieKpi">0 kkal</b><span>Sarflangan kaloriya</span><em>Taxminiy hisob</em></article>
+        <article class="kpi"><div class="icon">⏱</div><b id="minutesKpi">0 daq</b><span>Faol vaqt</span><em id="bestSpeedKpi">Eng tez: 0 km/soat</em></article>
+      </div>
+    </section>
+
+    <section class="section" id="trackSection">
+      <div class="section-head"><div><h2>Jonli faollik</h2><p>Yurish yoki velosipedni boshlang — GPS yo‘l va tezlikni yozadi</p></div></div>
+      <div class="control-card">
+        <div class="mode-row">
+          <button class="mode-btn active" data-mode="walk">🚶 Yurish</button>
+          <button class="mode-btn" data-mode="bike">🚲 Velosiped</button>
+        </div>
+        <div class="track-actions">
+          <button class="primary" id="startBtn">▶ Boshlash</button>
+          <button class="secondary" id="pauseBtn" disabled>⏸ Tanaffus</button>
+          <button class="danger" id="stopBtn" disabled>■ Yakunlash</button>
+        </div>
+        <div class="live-strip">
+          <div class="live-item"><b id="liveTime">00:00:00</b><span>Davomiyligi</span></div>
+          <div class="live-item"><b id="liveDistance">0.00 km</b><span>Masofa</span></div>
+          <div class="live-item"><b id="liveSpeed">0.0</b><span>Hozirgi km/soat</span></div>
+          <div class="live-item"><b id="liveAvg">0.0</b><span>O‘rtacha km/soat</span></div>
+          <div class="live-item"><b id="liveCalories">0</b><span>kkal</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="layout">
+        <article class="panel">
+          <div class="section-head"><div><h2>Yurgan yo‘lingiz</h2><p>GPS koordinatalari xaritada chiziq bo‘lib chiqadi</p></div><button class="text-btn" id="centerMapBtn">Markazlash</button></div>
+          <div id="map"><div class="map-fallback" id="mapFallback"><div><b>🗺 Xarita tayyor</b><small>Internet bo‘lsa OpenStreetMap ochiladi. “Boshlash” tugmasidan keyin lokatsiyaga ruxsat bering.</small></div></div></div>
+          <div class="map-status"><span id="gpsStatus">GPS: hali yoqilmagan</span><span id="pointCount">0 nuqta</span></div>
+          <div class="privacy"><label><input type="checkbox" id="privateRoute" checked /> Yo‘nalish faqat mijozning o‘ziga ko‘rinsin</label></div>
+        </article>
+        <article class="panel">
+          <div class="section-head"><div><h2>Tezlik tarixi</h2><p>Qaysi vaqtda qanday tezlikda yurganingiz</p></div></div>
+          <div class="speed-list" id="speedList"><div class="empty">Faollik boshlanganda tezliklar shu yerda chiqadi.</div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="weekSection">
+      <div class="layout">
+        <article class="panel">
+          <div class="section-head"><div><h2>7 kunlik qadamlar</h2><p>Har kuni 10 000 qadam maqsad bilan</p></div></div>
+          <div class="week-bars" id="weekBars"></div>
+          <div class="week-total"><div><b id="weekSteps">0</b><span>Jami qadam</span></div><div><b id="weekDistance">0 km</b><span>Jami masofa</span></div><div><b id="weekCalories">0</b><span>Jami kkal</span></div></div>
+        </article>
+        <article class="panel">
+          <div class="section-head"><div><h2>Kunlik hisobot</h2><p>Tanlangan kun bo‘yicha to‘liq natija</p></div></div>
+          <div class="field-row">
+            <div class="field"><label>Hisobot sanasi</label><input type="date" id="reportDate" /></div>
+            <div class="field"><label>Vazn</label><input type="number" id="weightInput" min="35" max="220" value="75" /></div>
+            <div class="field"><label>Qadam maqsadi</label><input type="number" id="goalInput" min="1000" max="50000" step="500" value="10000" /></div>
+          </div>
+          <div class="report-grid" style="margin-top:14px">
+            <div class="report-metric"><b id="reportSteps">0</b><span>Qadam</span></div>
+            <div class="report-metric"><b id="reportDistance">0 km</b><span>Masofa</span></div>
+            <div class="report-metric"><b id="reportCalories">0 kkal</b><span>Kaloriya</span></div>
+            <div class="report-metric"><b id="reportMinutes">0 daq</b><span>Faol vaqt</span></div>
+          </div>
+          <div class="report-actions"><button class="primary" id="printBtn">🖨 Hisobotni chiqarish</button><button class="secondary" id="csvBtn">⬇ CSV yuklash</button><button class="danger" id="clearDayBtn">Kunni tozalash</button></div>
+          <div class="notice"><b>Eslatma:</b> kaloriya va qadam GPS masofa, vazn va faoliyat turiga qarab taxminiy hisoblanadi. Telefonning haqiqiy qadam sensori uchun Android Health Connect yoki mobil ilova ulanishi kerak.</div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="active" data-scroll="overviewSection"><span>⌂</span>Bugun</button>
+    <button data-scroll="trackSection"><span>▶</span>Faollik</button>
+    <button data-scroll="weekSection"><span>▥</span>Hafta</button>
+    <button id="mobileProfile"><span>⚙</span>Profil</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal" id="profileModal">
+    <div class="modal-card">
+      <h3>Profil sozlamalari</h3>
+      <p>Bu ma’lumotlar qadam va kaloriya hisobini aniqroq qilishga yordam beradi.</p>
+      <div class="field-row">
+        <div class="field"><label>Ism</label><input id="nameInput" value="Hurmatli mijoz" /></div>
+        <div class="field"><label>Bo‘y (sm)</label><input id="heightInput" type="number" min="120" max="230" value="175" /></div>
+        <div class="field"><label>Qadam uzunligi (sm)</label><input id="strideInput" type="number" min="35" max="120" value="75" /></div>
+      </div>
+      <div class="report-actions"><button class="primary" id="saveProfile">Saqlash</button><button class="secondary" id="closeProfile">Yopish</button></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+  (function(){
+    'use strict';
+    const STORAGE_KEY='marjonActivityProV1';
+    const $=id=>document.getElementById(id);
+    const fmt=n=>Math.round(Number(n)||0).toLocaleString('uz-UZ');
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    const pad=n=>String(n).padStart(2,'0');
+    const localDate=(d=new Date())=>{
+      const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);
+      return x.toISOString().slice(0,10);
+    };
+    const today=localDate();
+    let state=loadState();
+    let tracking=false, paused=false, mode='walk', watchId=null, timerId=null, startedAt=0, pausedTotal=0, pauseStarted=0;
+    let live={points:[],distanceKm:0,speeds:[],lastPoint:null};
+    let map=null,routeLine=null,routeMarkers=[];
+
+    function defaultState(){return {profile:{name:'Hurmatli mijoz',weight:75,height:175,stride:75,goal:10000},days:{},sessions:[]};}
+    function loadState(){try{return Object.assign(defaultState(),JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'));}catch(e){return defaultState();}}
+    function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+    function ensureDay(date=today){if(!state.days[date])state.days[date]={steps:0,distanceKm:0,calories:0,activeMinutes:0,bestSpeed:0,sessions:[]};return state.days[date];}
+    function showToast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>el.classList.remove('show'),2700);}
+    function haversine(a,b){const R=6371,toRad=x=>x*Math.PI/180;const dLat=toRad(b.lat-a.lat),dLon=toRad(b.lng-a.lng);const h=Math.sin(dLat/2)**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+    function durationSec(){if(!tracking)return 0;const end=paused?pauseStarted:Date.now();return Math.max(0,Math.floor((end-startedAt-pausedTotal)/1000));}
+    function timeText(sec){return `${pad(Math.floor(sec/3600))}:${pad(Math.floor((sec%3600)/60))}:${pad(sec%60)}`;}
+    function caloriesFor(mode,distanceKm,minutes,weight){
+      if(mode==='bike'){
+        const avg=minutes>0?distanceKm/(minutes/60):0;const met=avg<16?4:avg<20?6.8:avg<24?8:10;return Math.round(met*3.5*weight/200*minutes);
+      }
+      return Math.round(distanceKm*weight*0.72);
+    }
+    function estimatedSteps(distanceKm){return Math.round((distanceKm*100000)/(Number(state.profile.stride)||75));}
+
+    function render(){
+      const d=ensureDay();const goal=Number(state.profile.goal)||10000;const pct=clamp(Math.round(d.steps/goal*100),0,100);
+      $('stepsKpi').textContent=fmt(d.steps);$('distanceKpi').textContent=d.distanceKm.toFixed(2)+' km';$('calorieKpi').textContent=fmt(d.calories)+' kkal';$('minutesKpi').textContent=fmt(d.activeMinutes)+' daq';$('bestSpeedKpi').textContent='Eng tez: '+d.bestSpeed.toFixed(1)+' km/soat';
+      $('ringPercent').textContent=pct+'%';$('goalRing').style.setProperty('--p',pct);$('stepsDelta').textContent=d.steps>=goal?'Kunlik maqsad bajarildi!':'Maqsadgacha '+fmt(goal-d.steps);
+      $('todayLabel').textContent=new Intl.DateTimeFormat('uz-UZ',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+      renderWeek();renderReport();
+    }
+
+    function last7Dates(){const a=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);a.push(localDate(d));}return a;}
+    function renderWeek(){const dates=last7Dates(),box=$('weekBars');box.innerHTML='';let ts=0,td=0,tc=0;const max=Math.max(10000,...dates.map(x=>(state.days[x]||{}).steps||0));
+      dates.forEach(date=>{const d=state.days[date]||{steps:0,distanceKm:0,calories:0};ts+=d.steps||0;td+=d.distanceKm||0;tc+=d.calories||0;const day=new Date(date+'T12:00:00');const names=['Yak','Du','Se','Chor','Pay','Ju','Sha'];const wrap=document.createElement('div');wrap.className='daybar';wrap.innerHTML=`<div class="bar-track"><div class="bar-fill" style="height:${Math.max(2,(d.steps||0)/max*100)}%"></div></div><b>${names[day.getDay()]}</b><span>${fmt(d.steps||0)}</span>`;box.appendChild(wrap);});
+      $('weekSteps').textContent=fmt(ts);$('weekDistance').textContent=td.toFixed(1)+' km';$('weekCalories').textContent=fmt(tc);
+    }
+    function renderReport(){const date=$('reportDate').value||today,d=state.days[date]||{steps:0,distanceKm:0,calories:0,activeMinutes:0};$('reportSteps').textContent=fmt(d.steps);$('reportDistance').textContent=(d.distanceKm||0).toFixed(2)+' km';$('reportCalories').textContent=fmt(d.calories)+' kkal';$('reportMinutes').textContent=fmt(d.activeMinutes)+' daq';}
+
+    function initMap(){
+      if(!window.L){$('mapFallback').classList.remove('hidden');return;}
+      try{map=L.map('map',{zoomControl:true}).setView([41.3111,69.2797],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);$('mapFallback').classList.add('hidden');}
+      catch(e){map=null;$('mapFallback').classList.remove('hidden');}
+    }
+    function updateMap(){if(!map||!live.points.length)return;const latlngs=live.points.map(p=>[p.lat,p.lng]);if(routeLine)routeLine.setLatLngs(latlngs);else routeLine=L.polyline(latlngs,{color:'#7c3aed',weight:5,opacity:.85}).addTo(map);if(routeMarkers.length===0){routeMarkers.push(L.circleMarker(latlngs[0],{radius:7,color:'#10b981',fillOpacity:1}).addTo(map));}map.fitBounds(routeLine.getBounds(),{padding:[28,28],maxZoom:17});}
+    function clearMap(){if(map&&routeLine){map.removeLayer(routeLine);routeLine=null;}if(map)routeMarkers.forEach(m=>map.removeLayer(m));routeMarkers=[];}
+
+    function startTracking(){
+      if(tracking&&!paused)return;
+      if(paused){paused=false;pausedTotal+=Date.now()-pauseStarted;$('pauseBtn').textContent='⏸ Tanaffus';startGeoWatch();showToast('Faollik davom ettirildi.');return;}
+      tracking=true;paused=false;startedAt=Date.now();pausedTotal=0;live={points:[],distanceKm:0,speeds:[],lastPoint:null};clearMap();
+      $('startBtn').disabled=true;$('pauseBtn').disabled=false;$('stopBtn').disabled=false;$('gpsStatus').textContent='GPS: ruxsat kutilmoqda';$('syncText').textContent='Jonli faollik yozilmoqda';
+      timerId=setInterval(updateLive,1000);startGeoWatch();showToast(mode==='walk'?'Yurish boshlandi.':'Velosiped faolligi boshlandi.');
+    }
+    function startGeoWatch(){
+      if(!navigator.geolocation){$('gpsStatus').textContent='GPS: brauzer qo‘llamaydi';showToast('Bu brauzer GPS funksiyasini qo‘llamaydi.');return;}
+      watchId=navigator.geolocation.watchPosition(onPosition,onGeoError,{enableHighAccuracy:true,maximumAge:3000,timeout:15000});
+    }
+    function onPosition(pos){if(!tracking||paused)return;const p={lat:pos.coords.latitude,lng:pos.coords.longitude,t:pos.timestamp||Date.now(),accuracy:pos.coords.accuracy||0,speed:pos.coords.speed};
+      if(live.lastPoint){const km=haversine(live.lastPoint,p);const dt=(p.t-live.lastPoint.t)/1000;const plausible=km<1 && dt>0;if(plausible){live.distanceKm+=km;let speed=Number.isFinite(p.speed)&&p.speed>=0?p.speed*3.6:(km/(dt/3600));speed=clamp(speed,0,mode==='bike'?80:20);live.speeds.push({time:new Date(p.t).toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),speed});if(live.speeds.length>120)live.speeds.shift();}}
+      live.points.push(p);if(live.points.length>1000)live.points.shift();live.lastPoint=p;$('gpsStatus').textContent='GPS: aniqlik ±'+Math.round(p.accuracy)+' m';$('pointCount').textContent=live.points.length+' nuqta';updateMap();renderSpeeds();updateLive();
+    }
+    function onGeoError(err){const msg={1:'lokatsiyaga ruxsat berilmadi',2:'lokatsiya topilmadi',3:'GPS javobi kechikdi'}[err.code]||'GPS xatosi';$('gpsStatus').textContent='GPS: '+msg;showToast('GPS: '+msg+'. Namuna ma’lumot bilan ham sinab ko‘rishingiz mumkin.');}
+    function pauseTracking(){if(!tracking)return;if(!paused){paused=true;pauseStarted=Date.now();if(watchId!==null)navigator.geolocation.clearWatch(watchId);watchId=null;$('pauseBtn').textContent='▶ Davom ettirish';showToast('Faollik vaqtincha to‘xtatildi.');}else startTracking();}
+    function stopTracking(){if(!tracking)return;if(watchId!==null)navigator.geolocation.clearWatch(watchId);clearInterval(timerId);watchId=null;timerId=null;const sec=durationSec(),minutes=Math.max(1,Math.round(sec/60)),distance=live.distanceKm;const avg=minutes>0?distance/(minutes/60):0;const best=live.speeds.reduce((m,x)=>Math.max(m,x.speed),0);const calories=caloriesFor(mode,distance,minutes,state.profile.weight);const steps=mode==='walk'?estimatedSteps(distance):0;const session={id:Date.now(),date:today,mode,start:new Date(startedAt).toISOString(),minutes,distanceKm:distance,calories,steps,avgSpeed:avg,bestSpeed:best,speeds:live.speeds.slice(),route:$('privateRoute').checked?live.points.slice():[]};
+      const d=ensureDay();d.steps+=steps;d.distanceKm+=distance;d.calories+=calories;d.activeMinutes+=minutes;d.bestSpeed=Math.max(d.bestSpeed,best);d.sessions.push(session);state.sessions.push(session);saveState();tracking=false;paused=false;$('startBtn').disabled=false;$('pauseBtn').disabled=true;$('stopBtn').disabled=true;$('pauseBtn').textContent='⏸ Tanaffus';$('syncText').textContent='Faollik telefonda saqlandi';render();showToast('Faollik saqlandi: '+distance.toFixed(2)+' km, '+calories+' kkal.');
+    }
+    function updateLive(){const sec=durationSec(),minutes=sec/60;const avg=minutes>0?live.distanceKm/(minutes/60):0;const current=live.speeds.length?live.speeds[live.speeds.length-1].speed:0;const cals=caloriesFor(mode,live.distanceKm,minutes,state.profile.weight);$('liveTime').textContent=timeText(sec);$('liveDistance').textContent=live.distanceKm.toFixed(2)+' km';$('liveSpeed').textContent=current.toFixed(1);$('liveAvg').textContent=avg.toFixed(1);$('liveCalories').textContent=fmt(cals);}
+    function renderSpeeds(){const box=$('speedList');if(!live.speeds.length){box.innerHTML='<div class="empty">Tezlik ma’lumoti hali yo‘q.</div>';return;}const max=Math.max(mode==='bike'?30:8,...live.speeds.map(x=>x.speed));box.innerHTML=live.speeds.slice().reverse().slice(0,45).map(x=>`<div class="speed-row"><div class="speed-time">${x.time}</div><div class="speed-track"><div class="speed-fill" style="width:${clamp(x.speed/max*100,2,100)}%"></div></div><div class="speed-value">${x.speed.toFixed(1)} km/s</div></div>`).join('');}
+
+    function addDemoDay(date,steps,distance,calories,minutes,best=0){state.days[date]={steps,distanceKm:distance,calories,activeMinutes:minutes,bestSpeed:best,sessions:[]};}
+    function seedDemo(){const dates=last7Dates(),vals=[[7200,5.1,370,64],[10450,7.6,520,91],[8900,6.4,445,78],[12120,9.0,610,105],[6400,4.7,335,58],[15100,12.8,790,126],[7650,5.8,420,78]];dates.forEach((d,i)=>addDemoDay(d,...vals[i]));const td=ensureDay();td.bestSpeed=Math.max(td.bestSpeed,22.4);saveState();render();showToast('7 kunlik namuna ma’lumot qo‘shildi.');}
+    function addSteps(){const d=ensureDay();d.steps+=1000;const km=1000*(state.profile.stride||75)/100000;d.distanceKm+=km;d.calories+=Math.round(km*(state.profile.weight||75)*.72);d.activeMinutes+=10;saveState();render();showToast('1 000 namuna qadam qo‘shildi.');}
+    function exportCsv(){const date=$('reportDate').value||today,d=state.days[date]||{steps:0,distanceKm:0,calories:0,activeMinutes:0,bestSpeed:0};const rows=[['Sana','Qadam','Masofa km','Kaloriya kkal','Faol vaqt daqiqa','Eng yuqori tezlik km/soat'],[date,d.steps,d.distanceKm.toFixed(2),d.calories,d.activeMinutes,d.bestSpeed.toFixed(1)]];const csv='\ufeff'+rows.map(r=>r.join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Marjon_Faollik_'+date+'.csv';a.click();URL.revokeObjectURL(a.href);}
+    function clearDay(){const date=$('reportDate').value||today;if(!confirm(date+' kungi ma’lumotlar tozalansinmi?'))return;delete state.days[date];saveState();render();showToast('Tanlangan kun ma’lumoti tozalandi.');}
+    function saveProfile(){state.profile.name=$('nameInput').value.trim()||'Hurmatli mijoz';state.profile.height=Number($('heightInput').value)||175;state.profile.stride=Number($('strideInput').value)||75;state.profile.weight=Number($('weightInput').value)||75;state.profile.goal=Number($('goalInput').value)||10000;saveState();$('profileModal').classList.remove('open');render();showToast('Profil sozlamalari saqlandi.');}
+    function openProfile(){$('nameInput').value=state.profile.name;$('heightInput').value=state.profile.height;$('strideInput').value=state.profile.stride;$('profileModal').classList.add('open');}
+
+    document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{if(tracking){showToast('Faollik davomida rejimni o‘zgartirib bo‘lmaydi.');return;}document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');mode=btn.dataset.mode;renderSpeeds();}));
+    $('startBtn').onclick=startTracking;$('pauseBtn').onclick=pauseTracking;$('stopBtn').onclick=stopTracking;$('demoDataBtn').onclick=seedDemo;$('addStepsBtn').onclick=addSteps;$('centerMapBtn').onclick=updateMap;$('printBtn').onclick=()=>window.print();$('csvBtn').onclick=exportCsv;$('clearDayBtn').onclick=clearDay;$('reportDate').onchange=renderReport;
+    $('weightInput').value=state.profile.weight;$('goalInput').value=state.profile.goal;$('weightInput').onchange=e=>{state.profile.weight=Number(e.target.value)||75;saveState();};$('goalInput').onchange=e=>{state.profile.goal=Number(e.target.value)||10000;saveState();render();};
+    $('profileBtn').onclick=openProfile;$('mobileProfile').onclick=openProfile;$('saveProfile').onclick=saveProfile;$('closeProfile').onclick=()=>$('profileModal').classList.remove('open');$('profileModal').onclick=e=>{if(e.target.id==='profileModal')$('profileModal').classList.remove('open');};
+    document.querySelectorAll('[data-scroll]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.bottom-nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');$(btn.dataset.scroll).scrollIntoView({behavior:'smooth'});});
+    $('reportDate').value=today;ensureDay();initMap();render();
+  })();
+  </script>
+</body>
+</html>
