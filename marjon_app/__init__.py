@@ -95,6 +95,10 @@ def create_app(test_config: dict | None = None) -> Flask:
     def assets(filename: str):
         return send_from_directory(Path(app.static_folder) / "assets", filename)
 
+    @app.get("/favicon.ico")
+    def favicon():
+        return send_from_directory(Path(app.static_folder) / "assets", "favicon-v14.ico", mimetype="image/x-icon")
+
     @app.errorhandler(400)
     def bad_request(error):
         if request.path.startswith("/api/"):

@@ -1,48 +1,6 @@
-const CACHE = "pharm360-secure-platform-v13";
-const STATIC_ASSETS = [
-  "/", "/offline.html", "/manifest.webmanifest", "/static/secure.css", "/static/secure-client.js",
-  "/assets/pharm360-logo.png", "/assets/icon-192.png", "/assets/icon-512.png", "/assets/pharm360-intro.mp3"
-];
-
-self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(STATIC_ASSETS)));
-  self.skipWaiting();
-});
-
-self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))));
-  self.clients.claim();
-});
-
-self.addEventListener("message", event => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
-});
-
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Never cache authenticated API responses, uploads, reports or non-GET requests.
-  if (request.method !== "GET" || url.pathname.startsWith("/api/")) return;
-
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request, {cache: "no-store"})
-        .then(response => response)
-        .catch(() => caches.match("/").then(response => response || caches.match("/offline.html")))
-    );
-    return;
-  }
-
-  if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.match(request).then(cached => cached || fetch(request).then(response => {
-        if (response.ok && ["style", "script", "image", "audio", "font"].includes(request.destination)) {
-          const copy = response.clone();
-          caches.open(CACHE).then(cache => cache.put(request, copy));
-        }
-        return response;
-      }))
-    );
-  }
-});
+const CACHE="pharm360-secure-platform-v14";
+const CORE=["/","/offline.html","/manifest.webmanifest?v=14","/static/secure.css","/static/secure-client.js","/assets/pharm360-logo.png","/assets/pharm360-icon-v14-192.png","/assets/pharm360-icon-v14-512.png","/assets/apple-touch-icon-v14.png","/assets/favicon-v14.ico","/assets/pharm360-intro.mp3"];
+self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)));});
+self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting();});
+self.addEventListener("fetch",e=>{const r=e.request,u=new URL(r.url);if(r.method!=="GET"||u.pathname.startsWith("/api/"))return;if(u.pathname.endsWith("manifest.webmanifest")||u.pathname.includes("pharm360-icon-v14")||u.pathname.endsWith("favicon-v14.ico")){e.respondWith(fetch(r,{cache:"reload"}));return;}if(r.mode==="navigate"){e.respondWith(fetch(r,{cache:"no-store"}).catch(()=>caches.match("/").then(x=>x||caches.match("/offline.html"))));return;}e.respondWith(caches.match(r).then(x=>x||fetch(r)));});

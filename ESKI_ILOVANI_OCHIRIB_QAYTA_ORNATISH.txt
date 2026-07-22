@@ -1,0 +1,19 @@
+PHARM360° NOMI VA IKONKASINI YANGILASH
+
+MUHIM: GitHub/Render yangilangani bilan oldin o‘rnatilgan “Marjon PRO” ilovasi avtomatik nomini almashtirmasligi mumkin.
+
+TELEFONDA:
+1. “Marjon PRO” ustiga uzoq bosing.
+2. “O‘chirish / Удалить” ni bosing.
+3. Chrome sozlamasidan sayt ma’lumotlari va keshini tozalang.
+4. https://marjon-platform.onrender.com/?source=pharm360-pwa-v14 manzilini oching.
+5. Chrome menyusi (⋮) → “Ilovani o‘rnatish / Установить приложение”.
+6. Endi nom “Pharm360°”, ikonka yangi yashil-ko‘k logo bo‘ladi.
+
+KOMPYUTERDA:
+1. Ish stolidagi eski “Marjon” ikonkasini o‘chiring.
+2. Chrome’da saytni ?source=pharm360-pwa-v14 bilan oching.
+3. Brauzer keshini tozalang va Ctrl+F5 bosing.
+4. Chrome menyusi → “Pharm360° ni o‘rnatish” yoki yangi yorliq yarating.
+
+GitHub izohi: Pharm360° PWA nomi va ikonkalari v14 yangilandi
