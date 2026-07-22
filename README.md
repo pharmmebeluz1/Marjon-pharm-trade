@@ -1,4 +1,4 @@
-# Marjon Farm Trade — Secure Server Edition 8.0
+# Pharm360° — Secure Server Edition 8.0
 
 Bu loyiha avvalgi chiroyli PWA shablonini saqlab, uning tagiga haqiqiy Flask serveri, umumiy ma’lumotlar bazasi, xavfsiz login, rollar, buyurtma jarayoni, kuryer GPS kuzatuvi, yopiq retsept fayllari va haqiqiy `.xlsx` hisobot qo‘shilgan versiya.
 
@@ -108,3 +108,7 @@ Testlar login, buyurtma, ombor, status, kuryer GPS, shifrlangan sog‘liq paspor
 ## Muhim production vazifalari
 
 Haqiqiy bemor ma’lumotlari bilan ishlashdan oldin HTTPS, kundalik backup, server monitoringi, loglarni himoyalash, foydalanuvchi roziligi matni, maxfiylik siyosati va mahalliy qonuniy talablar bo‘yicha mutaxassis tekshiruvi kerak.
+
+
+## Ichki texnik nomlar
+`marjon_app` paketi va Renderdagi mavjud xizmat nomi eski deploy bilan moslik uchun o‘zgartirilmadi. Saytda ko‘rinadigan barcha brending Pharm360° ga almashtirilgan.

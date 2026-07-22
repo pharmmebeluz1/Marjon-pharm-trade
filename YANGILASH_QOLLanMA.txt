@@ -1,7 +1,7 @@
-PHARM360° — GLOBAL PRO
+PHARM360° YANGILASH QO‘LLANMASI
 
-GitHub’dagi Marjon-pharm-trade reposiga ushbu papka ichidagi HAMMA faylni yuklang.
-Eski fayl nomlari bir xil bo‘lsa, Replace/Commit changes qiling.
-Keyin GitHub Pages o‘zi yangi versiyani chiqaradi. Telefon eski ko‘rinishni ko‘rsatsa: Chrome → sayt sozlamalari → Clear & reset, yoki ilovani yopib qayta oching.
-
-MUHIM: Bu demo. Haqiqiy bemor ma’lumotlari, AI API kaliti, DMED kaliti va to‘lov kalitlarini HTML ichiga yozmang.
+GitHub’dagi mavjud Marjon-pharm-trade reposiga ushbu papka ichidagi BARCHA fayl va papkalarni yuklang.
+Bu repo nomi eski bo‘lsa ham, saytda ko‘rinadigan nom va logo Pharm360° bo‘ladi.
+Commit izohi: Pharm360° nomi va yangi logosi to‘liq yangilandi
+Renderda: Manual Deploy > Deploy latest commit
+Deploydan keyin: Ctrl + F5 yoki sayt havolasi oxiriga ?v=12

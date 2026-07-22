@@ -1,7 +1,7 @@
-const CACHE = "marjon-secure-platform-v9";
+const CACHE = "pharm360-secure-platform-v12";
 const STATIC_ASSETS = [
   "/", "/offline.html", "/manifest.webmanifest", "/static/secure.css", "/static/secure-client.js",
-  "/assets/marjon-logo.jpg", "/assets/icon-192.png", "/assets/icon-512.png", "/assets/marjon-intro.mp3"
+  "/assets/pharm360-logo.png", "/assets/icon-192.png", "/assets/icon-512.png", "/assets/pharm360-intro.mp3"
 ];
 
 self.addEventListener("install", event => {

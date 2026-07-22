@@ -1,0 +1,19 @@
+PHARM360° — GITHUB VA RENDERGA YUKLASH
+
+1. ZIP faylni oching.
+2. Shu papka ichidagi BARCHA fayl va papkalarni belgilang.
+3. GitHub > Marjon-pharm-trade reposi > Add file > Upload files ni bosing.
+4. Barcha fayllarni yuklang.
+5. Izohga yozing: Pharm360° nomi va yangi logosi to‘liq yangilandi
+6. Commit changes ni bosing.
+7. Render > marjon-platform > Manual Deploy > Deploy latest commit ni bosing.
+8. Deploy tugagach saytni Ctrl + F5 bilan yangilang. Kerak bo‘lsa havola oxiriga ?v=12 yozing.
+
+MUHIM:
+- marjon_app papkasini o‘chirmang. Bu ichki texnik papka, sayt nomi emas.
+- Renderdagi marjon-platform nomi va eski GitHub repo nomi sayt brendiga ta’sir qilmaydi.
+- GitHubda eski ortiqcha fayllar qolsa, keyin o‘chirish mumkin:
+  1_BOSING_MARJON_DMED.html
+  assets/marjon-logo.jpg
+  static/assets/marjon-logo.jpg
+  GITHUBGA_YUKLASH.txt

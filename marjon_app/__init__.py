@@ -71,7 +71,8 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     @app.get("/")
     @app.get("/index.html")
-    @app.get("/1_BOSING_MARJON_DMED.html")
+    @app.get("/1_BOSING_MARJON_DMED.html")  # eski havola bilan moslik
+    @app.get("/1_BOSING_PHARM360_DMED.html")
     def index():
         return send_file(Path(app.root_path).parent / "templates" / "index.html")
 

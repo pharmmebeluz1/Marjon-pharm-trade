@@ -46,7 +46,7 @@ class Config:
     SMS_WEBHOOK_URL = os.getenv("SMS_WEBHOOK_URL", "")
     SMS_WEBHOOK_TOKEN = os.getenv("SMS_WEBHOOK_TOKEN", "")
 
-    ADMIN_NAME = os.getenv("ADMIN_NAME", "Marjon Rahbar")
+    ADMIN_NAME = os.getenv("ADMIN_NAME", "Pharm360° Rahbar")
     ADMIN_PHONE = os.getenv("ADMIN_PHONE", "+998900000000")
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 

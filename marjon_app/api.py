@@ -125,7 +125,7 @@ def _order_query():
 
 @bp.get("/health")
 def health():
-    return jsonify({"ok": True, "service": "Marjon Farm Trade", "version": "8.0.0-secure"})
+    return jsonify({"ok": True, "service": "Pharm360°", "version": "8.0.0-secure"})
 
 
 @bp.get("/products")
@@ -729,7 +729,7 @@ def export_orders_xlsx():
     output.seek(0)
     audit("excel_exported", "report", "orders", f"rows={len(rows)}")
     db.session.commit()
-    filename = f"Marjon_Farm_Trade_Hisobot_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+    filename = f"Pharm360_Hisobot_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
     return send_file(output, as_attachment=True, download_name=filename, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 

@@ -169,11 +169,11 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 def seed_catalog() -> None:
     if Branch.query.count() == 0:
         branches = [
-            ("tashkent", "Marjon Farm Trade — Toshkent", "Toshkent", "Toshkent shahri, aniq manzilni kiriting", "+998900000000", 41.311081, 69.240562),
-            ("samarkand", "Marjon Farm Trade — Samarqand", "Samarqand", "Samarqand shahri, aniq manzilni kiriting", "+998900000001", 39.6542, 66.9597),
-            ("andijan", "Marjon Farm Trade — Andijon", "Andijon", "Andijon shahri, aniq manzilni kiriting", "+998900000002", 40.7821, 72.3442),
-            ("fergana", "Marjon Farm Trade — Farg‘ona", "Farg‘ona", "Farg‘ona shahri, aniq manzilni kiriting", "+998900000003", 40.3894, 71.787),
-            ("namangan", "Marjon Farm Trade — Namangan", "Namangan", "Namangan shahri, aniq manzilni kiriting", "+998900000004", 40.9983, 71.6726),
+            ("tashkent", "Pharm360° — Toshkent", "Toshkent", "Toshkent shahri, aniq manzilni kiriting", "+998900000000", 41.311081, 69.240562),
+            ("samarkand", "Pharm360° — Samarqand", "Samarqand", "Samarqand shahri, aniq manzilni kiriting", "+998900000001", 39.6542, 66.9597),
+            ("andijan", "Pharm360° — Andijon", "Andijon", "Andijon shahri, aniq manzilni kiriting", "+998900000002", 40.7821, 72.3442),
+            ("fergana", "Pharm360° — Farg‘ona", "Farg‘ona", "Farg‘ona shahri, aniq manzilni kiriting", "+998900000003", 40.3894, 71.787),
+            ("namangan", "Pharm360° — Namangan", "Namangan", "Namangan shahri, aniq manzilni kiriting", "+998900000004", 40.9983, 71.6726),
         ]
         for slug, name, city, address, phone, lat, lon in branches:
             db.session.add(Branch(slug=slug, name=name, city=city, address=address, phone=phone, latitude=lat, longitude=lon))
@@ -212,9 +212,9 @@ def seed_users() -> list[str]:
     env = current_app.config["APP_ENV"]
     users = [
         ("manager", current_app.config["ADMIN_NAME"], current_app.config["ADMIN_PHONE"], current_app.config["ADMIN_PASSWORD"]),
-        ("pharmacist", "Marjon Farmatsevt", current_app.config["PHARMACIST_PHONE"], current_app.config["PHARMACIST_PASSWORD"]),
-        ("courier", "Marjon Kuryer", current_app.config["COURIER_PHONE"], current_app.config["COURIER_PASSWORD"]),
-        ("accountant", "Marjon Buxgalter", current_app.config["ACCOUNTANT_PHONE"], current_app.config["ACCOUNTANT_PASSWORD"]),
+        ("pharmacist", "Pharm360° Farmatsevt", current_app.config["PHARMACIST_PHONE"], current_app.config["PHARMACIST_PASSWORD"]),
+        ("courier", "Pharm360° Kuryer", current_app.config["COURIER_PHONE"], current_app.config["COURIER_PASSWORD"]),
+        ("accountant", "Pharm360° Buxgalter", current_app.config["ACCOUNTANT_PHONE"], current_app.config["ACCOUNTANT_PASSWORD"]),
     ]
     demo_passwords = {"manager": "Marjon2026!", "pharmacist": "Farm2026!", "courier": "Kuryer2026!", "accountant": "Hisob2026!"}
     for role, name, phone, password in users:

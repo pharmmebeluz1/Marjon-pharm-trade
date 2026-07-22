@@ -1,5 +1,10 @@
-PHARM360° BRANDING YANGILANDI
+PHARM360° YANGILANDI
 
-1. Eski Marjon Pharm logosi Pharm360° logosiga almashtirildi.
-2. Kirish sahifasi, sarlavhalar, menyu, footer, PWA nomi va ilova ikonkalari Pharm360° qilindi.
-3. Telefon eski logoni ko‘rsatsa, GitHub Pages yangilangandan keyin sahifani qayta oching yoki ilovani qayta o‘rnating.
+1. Server ochilish sahifasi templates/index.html ichida Pharm360° nomi va yangi logo bilan yangilandi.
+2. GitHub Pages uchun index.html va 1_BOSING_PHARM360_DMED.html yangilandi.
+3. PWA ikonkalari va manifestlar yangi Pharm360° logosi bilan yangilandi.
+4. Service worker keshi v12 ga ko‘tarildi — eski Marjon logosi avtomatik o‘chadi.
+5. Backend xizmat nomi, filiallar, SMS matni, Excel va chek fayl nomlari Pharm360° bo‘ldi.
+6. marjon_app papkasi va ayrim ichki kod nomlari server buzilmasligi uchun texnik nom sifatida saqlandi.
+
+GitHubga ushbu papka ichidagi barcha fayl va papkalarni yuklang. Renderda Deploy latest commit qiling.

@@ -1,4 +1,4 @@
-/* Marjon Platform 8 — server-backed security and cabinet UI */
+/* Pharm360° Platform 8 — server-backed security and cabinet UI */
 .secure-auth-card,.secure-panel{background:#fff;border:1px solid #dce9ed;border-radius:22px;padding:20px;box-shadow:0 12px 34px rgba(12,49,75,.07)}
 .secure-auth-head,.secure-user-bar,.secure-panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
 .secure-auth-head h3,.secure-panel-head h3{margin:0;color:#0c314b}.secure-auth-head p,.secure-panel-head p{margin:5px 0 0;color:#6d808b;font-size:12px}

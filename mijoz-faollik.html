@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#082f49" />
-  <meta name="description" content="Marjon Pharm mijoz kabineti uchun yurish, qadam, kaloriya, GPS va velosiped faolligi demo moduli" />
-  <title>Marjon Pharm — Faollik va salomatlik</title>
+  <meta name="description" content="Pharm360° mijoz kabineti uchun yurish, qadam, kaloriya, GPS va velosiped faolligi demo moduli" />
+  <title>Pharm360° — Faollik va salomatlik</title>
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
@@ -69,7 +69,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="logo">M+</div>
-      <div class="brand"><b>MARJON PHARM</b><small>FAOLLIK VA SALOMATLIK</small></div>
+      <div class="brand"><b>PHARM360°</b><small>FAOLLIK VA SALOMATLIK</small></div>
       <div class="top-actions">
         <a class="icon-btn" href="./index.html" style="display:inline-flex;align-items:center;text-decoration:none">← Asosiy sahifa</a>
         <button class="icon-btn" id="demoDataBtn">Namuna ma’lumot</button>
@@ -273,7 +273,7 @@
     function addDemoDay(date,steps,distance,calories,minutes,best=0){state.days[date]={steps,distanceKm:distance,calories,activeMinutes:minutes,bestSpeed:best,sessions:[]};}
     function seedDemo(){const dates=last7Dates(),vals=[[7200,5.1,370,64],[10450,7.6,520,91],[8900,6.4,445,78],[12120,9.0,610,105],[6400,4.7,335,58],[15100,12.8,790,126],[7650,5.8,420,78]];dates.forEach((d,i)=>addDemoDay(d,...vals[i]));const td=ensureDay();td.bestSpeed=Math.max(td.bestSpeed,22.4);saveState();render();showToast('7 kunlik namuna ma’lumot qo‘shildi.');}
     function addSteps(){const d=ensureDay();d.steps+=1000;const km=1000*(state.profile.stride||75)/100000;d.distanceKm+=km;d.calories+=Math.round(km*(state.profile.weight||75)*.72);d.activeMinutes+=10;saveState();render();showToast('1 000 namuna qadam qo‘shildi.');}
-    function exportCsv(){const date=$('reportDate').value||today,d=state.days[date]||{steps:0,distanceKm:0,calories:0,activeMinutes:0,bestSpeed:0};const rows=[['Sana','Qadam','Masofa km','Kaloriya kkal','Faol vaqt daqiqa','Eng yuqori tezlik km/soat'],[date,d.steps,d.distanceKm.toFixed(2),d.calories,d.activeMinutes,d.bestSpeed.toFixed(1)]];const csv='\ufeff'+rows.map(r=>r.join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Marjon_Faollik_'+date+'.csv';a.click();URL.revokeObjectURL(a.href);}
+    function exportCsv(){const date=$('reportDate').value||today,d=state.days[date]||{steps:0,distanceKm:0,calories:0,activeMinutes:0,bestSpeed:0};const rows=[['Sana','Qadam','Masofa km','Kaloriya kkal','Faol vaqt daqiqa','Eng yuqori tezlik km/soat'],[date,d.steps,d.distanceKm.toFixed(2),d.calories,d.activeMinutes,d.bestSpeed.toFixed(1)]];const csv='\ufeff'+rows.map(r=>r.join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Pharm360_Faollik_'+date+'.csv';a.click();URL.revokeObjectURL(a.href);}
     function clearDay(){const date=$('reportDate').value||today;if(!confirm(date+' kungi ma’lumotlar tozalansinmi?'))return;delete state.days[date];saveState();render();showToast('Tanlangan kun ma’lumoti tozalandi.');}
     function saveProfile(){state.profile.name=$('nameInput').value.trim()||'Hurmatli mijoz';state.profile.height=Number($('heightInput').value)||175;state.profile.stride=Number($('strideInput').value)||75;state.profile.weight=Number($('weightInput').value)||75;state.profile.goal=Number($('goalInput').value)||10000;saveState();$('profileModal').classList.remove('open');render();showToast('Profil sozlamalari saqlandi.');}
     function openProfile(){$('nameInput').value=state.profile.name;$('heightInput').value=state.profile.height;$('strideInput').value=state.profile.stride;$('profileModal').classList.add('open');}

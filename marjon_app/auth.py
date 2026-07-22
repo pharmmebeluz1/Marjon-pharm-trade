@@ -66,7 +66,7 @@ def request_otp():
     if _rate_limited(key, limit=4, window=600):
         return jsonify({"ok": False, "error": "Juda ko‘p urinish. 10 daqiqadan keyin qayta urinib ko‘ring."}), 429
     code = create_otp(phone, purpose)
-    sent = send_sms(phone, f"Marjon Farm Trade tasdiqlash kodi: {code}. Kod 5 daqiqa amal qiladi.")
+    sent = send_sms(phone, f"Pharm360° tasdiqlash kodi: {code}. Kod 5 daqiqa amal qiladi.")
     response = {"ok": True, "sent": sent, "message": "Tasdiqlash kodi yuborildi." if sent else "SMS provayder ulanmagan."}
     if current_app.config["APP_ENV"] != "production":
         response["demo_code"] = code

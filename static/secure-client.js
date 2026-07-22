@@ -573,7 +573,7 @@
       var name = language === "ru" ? product.ru : (language === "en" ? product.en : product.uz);
       var total = Number(product.total_stock || 0);
       var favorite = window.favorites && window.favorites[product.id];
-      return '<article class="product-card"><div class="product-image"><span class="product-badge">'+esc(product.badge)+'</span><button type="button" class="favorite-product '+(favorite?'active':'')+'" onclick="toggleFavorite('+product.id+')">'+(favorite?'♥':'♡')+'</button><div class="product-pack"><span>'+esc(product.emoji)+'</span><small>MARJON<br>FARM TRADE</small></div></div><div class="product-info"><small>'+esc(typeof window.getCategoryName === "function" ? window.getCategoryName(product.category) : product.category)+'</small><h3>'+esc(name)+'</h3><div class="product-stock-line"><span class="'+(total<15?'stock-low':'stock-number')+'">'+total+' dona mavjud</span><button type="button" data-stock-product="'+product.id+'">Filiallar</button></div><div class="price-row"><div><strong>'+money(product.price)+'</strong>'+(product.old?'<del>'+money(product.old)+'</del>':'')+'</div><button type="button" class="add-button" onclick="addToCart('+product.id+')">+</button></div></div></article>';
+      return '<article class="product-card"><div class="product-image"><span class="product-badge">'+esc(product.badge)+'</span><button type="button" class="favorite-product '+(favorite?'active':'')+'" onclick="toggleFavorite('+product.id+')">'+(favorite?'♥':'♡')+'</button><div class="product-pack"><span>'+esc(product.emoji)+'</span><small>PHARM360°<br>DORIXONA</small></div></div><div class="product-info"><small>'+esc(typeof window.getCategoryName === "function" ? window.getCategoryName(product.category) : product.category)+'</small><h3>'+esc(name)+'</h3><div class="product-stock-line"><span class="'+(total<15?'stock-low':'stock-number')+'">'+total+' dona mavjud</span><button type="button" data-stock-product="'+product.id+'">Filiallar</button></div><div class="price-row"><div><strong>'+money(product.price)+'</strong>'+(product.old?'<del>'+money(product.old)+'</del>':'')+'</div><button type="button" class="add-button" onclick="addToCart('+product.id+')">+</button></div></div></article>';
     }).join("");
     if (el("emptyState")) el("emptyState").className = list.length ? "empty-state hidden" : "empty-state";
     grid.querySelectorAll("[data-stock-product]").forEach(function (button) {
@@ -817,6 +817,7 @@
     } else {
       hydrateSmartData({}, {reminders: [], family_members: [], reservations: []}, []);
     }
-    window.MarjonSecure = {openRole:openRole, refreshMe:refreshMe, openTracking:openTracking, state:state};
+    window.Pharm360Secure = {openRole:openRole, refreshMe:refreshMe, openTracking:openTracking, state:state};
+    window.MarjonSecure = window.Pharm360Secure; // eski integratsiyalar bilan moslik
   });
 })();
