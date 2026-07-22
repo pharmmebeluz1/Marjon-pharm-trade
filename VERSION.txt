@@ -1,3 +1,14 @@
-Marjon Farm Trade Secure Server Edition
-Version: 8.0.0-secure
-Date: 2026-07-20
+PHARM360° — PLATFORM PRO + BOLALAR MUSIQA REJIMI
+Versiya: 7.0.0-template
+Sana: 20.07.2026
+
+Yangi qo‘shildi:
+- Bemor kabinetiga kirganda qisqa original klinika chime ovozi
+- Bolalar uchun 30 soniyalik dori ichirish musiqa rejimi
+- Rangli taymer, yulduzlar va “Qahramon bo‘lding!” rag‘bati
+- Musiqani boshlash, to‘xtatish va yakunlash tugmalari
+- O‘zbek, rus va ingliz tilidagi bolalar oynasi
+- Kirish ovozini yoqish/o‘chirish va tanlovni telefonda eslab qolish
+- Mualliflik huquqli qo‘shiq ishlatilmagan; ohang Web Audio orqali original yaratiladi
+
+MUHIM: dori faqat shifokor/farmatsevt ko‘rsatmasi va katta odam nazoratida beriladi.

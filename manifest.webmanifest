@@ -1,7 +1,7 @@
 {
-  "name": "Marjon Farm Trade — Child Music + Live Courier",
-  "short_name": "Marjon Health",
-  "description": "3 tilli dorixona PWA: bemor kabineti, bolalar dori musiqasi, Excel, DMED va kuryerni jonli kuzatish.",
+  "name": "Pharm360° — Dorixona boshqaruv platformasi",
+  "short_name": "Pharm360°",
+  "description": "Dorixona, mijoz, buyurtma, dori eslatmasi va jonli kuryer boshqaruv platformasi.",
   "id": "./?source=pwa",
   "start_url": "./index.html?source=pwa",
   "scope": "./",

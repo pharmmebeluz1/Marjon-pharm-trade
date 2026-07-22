@@ -1,13 +1,6 @@
-MARJON PLATFORMANI GITHUB VA RENDERGA YUKLASH
-
-1. Eski repo ichidagi fayllarni o‘chirib yubormasdan avval zaxira nusxa oling.
-2. Shu papkadagi barcha fayllarni GitHub repositoriyga yuklang.
-3. .env faylini HECH QACHON GitHubga yuklamang. Faqat .env.example yuklanadi.
-4. Commit izohi: Marjon platformaga xavfsiz server baza va kuryer GPS qo‘shildi
-5. Renderda New > Blueprint ni bosing.
-6. GitHub repositoriyingizni tanlang.
-7. Render Environment bo‘limida DATA_ENCRYPTION_KEY va xodim parollarini kiriting.
-8. Deploy tugagach: saytingiz/api/health manzilini oching.
-9. ok true chiqsa server ishlayapti.
-
-Batafsil yo‘riqnoma README.md ichida.
+MARJON PLATFORM PRO — BOLALAR MUSIQA REJIMI
+1. Shu papka ichidagi HAMMA fayl va assets papkasini belgilang.
+2. GitHub > Marjon-pharm-trade > Add file > Upload files.
+3. Fayllarni tashlang va Commit changes bosing.
+4. Yashil belgi chiqqach: https://pharmmebeluz1.github.io/Marjon-pharm-trade/?v=7
+5. Eski ko‘rinish chiqsa Chrome keshini yangilang yoki ?v=7 havolani yangi oynada oching.

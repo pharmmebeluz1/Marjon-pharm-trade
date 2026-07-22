@@ -1,0 +1,5 @@
+PHARM360° BRANDING YANGILANDI
+
+1. Eski Marjon Pharm logosi Pharm360° logosiga almashtirildi.
+2. Kirish sahifasi, sarlavhalar, menyu, footer, PWA nomi va ilova ikonkalari Pharm360° qilindi.
+3. Telefon eski logoni ko‘rsatsa, GitHub Pages yangilangandan keyin sahifani qayta oching yoki ilovani qayta o‘rnating.
