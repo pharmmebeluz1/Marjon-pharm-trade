@@ -1,0 +1,10 @@
+PHARM360° TELEFON ILOVASINI YANGILASH
+
+1. GitHubga ushbu papkadagi barcha fayl va papkalarni yuklang.
+2. Renderda Deploy live chiqishini kuting.
+3. Telefonda eski “Marjon PRO” ilovasini o‘chirib tashlang.
+4. Chrome orqali saytni qayta oching.
+5. Menyu (uch nuqta) → “Ilovani o‘rnatish” yoki “Bosh ekranga qo‘shish”ni bosing.
+6. Yangi ilova “Pharm360°” nomi va yangi yashil-ko‘k logo bilan chiqadi.
+
+Sabab: Android avval o‘rnatilgan PWA nomi va ikonkasini darhol yangilamasligi mumkin. Shu versiyada manifest ID va kesh ham yangilandi.

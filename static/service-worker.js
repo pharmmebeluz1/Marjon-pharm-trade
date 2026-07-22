@@ -1,4 +1,4 @@
-const CACHE = "pharm360-secure-platform-v12";
+const CACHE = "pharm360-secure-platform-v13";
 const STATIC_ASSETS = [
   "/", "/offline.html", "/manifest.webmanifest", "/static/secure.css", "/static/secure-client.js",
   "/assets/pharm360-logo.png", "/assets/icon-192.png", "/assets/icon-512.png", "/assets/pharm360-intro.mp3"
