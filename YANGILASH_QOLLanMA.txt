@@ -1,7 +1,7 @@
-PHARM360° YANGILASH QO‘LLANMASI
+ZAM ZAM PHARM TRADE YANGILASH QO‘LLANMASI
 
 GitHub’dagi mavjud Marjon-pharm-trade reposiga ushbu papka ichidagi BARCHA fayl va papkalarni yuklang.
-Bu repo nomi eski bo‘lsa ham, saytda ko‘rinadigan nom va logo Pharm360° bo‘ladi.
-Commit izohi: Pharm360° nomi va yangi logosi to‘liq yangilandi
+Bu repo nomi eski bo‘lsa ham, saytda ko‘rinadigan nom va logo Zam Zam Pharm Trade bo‘ladi.
+Commit izohi: Zam Zam Pharm Trade nomi va yangi logosi to‘liq yangilandi
 Renderda: Manual Deploy > Deploy latest commit
 Deploydan keyin: Ctrl + F5 yoki sayt havolasi oxiriga ?v=12

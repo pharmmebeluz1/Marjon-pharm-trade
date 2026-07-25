@@ -1,9 +1,9 @@
 {
-  "name": "Pharm360° — Dorixona boshqaruv platformasi",
-  "short_name": "Pharm360°",
+  "name": "Zam Zam Pharm Trade — Dorixona platformasi",
+  "short_name": "Zam Zam",
   "description": "Dorixona, mijoz, buyurtma, dori eslatmasi va jonli kuryer boshqaruv platformasi.",
-  "id": "./pharm360-pwa-v14",
-  "start_url": "./index.html?source=pharm360-pwa-v14",
+  "id": "./zam-zam-pwa-v15",
+  "start_url": "./index.html?source=zam-zam-pwa-v15",
   "scope": "./",
   "display": "standalone",
   "display_override": [
@@ -11,8 +11,8 @@
     "minimal-ui"
   ],
   "orientation": "portrait-primary",
-  "background_color": "#071f32",
-  "theme_color": "#071f32",
+  "background_color": "#003b2a",
+  "theme_color": "#006b3c",
   "lang": "uz",
   "categories": [
     "medical",
@@ -22,13 +22,13 @@
   ],
   "icons": [
     {
-      "src": "assets/pharm360-icon-v14-192.png",
+      "src": "assets/zam-zam-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "assets/pharm360-icon-v14-512.png",
+      "src": "assets/zam-zam-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

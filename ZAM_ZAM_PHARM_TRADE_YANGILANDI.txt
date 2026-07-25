@@ -1,0 +1,7 @@
+Zam Zam Pharm Trade versiyasi tayyor.
+- Dasturda ko‘rinadigan nomlar Zam Zam Pharm Trade ga almashtirildi.
+- AI nomi Zam Zam AI qilindi.
+- Yangi logo, telefon ikonkalari va favicon qo‘yildi.
+- Eski marjon_app texnik papkasi dastur buzilmasligi uchun saqlandi.
+- GitHubga ZIPning o‘zini emas, ZIP ichidagi barcha fayl va papkalarni yuklang.
+Commit izohi: Zam Zam Pharm Trade nomi va logosi yangilandi

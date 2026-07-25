@@ -1,4 +1,4 @@
-MARJON PLATFORM PRO — BOLALAR MUSIQA REJIMI
+ZAM ZAM PHARM TRADE PLATFORM PRO — BOLALAR MUSIQA REJIMI
 1. Shu papka ichidagi HAMMA fayl va assets papkasini belgilang.
 2. GitHub > Marjon-pharm-trade > Add file > Upload files.
 3. Fayllarni tashlang va Commit changes bosing.

@@ -73,6 +73,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.get("/index.html")
     @app.get("/1_BOSING_MARJON_DMED.html")  # eski havola bilan moslik
     @app.get("/1_BOSING_PHARM360_DMED.html")
+    @app.get("/1_BOSING_ZAM_ZAM_PHARM_TRADE.html")
     def index():
         return send_file(Path(app.root_path).parent / "templates" / "index.html")
 
@@ -97,7 +98,7 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     @app.get("/favicon.ico")
     def favicon():
-        return send_from_directory(Path(app.static_folder) / "assets", "favicon-v14.ico", mimetype="image/x-icon")
+        return send_from_directory(Path(app.static_folder) / "assets", "zam-zam-favicon.ico", mimetype="image/x-icon")
 
     @app.errorhandler(400)
     def bad_request(error):

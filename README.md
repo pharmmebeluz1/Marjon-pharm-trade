@@ -1,4 +1,4 @@
-# Pharm360° — Secure Server Edition 8.0
+# Zam Zam Pharm Trade — Secure Server Edition 8.0
 
 Bu loyiha avvalgi chiroyli PWA shablonini saqlab, uning tagiga haqiqiy Flask serveri, umumiy ma’lumotlar bazasi, xavfsiz login, rollar, buyurtma jarayoni, kuryer GPS kuzatuvi, yopiq retsept fayllari va haqiqiy `.xlsx` hisobot qo‘shilgan versiya.
 
@@ -111,4 +111,4 @@ Haqiqiy bemor ma’lumotlari bilan ishlashdan oldin HTTPS, kundalik backup, serv
 
 
 ## Ichki texnik nomlar
-`marjon_app` paketi va Renderdagi mavjud xizmat nomi eski deploy bilan moslik uchun o‘zgartirilmadi. Saytda ko‘rinadigan barcha brending Pharm360° ga almashtirilgan.
+`marjon_app` paketi va Renderdagi mavjud xizmat nomi eski deploy bilan moslik uchun o‘zgartirilmadi. Saytda ko‘rinadigan barcha brending Zam Zam Pharm Trade ga almashtirilgan.
