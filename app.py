@@ -1,17 +1,13 @@
-from flask import send_from_directory
 from marjon_app import create_app
 
+# Render yoki lokal ishga tushirish uchun Flask ilovasi.
+# /mijoz yo'nalishi marjon_app/__init__.py ichida ro'yxatdan o'tgan.
 app = create_app()
 
 
-@app.route("/mijoz")
-def mijoz():
-    return send_from_directory(".", "mijoz-faollik.html")
-
-
-if name == "main":
+if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=5000,
-        debug=app.config.get("APP_ENV") != "production"
+        debug=app.config.get("APP_ENV") != "production",
     )

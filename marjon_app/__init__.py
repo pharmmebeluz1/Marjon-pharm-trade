@@ -81,7 +81,13 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.get("/mijoz/")
     @app.get("/mijoz.html")
     def customer_portal():
+        # 4 xonali PIN, qabuldan keyingi AI, buyurtma va eslatmalar ishlaydigan kabinet.
         return render_template("mijoz.html")
+
+    @app.get("/mijoz/faollik")
+    def customer_activity():
+        # Qadam, GPS va velosiped moduli alohida sahifada ochiladi.
+        return send_file(Path(app.root_path).parent / "mijoz-faollik.html")
 
     @app.get("/manifest.webmanifest")
     def manifest():
