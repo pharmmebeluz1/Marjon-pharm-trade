@@ -2,8 +2,8 @@
   "name": "Zam Zam Pharm Trade — Dorixona platformasi",
   "short_name": "Zam Zam",
   "description": "Dorixona, mijoz, buyurtma, dori eslatmasi va jonli kuryer boshqaruv platformasi.",
-  "id": "/zam-zam-pwa-v15",
-  "start_url": "/?source=zam-zam-pwa-v15",
+  "id": "/zam-zam-mijoz-v16",
+  "start_url": "/mijoz?source=zam-zam-pwa-v16",
   "scope": "/",
   "display": "standalone",
   "display_override": [

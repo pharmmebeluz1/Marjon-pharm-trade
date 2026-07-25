@@ -5,7 +5,7 @@ from pathlib import Path
 
 import click
 from cryptography.fernet import Fernet
-from flask import Flask, jsonify, request, send_file, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_file, send_from_directory
 from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -76,6 +76,12 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.get("/1_BOSING_ZAM_ZAM_PHARM_TRADE.html")
     def index():
         return send_file(Path(app.root_path).parent / "templates" / "index.html")
+
+    @app.get("/mijoz")
+    @app.get("/mijoz/")
+    @app.get("/mijoz.html")
+    def customer_portal():
+        return render_template("mijoz.html")
 
     @app.get("/manifest.webmanifest")
     def manifest():

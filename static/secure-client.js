@@ -790,8 +790,8 @@
     if (el("saveHealthProfile")) el("saveHealthProfile").onclick = savePassportFromLegacy;
     if (el("openHealthProfile")) el("openHealthProfile").onclick = openLegacyHealthProfile;
     if (el("refreshDashboard")) el("refreshDashboard").onclick = function () { openRole("manager"); };
-    if (el("openCabinetTop")) el("openCabinetTop").onclick = function () { openRole(state.user ? (state.user.role === "admin" ? "manager" : state.user.role) : "patient"); };
-    if (el("cabinetButton")) el("cabinetButton").onclick = function () { openRole(state.user ? (state.user.role === "admin" ? "manager" : state.user.role) : "patient"); };
+    if (el("openCabinetTop")) el("openCabinetTop").onclick = function () { window.location.href = "/mijoz"; };
+    if (el("cabinetButton")) el("cabinetButton").onclick = function () { window.location.href = "/mijoz"; };
     if (el("checkoutButton")) {
       var originalCheckout = el("checkoutButton").onclick;
       el("checkoutButton").onclick = function () {

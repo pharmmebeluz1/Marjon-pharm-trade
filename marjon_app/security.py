@@ -56,7 +56,7 @@ def get_csrf_token() -> str:
 def csrf_protect() -> None:
     if request.method in {"GET", "HEAD", "OPTIONS"}:
         return
-    if request.endpoint in {"api.ai_ask"}:
+    if request.endpoint in {"api.ai_ask", "api.dmed_visit_completed"}:
         return
     if request.endpoint and request.endpoint.endswith("payment_webhook"):
         return

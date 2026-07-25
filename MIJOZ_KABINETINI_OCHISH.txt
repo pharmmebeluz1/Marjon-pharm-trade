@@ -1,0 +1,20 @@
+ZAM ZAM PHARM TRADE — MIJOZ KABINETINI OCHISH
+
+Serverga yuklangandan keyin asosiy sayt manzilining oxiriga /mijoz yozing.
+Misol:
+https://sizning-saytingiz.onrender.com/mijoz
+
+Mijoz shu manzildan:
+- telefon + 4 xonali PIN bilan kiradi;
+- yangi profil yaratadi;
+- eski profiliga PIN o‘rnatadi;
+- buyurtma, kuryer, retsept, qabul, sog‘liq pasporti va dori eslatmalarini ko‘radi;
+- Zam-Zam AI bilan yozishadi;
+- 103 ga bir bosishda qo‘ng‘iroq qiladi.
+
+Qabuldan keyingi sinov:
+1. “Shifokor qabuli” bo‘limida qabul kiriting.
+2. “Qabuldan chiqdim” tugmasini bosing.
+3. Zam-Zam AI chiroyli hol-ahvol xabarini chiqaradi.
+
+DEMD ulanganda bu tugma o‘rniga qabul tugagan hodisa avtomatik keladi.

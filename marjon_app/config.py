@@ -59,6 +59,7 @@ class Config:
 
     AI_WEBHOOK_URL = os.getenv("AI_WEBHOOK_URL", "")
     AI_WEBHOOK_TOKEN = os.getenv("AI_WEBHOOK_TOKEN", "")
+    DMED_WEBHOOK_TOKEN = os.getenv("DMED_WEBHOOK_TOKEN", "")
 
     PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "")
     ALLOW_PRODUCTION_SQLITE = _bool("ALLOW_PRODUCTION_SQLITE", False)

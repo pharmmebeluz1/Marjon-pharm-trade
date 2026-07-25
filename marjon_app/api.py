@@ -15,6 +15,7 @@ from sqlalchemy import func, or_
 
 from .extensions import db
 from .models import (
+    Appointment,
     AuditLog,
     Branch,
     CourierLocation,
@@ -28,7 +29,7 @@ from .models import (
     User,
     utcnow,
 )
-from .security import audit, decrypt_json, encrypt_json, role_required
+from .security import audit, decrypt_json, encrypt_json, normalize_phone, role_required
 from .services import (
     ask_ai,
     can_transition,
@@ -38,6 +39,7 @@ from .services import (
     reserve_stock,
     restore_stock,
     save_private_upload,
+    send_sms,
 )
 
 bp = Blueprint("api", __name__, url_prefix="/api")
@@ -76,6 +78,46 @@ def _optional_coordinate(value: Any, minimum: float, maximum: float) -> float | 
     if not minimum <= parsed <= maximum:
         raise ValueError("Koordinata ruxsat etilgan chegaradan tashqarida.")
     return parsed
+
+
+def _parse_iso_datetime(value: Any, default: datetime | None = None) -> datetime:
+    if not value:
+        return default or utcnow()
+    raw = str(value).strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError:
+        raise ValueError("Sana-vaqt noto‘g‘ri formatda.")
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _follow_up_message(appointment: Appointment) -> str:
+    patient_name = appointment.patient.name if appointment.patient else "Hurmatli mijoz"
+    doctor = appointment.doctor_name or "shifokor"
+    specialty = f" ({appointment.specialty})" if appointment.specialty else ""
+    return (
+        f"Assalomu alaykum, {patient_name} 🌿\n\n"
+        f"{doctor}{specialty} qabulidan chiqqaningizni qayd etdik. Hozir o‘zingizni qanday his qilyapsiz?\n\n"
+        "Shifokor yozgan retsept yoki tavsiya bo‘lsa, rasmga olib yuboring. Zam-Zam AI sizga dori vaqtlarini "
+        "eslatma qilib tuzish, kerakli dorini topish, farmatsevtga savol yuborish va qayta qabul sanasini eslatishda yordam beradi.\n\n"
+        "Nafas qisishi, hushdan ketish, kuchli ko‘krak og‘rig‘i yoki ko‘p qon ketishi bo‘lsa, AI javobini kutmang — 103 ga qo‘ng‘iroq qiling."
+    )
+
+
+def _complete_appointment(appointment: Appointment, doctor_note: str = "", follow_up_at: datetime | None = None) -> None:
+    now = utcnow()
+    appointment.status = "yakunlandi"
+    appointment.completed_at = appointment.completed_at or now
+    appointment.doctor_note = (doctor_note or appointment.doctor_note or "")[:2000]
+    appointment.follow_up_at = follow_up_at or appointment.follow_up_at
+    appointment.ai_message = _follow_up_message(appointment)
+    appointment.ai_sent_at = now
+    appointment.ai_read_at = None
+    if appointment.patient:
+        sms_text = f"Zam-Zam AI: {appointment.patient.name}, shifokor qabulidan keyin holatingiz qanday? Retseptni ilovaga yuborishingiz mumkin. Favqulodda holatda 103."
+        send_sms(appointment.patient.phone, sms_text)
 
 
 def _accessible_order(order: Order) -> bool:
@@ -392,6 +434,122 @@ def tracking(code: str):
     )
 
 
+@bp.get("/appointments")
+@login_required
+def appointments():
+    query = Appointment.query.order_by(Appointment.scheduled_at.desc())
+    if current_user.role == "patient":
+        query = query.filter(Appointment.patient_id == current_user.id)
+    elif current_user.role not in {"manager", "admin", "pharmacist"}:
+        return jsonify({"ok": False, "error": "Bu bo‘lim uchun ruxsat yo‘q."}), 403
+    rows = query.limit(_bounded_int(request.args.get("limit"), 100, 1, 300)).all()
+    return jsonify({"ok": True, "appointments": [row.to_dict() for row in rows]})
+
+
+@bp.post("/appointments")
+@role_required("patient")
+def create_appointment():
+    payload = _json()
+    doctor_name = str(payload.get("doctor_name", "Shifokor")).strip()[:160] or "Shifokor"
+    specialty = str(payload.get("specialty", "Umumiy amaliyot")).strip()[:160] or "Umumiy amaliyot"
+    clinic = str(payload.get("clinic", "")).strip()[:220]
+    patient_note = str(payload.get("patient_note", "")).strip()[:1000]
+    try:
+        scheduled_at = _parse_iso_datetime(payload.get("scheduled_at"), utcnow())
+    except ValueError as error:
+        return jsonify({"ok": False, "error": str(error)}), 400
+    row = Appointment(
+        patient_id=current_user.id,
+        doctor_name=doctor_name,
+        specialty=specialty,
+        clinic=clinic,
+        scheduled_at=scheduled_at,
+        patient_note=patient_note,
+        status="rejalashtirilgan",
+    )
+    db.session.add(row)
+    db.session.flush()
+    audit("appointment_created", "appointment", row.id, f"doctor={doctor_name}")
+    db.session.commit()
+    return jsonify({"ok": True, "appointment": row.to_dict()}), 201
+
+
+@bp.patch("/appointments/<int:appointment_id>/complete")
+@login_required
+def complete_appointment(appointment_id: int):
+    row = db.session.get(Appointment, appointment_id)
+    if not row:
+        return jsonify({"ok": False, "error": "Qabul yozuvi topilmadi."}), 404
+    if current_user.role == "patient" and row.patient_id != current_user.id:
+        return jsonify({"ok": False, "error": "Bu qabul sizga tegishli emas."}), 403
+    if current_user.role not in {"patient", "manager", "admin", "pharmacist"}:
+        return jsonify({"ok": False, "error": "Bu amal uchun ruxsat yo‘q."}), 403
+    payload = _json()
+    follow_up_at = None
+    if payload.get("follow_up_at"):
+        try:
+            follow_up_at = _parse_iso_datetime(payload.get("follow_up_at"))
+        except ValueError as error:
+            return jsonify({"ok": False, "error": str(error)}), 400
+    _complete_appointment(row, str(payload.get("doctor_note", "")), follow_up_at)
+    audit("appointment_completed", "appointment", row.id, f"patient={row.patient_id}")
+    db.session.commit()
+    return jsonify({"ok": True, "appointment": row.to_dict(), "message": row.ai_message})
+
+
+@bp.patch("/appointments/<int:appointment_id>/read")
+@role_required("patient")
+def read_appointment_message(appointment_id: int):
+    row = Appointment.query.filter_by(id=appointment_id, patient_id=current_user.id).first()
+    if not row:
+        return jsonify({"ok": False, "error": "Qabul yozuvi topilmadi."}), 404
+    row.ai_read_at = utcnow()
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
+@bp.post("/integrations/dmed/visit-completed")
+def dmed_visit_completed():
+    configured = str(current_app.config.get("DMED_WEBHOOK_TOKEN", "")).strip()
+    supplied = request.headers.get("X-DMED-Token", "")
+    if not configured:
+        return jsonify({"ok": False, "error": "DMED_WEBHOOK_TOKEN sozlanmagan."}), 503
+    if not supplied or supplied != configured:
+        return jsonify({"ok": False, "error": "Integratsiya tokeni noto‘g‘ri."}), 401
+    payload = _json()
+    phone = normalize_phone(payload.get("phone", ""))
+    patient = User.query.filter_by(phone=phone, role="patient").first()
+    if not patient:
+        return jsonify({"ok": False, "error": "Mijoz topilmadi."}), 404
+    external_id = str(payload.get("external_id", "")).strip()[:120] or None
+    row = Appointment.query.filter_by(external_id=external_id).first() if external_id else None
+    if not row:
+        try:
+            scheduled = _parse_iso_datetime(payload.get("scheduled_at"), utcnow())
+        except ValueError as error:
+            return jsonify({"ok": False, "error": str(error)}), 400
+        row = Appointment(
+            patient_id=patient.id,
+            doctor_name=str(payload.get("doctor_name", "Shifokor"))[:160],
+            specialty=str(payload.get("specialty", "Umumiy amaliyot"))[:160],
+            clinic=str(payload.get("clinic", ""))[:220],
+            scheduled_at=scheduled,
+            external_id=external_id,
+        )
+        db.session.add(row)
+        db.session.flush()
+    follow_up_at = None
+    if payload.get("follow_up_at"):
+        try:
+            follow_up_at = _parse_iso_datetime(payload.get("follow_up_at"))
+        except ValueError as error:
+            return jsonify({"ok": False, "error": str(error)}), 400
+    _complete_appointment(row, str(payload.get("doctor_note", "")), follow_up_at)
+    audit("dmed_visit_completed", "appointment", row.id, f"external_id={external_id or ''}")
+    db.session.commit()
+    return jsonify({"ok": True, "appointment": row.to_dict()})
+
+
 @bp.get("/health-passport")
 @role_required("patient")
 def get_health_passport():
@@ -451,6 +609,7 @@ def _clean_patient_vault(payload: dict[str, Any]) -> dict[str, Any]:
                 "id": _bounded_int(item.get("id"), 0, 0, 9_999_999_999_999),
                 "medicine": medicine,
                 "time": reminder_time,
+                "note": str(item.get("note", "")).strip()[:180],
                 "active": bool(item.get("active", True)),
             })
 

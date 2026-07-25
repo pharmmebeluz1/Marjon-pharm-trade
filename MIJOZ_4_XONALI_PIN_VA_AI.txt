@@ -1,0 +1,9 @@
+ZAM ZAM PHARM TRADE — MIJOZ KABINETI
+
+1. Mijoz uchun alohida manzil: /mijoz
+2. Kirish: telefon raqami + 4 xonali PIN.
+3. Yangi mijoz shu sahifada PIN bilan ro‘yxatdan o‘tadi.
+4. Eski hisob egasi “PIN yaratish” bo‘limida eski parolini kiritib PIN o‘rnatadi.
+5. Kabinetda: shifokor qabuli, Zam-Zam AI xabari, buyurtmalar, retsept, sog‘liq pasporti, dori eslatmasi, katalog va 103 mavjud.
+6. Qabul tugaganda “Qabuldan chiqdim” tugmasi Zam-Zam AI xabarini chiqaradi.
+7. DEMD integratsiyasi uchun DMED_WEBHOOK_TOKEN server o‘zgaruvchisi va /api/integrations/dmed/visit-completed endpointi tayyor.

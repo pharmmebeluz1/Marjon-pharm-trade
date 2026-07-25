@@ -64,6 +64,22 @@ class User(UserMixin, TimestampMixin, db.Model):
         }
 
 
+class PatientPin(TimestampMixin, db.Model):
+    __tablename__ = "patient_pins"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False, index=True)
+    pin_hash = db.Column(db.String(255), nullable=False)
+
+    user = db.relationship("User")
+
+    def set_pin(self, pin: str) -> None:
+        self.pin_hash = generate_password_hash(pin, method="scrypt")
+
+    def check_pin(self, pin: str) -> bool:
+        return check_password_hash(self.pin_hash, pin)
+
+
 class Branch(TimestampMixin, db.Model):
     __tablename__ = "branches"
 
@@ -286,6 +302,49 @@ class PatientVault(TimestampMixin, db.Model):
     encrypted_payload = db.Column(db.Text, nullable=False, default="")
 
     user = db.relationship("User")
+
+
+class Appointment(TimestampMixin, db.Model):
+    __tablename__ = "appointments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    doctor_name = db.Column(db.String(160), nullable=False, default="Shifokor")
+    specialty = db.Column(db.String(160), nullable=False, default="Umumiy amaliyot")
+    clinic = db.Column(db.String(220), nullable=False, default="")
+    scheduled_at = db.Column(db.DateTime(timezone=True), nullable=False, default=utcnow, index=True)
+    status = db.Column(db.String(30), nullable=False, default="rejalashtirilgan", index=True)
+    patient_note = db.Column(db.String(1000), nullable=False, default="")
+    doctor_note = db.Column(db.String(2000), nullable=False, default="")
+    completed_at = db.Column(db.DateTime(timezone=True))
+    follow_up_at = db.Column(db.DateTime(timezone=True))
+    ai_message = db.Column(db.Text, nullable=False, default="")
+    ai_sent_at = db.Column(db.DateTime(timezone=True))
+    ai_read_at = db.Column(db.DateTime(timezone=True))
+    external_id = db.Column(db.String(120), unique=True, index=True)
+
+    patient = db.relationship("User")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "patient_id": self.patient_id,
+            "patient_name": self.patient.name if self.patient else "",
+            "patient_phone": self.patient.phone if self.patient else "",
+            "doctor_name": self.doctor_name,
+            "specialty": self.specialty,
+            "clinic": self.clinic,
+            "scheduled_at": self.scheduled_at.isoformat() if self.scheduled_at else None,
+            "status": self.status,
+            "patient_note": self.patient_note,
+            "doctor_note": self.doctor_note,
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "follow_up_at": self.follow_up_at.isoformat() if self.follow_up_at else None,
+            "ai_message": self.ai_message,
+            "ai_sent_at": self.ai_sent_at.isoformat() if self.ai_sent_at else None,
+            "ai_read_at": self.ai_read_at.isoformat() if self.ai_read_at else None,
+            "external_id": self.external_id,
+        }
 
 
 class Prescription(TimestampMixin, db.Model):

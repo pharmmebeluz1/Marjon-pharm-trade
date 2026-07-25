@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import secrets
 import time
 from collections import defaultdict, deque
 from datetime import datetime, timezone
@@ -8,7 +9,7 @@ from flask import Blueprint, current_app, jsonify, request, session
 from flask_login import current_user, login_required, login_user, logout_user
 
 from .extensions import db
-from .models import User
+from .models import PatientPin, User
 from .security import (
     audit,
     create_otp,
@@ -36,6 +37,10 @@ def _rate_limited(key: str, limit: int = 8, window: int = 300) -> bool:
     return False
 
 
+def _valid_pin(pin: str) -> bool:
+    return len(pin) == 4 and pin.isdigit()
+
+
 @bp.get("/csrf")
 def csrf():
     return jsonify({"ok": True, "csrf_token": get_csrf_token()})
@@ -48,6 +53,7 @@ def me():
             "ok": True,
             "authenticated": current_user.is_authenticated,
             "user": current_user.to_dict() if current_user.is_authenticated else None,
+            "has_pin": bool(current_user.is_authenticated and PatientPin.query.filter_by(user_id=current_user.id).first()),
             "csrf_token": get_csrf_token(),
             "require_sms_otp": bool(current_app.config["REQUIRE_SMS_OTP"]),
             "environment": current_app.config["APP_ENV"],
@@ -82,6 +88,7 @@ def register():
     name = str(payload.get("name", "")).strip()[:120]
     phone = normalize_phone(payload.get("phone", ""))
     password = str(payload.get("password", ""))
+    pin = str(payload.get("pin", "")).strip()
     language = str(payload.get("language", "uz"))[:5]
     address = str(payload.get("address", "")).strip()[:500]
     consent = bool(payload.get("consent"))
@@ -89,9 +96,14 @@ def register():
 
     if not name or not valid_phone(phone) or not consent:
         return jsonify({"ok": False, "error": "Ism, to‘g‘ri telefon va rozilik majburiy."}), 400
-    ok, message = validate_password(password)
-    if not ok:
-        return jsonify({"ok": False, "error": message}), 400
+    if pin and not _valid_pin(pin):
+        return jsonify({"ok": False, "error": "PIN-kod aynan 4 ta raqamdan iborat bo‘lsin."}), 400
+    if password:
+        ok, message = validate_password(password)
+        if not ok:
+            return jsonify({"ok": False, "error": message}), 400
+    elif not pin:
+        return jsonify({"ok": False, "error": "4 xonali PIN-kod yoki kuchli parol kiriting."}), 400
     if User.query.filter_by(phone=phone).first():
         return jsonify({"ok": False, "error": "Bu telefon raqami avval ro‘yxatdan o‘tgan."}), 409
     if current_app.config["REQUIRE_SMS_OTP"] and not verify_otp(phone, "register", otp):
@@ -106,15 +118,88 @@ def register():
         latitude=payload.get("latitude"),
         longitude=payload.get("longitude"),
     )
-    user.set_password(password)
+    user.set_password(password or (secrets.token_urlsafe(24) + "A1"))
     db.session.add(user)
     db.session.flush()
-    audit("patient_registered", "user", user.id, f"phone={phone}")
+    if pin:
+        patient_pin = PatientPin(user_id=user.id, pin_hash="")
+        patient_pin.set_pin(pin)
+        db.session.add(patient_pin)
+    audit("patient_registered", "user", user.id, f"phone={phone}; pin_enabled={bool(pin)}")
     db.session.commit()
     login_user(user, remember=False, fresh=True)
     session.permanent = True
     session["csrf_token"] = get_csrf_token()
     return jsonify({"ok": True, "user": user.to_dict(), "csrf_token": get_csrf_token()}), 201
+
+
+@bp.post("/pin-login")
+def pin_login():
+    payload = request.get_json(silent=True) or {}
+    phone = normalize_phone(payload.get("phone", ""))
+    pin = str(payload.get("pin", "")).strip()
+    key = f"pin-login:{request.remote_addr}:{phone}"
+    if _rate_limited(key, limit=5, window=600):
+        return jsonify({"ok": False, "error": "PIN ko‘p marta noto‘g‘ri kiritildi. 10 daqiqadan keyin urinib ko‘ring."}), 429
+    if not valid_phone(phone) or not _valid_pin(pin):
+        return jsonify({"ok": False, "error": "Telefon raqami va 4 xonali PIN-kodni to‘g‘ri kiriting."}), 400
+    user = User.query.filter_by(phone=phone, role="patient").first()
+    patient_pin = PatientPin.query.filter_by(user_id=user.id).first() if user else None
+    if not user or not patient_pin or not patient_pin.check_pin(pin) or not user.is_active_account:
+        return jsonify({"ok": False, "error": "Telefon yoki PIN-kod noto‘g‘ri."}), 401
+    login_user(user, remember=bool(payload.get("remember")), fresh=True)
+    session.permanent = True
+    user.last_login_at = datetime.now(timezone.utc)
+    audit("pin_login", "user", user.id)
+    db.session.commit()
+    return jsonify({"ok": True, "user": user.to_dict(), "csrf_token": get_csrf_token()})
+
+
+@bp.post("/setup-pin")
+def setup_pin():
+    payload = request.get_json(silent=True) or {}
+    phone = normalize_phone(payload.get("phone", ""))
+    password = str(payload.get("password", ""))
+    pin = str(payload.get("pin", "")).strip()
+    key = f"setup-pin:{request.remote_addr}:{phone}"
+    if _rate_limited(key, limit=5, window=600):
+        return jsonify({"ok": False, "error": "Juda ko‘p urinish. 10 daqiqadan keyin qayta urinib ko‘ring."}), 429
+    if not _valid_pin(pin):
+        return jsonify({"ok": False, "error": "Yangi PIN aynan 4 ta raqamdan iborat bo‘lsin."}), 400
+    user = User.query.filter_by(phone=phone, role="patient").first()
+    if not user or not user.check_password(password) or not user.is_active_account:
+        return jsonify({"ok": False, "error": "Telefon yoki eski parol noto‘g‘ri."}), 401
+    patient_pin = PatientPin.query.filter_by(user_id=user.id).first() or PatientPin(user_id=user.id, pin_hash="")
+    patient_pin.set_pin(pin)
+    user.must_change_password = False
+    db.session.add(patient_pin)
+    login_user(user, remember=True, fresh=True)
+    session.permanent = True
+    audit("patient_pin_set", "user", user.id)
+    db.session.commit()
+    return jsonify({"ok": True, "user": user.to_dict(), "csrf_token": get_csrf_token()})
+
+
+@bp.post("/change-pin")
+@login_required
+def change_pin():
+    if current_user.role != "patient":
+        return jsonify({"ok": False, "error": "PIN faqat mijoz kabineti uchun."}), 403
+    payload = request.get_json(silent=True) or {}
+    current_pin = str(payload.get("current_pin", "")).strip()
+    new_pin = str(payload.get("new_pin", "")).strip()
+    if not _valid_pin(new_pin):
+        return jsonify({"ok": False, "error": "Yangi PIN aynan 4 ta raqamdan iborat bo‘lsin."}), 400
+    patient_pin = PatientPin.query.filter_by(user_id=current_user.id).first()
+    if patient_pin and not patient_pin.check_pin(current_pin):
+        return jsonify({"ok": False, "error": "Joriy PIN noto‘g‘ri."}), 400
+    if not patient_pin:
+        patient_pin = PatientPin(user_id=current_user.id, pin_hash="")
+    patient_pin.set_pin(new_pin)
+    db.session.add(patient_pin)
+    audit("patient_pin_changed", "user", current_user.id)
+    db.session.commit()
+    return jsonify({"ok": True})
 
 
 @bp.post("/login")

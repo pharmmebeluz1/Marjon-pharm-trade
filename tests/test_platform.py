@@ -203,3 +203,46 @@ def test_validation_and_role_isolation(client):
 
     invalid_limit = client.get("/api/orders?limit=noto‘g‘ri")
     assert invalid_limit.status_code == 200
+
+
+def test_patient_pin_and_post_visit_ai_flow(client):
+    assert client.get("/mijoz").status_code == 200
+    response = post(
+        client,
+        "/api/auth/register",
+        {
+            "name": "PIN Bemor",
+            "phone": "+998909876543",
+            "pin": "2468",
+            "address": "Toshkent",
+            "consent": True,
+        },
+    )
+    assert response.status_code == 201, response.get_json()
+    logout(client)
+
+    response = post(client, "/api/auth/pin-login", {"phone": "+998909876543", "pin": "2468"})
+    assert response.status_code == 200, response.get_json()
+
+    response = post(
+        client,
+        "/api/appointments",
+        {
+            "doctor_name": "Dr. Test",
+            "specialty": "Terapevt",
+            "clinic": "Zam Zam klinikasi",
+            "scheduled_at": "2026-07-25T10:00:00+05:00",
+        },
+    )
+    assert response.status_code == 201, response.get_json()
+    appointment_id = response.get_json()["appointment"]["id"]
+
+    response = patch(client, f"/api/appointments/{appointment_id}/complete", {})
+    assert response.status_code == 200, response.get_json()
+    message = response.get_json()["message"]
+    assert "Zam-Zam AI" in message
+    assert "103" in message
+
+    rows = client.get("/api/appointments").get_json()["appointments"]
+    assert rows[0]["status"] == "yakunlandi"
+    assert rows[0]["ai_message"]

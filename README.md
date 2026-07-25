@@ -112,3 +112,14 @@ Haqiqiy bemor ma’lumotlari bilan ishlashdan oldin HTTPS, kundalik backup, serv
 
 ## Ichki texnik nomlar
 `marjon_app` paketi va Renderdagi mavjud xizmat nomi eski deploy bilan moslik uchun o‘zgartirilmadi. Saytda ko‘rinadigan barcha brending Zam Zam Pharm Trade ga almashtirilgan.
+
+
+## Mijoz uchun alohida telefon kabineti (v16)
+
+- Manzil: `/mijoz`
+- Telefon raqami + 4 xonali PIN bilan kirish
+- Yangi mijozni PIN bilan ro‘yxatdan o‘tkazish
+- Eski bemor hisobiga parol orqali PIN o‘rnatish
+- Shifokor qabuli va qabul tugagach Zam-Zam AI hol-ahvol xabari
+- Buyurtmalar, retsept, sog‘liq pasporti, dori eslatmasi, AI va 103
+- DEMD integratsiyasi uchun `DMED_WEBHOOK_TOKEN` va webhook endpoint tayyor
