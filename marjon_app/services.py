@@ -167,17 +167,36 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def seed_catalog() -> None:
-    if Branch.query.count() == 0:
-        branches = [
-            ("tashkent", "Zam Zam Pharm Trade — Toshkent", "Toshkent", "Toshkent shahri, aniq manzilni kiriting", "+998900000000", 41.311081, 69.240562),
-            ("samarkand", "Zam Zam Pharm Trade — Samarqand", "Samarqand", "Samarqand shahri, aniq manzilni kiriting", "+998900000001", 39.6542, 66.9597),
-            ("andijan", "Zam Zam Pharm Trade — Andijon", "Andijon", "Andijon shahri, aniq manzilni kiriting", "+998900000002", 40.7821, 72.3442),
-            ("fergana", "Zam Zam Pharm Trade — Farg‘ona", "Farg‘ona", "Farg‘ona shahri, aniq manzilni kiriting", "+998900000003", 40.3894, 71.787),
-            ("namangan", "Zam Zam Pharm Trade — Namangan", "Namangan", "Namangan shahri, aniq manzilni kiriting", "+998900000004", 40.9983, 71.6726),
-        ]
-        for slug, name, city, address, phone, lat, lon in branches:
-            db.session.add(Branch(slug=slug, name=name, city=city, address=address, phone=phone, latitude=lat, longitude=lon))
-        db.session.flush()
+    # Faqat buyurtmachi bergan 8 ta filial faol ko‘rinadi.
+    # Eski filiallar o‘chirilmaydi: mavjud buyurtmalar buzilmasligi uchun nofaol qilinadi.
+    desired_branches = [
+        ("chilonzor-parvus", "Chilonzor Parvus", "Toshkent", "Toshkent shahri, Chilonzor Parvus filiali", "", 0.0, 0.0),
+        ("mirabod", "Mirabod", "Toshkent", "Toshkent shahri, Mirabod filiali", "", 0.0, 0.0),
+        ("qoasuv-1", "Qoasuv 1", "Toshkent", "Toshkent shahri, Qoasuv 1 filiali", "", 0.0, 0.0),
+        ("ttz-yuzrabod", "TTZ Yuzrabod ko‘chasi", "Toshkent", "Toshkent shahri, TTZ Yuzrabod ko‘chasi filiali", "", 0.0, 0.0),
+        ("ttz-buyuk-ipak-yoli", "TTZ Buyuk Ipak yo‘li ko‘chasi", "Toshkent", "Toshkent shahri, TTZ Buyuk Ipak yo‘li ko‘chasi filiali", "", 0.0, 0.0),
+        ("mirzo-ulugbek-pushkin", "Mirzo Ulug‘bek Pushkin", "Toshkent", "Toshkent shahri, Mirzo Ulug‘bek Pushkin filiali", "", 0.0, 0.0),
+        ("sebzor", "Sebzor", "Toshkent", "Toshkent shahri, Sebzor filiali", "", 0.0, 0.0),
+        ("s-1", "S-1", "Toshkent", "Toshkent shahri, S-1 filiali", "", 0.0, 0.0),
+    ]
+    desired_slugs = {item[0] for item in desired_branches}
+
+    for existing in Branch.query.all():
+        existing.is_active = existing.slug in desired_slugs
+
+    for slug, name, city, address, phone, lat, lon in desired_branches:
+        branch = Branch.query.filter_by(slug=slug).first()
+        if branch is None:
+            branch = Branch(slug=slug)
+            db.session.add(branch)
+        branch.name = name
+        branch.city = city
+        branch.address = address
+        branch.phone = phone
+        branch.latitude = lat
+        branch.longitude = lon
+        branch.is_active = True
+    db.session.flush()
 
     if Product.query.count() == 0:
         products = [
@@ -194,16 +213,13 @@ def seed_catalog() -> None:
             db.session.add(Product(sku=sku, category=category, name_uz=uz, name_ru=ru, name_en=en, price=price, cost_price=cost, old_price=old or None, emoji=emoji, badge=badge, prescription_required=rx))
         db.session.flush()
 
-    if Stock.query.count() == 0:
-        quantities = {
-            "MFT-001": [5, 12, 0, 8, 3], "MFT-002": [18, 9, 4, 11, 7], "MFT-003": [7, 3, 6, 2, 5],
-            "MFT-004": [15, 10, 8, 6, 12], "MFT-005": [2, 1, 0, 2, 1], "MFT-006": [14, 7, 9, 5, 8],
-            "MFT-007": [26, 18, 12, 21, 16], "MFT-008": [8, 14, 3, 9, 6],
-        }
-        branches = Branch.query.order_by(Branch.id).all()
-        for product in Product.query.order_by(Product.id).all():
-            for branch, qty in zip(branches, quantities.get(product.sku, [10] * len(branches))):
-                db.session.add(Stock(branch_id=branch.id, product_id=product.id, quantity=qty, minimum_quantity=5))
+    # Har bir faol filial uchun ombor yozuvi bo‘lsin.
+    active_branches = Branch.query.filter_by(is_active=True).order_by(Branch.id).all()
+    for product in Product.query.order_by(Product.id).all():
+        for branch in active_branches:
+            stock = Stock.query.filter_by(branch_id=branch.id, product_id=product.id).first()
+            if stock is None:
+                db.session.add(Stock(branch_id=branch.id, product_id=product.id, quantity=10, minimum_quantity=5))
     db.session.commit()
 
 

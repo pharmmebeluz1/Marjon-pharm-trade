@@ -143,8 +143,9 @@ class Product(TimestampMixin, db.Model):
             "prescription_required": self.prescription_required,
         }
         if include_stock:
-            data["stock"] = {stock.branch.slug: stock.quantity for stock in self.stocks}
-            data["total_stock"] = sum(stock.quantity for stock in self.stocks)
+            active_stocks = [stock for stock in self.stocks if stock.branch and stock.branch.is_active]
+            data["stock"] = {stock.branch.slug: stock.quantity for stock in active_stocks}
+            data["total_stock"] = sum(stock.quantity for stock in active_stocks)
         return data
 
 

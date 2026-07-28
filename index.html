@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#071f32">
   <meta name="application-name" content="Zam Zam Pharm Trade">
   <meta name="msapplication-TileColor" content="#071f32">
-  <meta name="msapplication-TileImage" content="assets/zam-zam-icon-192.png?v=14">
+  <meta name="msapplication-TileImage" content="assets/zam-zam-icon-192.png?v=18">
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="Zam Zam Pharm Trade PLATFORM PRO — bemor buyurtmasi, 3 til, Excel va kuryerni jonli xaritada kuzatish demo platformasi">
-  <link rel="manifest" href="manifest.webmanifest?v=14">
-  <link rel="shortcut icon" href="assets/zam-zam-favicon.ico?v=14">
-  <link rel="apple-touch-icon" href="assets/zam-zam-icon-192.png?v=14">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/zam-zam-icon-192.png?v=14">
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/zam-zam-icon-512.png?v=14">
+  <link rel="manifest" href="manifest.webmanifest?v=18">
+  <link rel="shortcut icon" href="assets/zam-zam-favicon.ico?v=18">
+  <link rel="apple-touch-icon" href="assets/zam-zam-icon-192.png?v=18">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/zam-zam-icon-192.png?v=18">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/zam-zam-icon-512.png?v=18">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -71,12 +71,12 @@ img{display:block;max-width:100%}
   height:170px;
   margin:auto;
   padding:7px;
-  border-radius:42px;
+  border-radius:50%;
   background:linear-gradient(145deg,#fff,rgba(255,255,255,.45));
   box-shadow:0 30px 100px rgba(4,28,45,.36);
   animation:splashLogo 1s cubic-bezier(.18,.89,.32,1.28) both;
 }
-.splash-logo-frame img{width:100%;height:100%;object-fit:cover;border-radius:36px}
+.splash-logo-frame img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:#fff}
 .splash h1{font-size:43px;letter-spacing:.18em;margin:25px 0 0;padding-left:.18em}
 .splash p{margin:7px 0 0;letter-spacing:.16em;color:#d8fbff}
 .splash small{display:block;margin-top:13px;color:rgba(255,255,255,.75)}
@@ -104,10 +104,10 @@ img{display:block;max-width:100%}
 }
 .header-inner{height:84px;display:flex;align-items:center;gap:34px}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
-.brand img{width:54px;height:54px;object-fit:cover;border-radius:17px;box-shadow:0 10px 24px rgba(12,49,75,.15)}
+.brand img{width:58px;height:58px;object-fit:contain;border-radius:50%;background:#fff;border:2px solid rgba(0,92,54,.12);box-shadow:0 10px 28px rgba(0,74,43,.18)}
 .brand span{display:flex;flex-direction:column;line-height:1}
-.brand strong{font-size:21px;letter-spacing:.08em;color:var(--navy)}
-.brand small{font-size:10px;letter-spacing:.12em;color:var(--cyan-dark);margin-top:6px}
+.brand strong{font-family:Georgia,serif;font-size:22px;letter-spacing:.015em;color:#075934;font-weight:800}
+.brand small{font-size:9px;letter-spacing:.14em;color:#138a58;margin-top:7px;font-weight:800}
 .desktop-nav{display:flex;gap:30px}
 .desktop-nav a{font-size:14px;font-weight:700;color:#566d7d;position:relative}
 .desktop-nav a:after{content:"";position:absolute;left:0;right:100%;bottom:-10px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.25s}
@@ -183,7 +183,7 @@ img{display:block;max-width:100%}
 .phone-top{width:88px;height:20px;border-radius:0 0 15px 15px;background:#102b3e;position:absolute;left:50%;top:9px;transform:translateX(-50%);z-index:4}
 .phone-screen{height:100%;border-radius:34px;background:#f8fcfd;padding:30px 15px 18px;overflow:hidden}
 .phone-brand{display:flex;align-items:center;gap:9px}
-.phone-brand img{width:40px;height:40px;border-radius:12px}
+.phone-brand img{width:40px;height:40px;object-fit:contain;border-radius:50%;background:#fff}
 .phone-brand div{display:flex;flex-direction:column}
 .phone-brand b{font-size:13px;color:var(--navy)}
 .phone-brand small{font-size:9px;color:var(--cyan-dark);margin-top:2px}
@@ -299,7 +299,7 @@ img{display:block;max-width:100%}
 .branch-card p{font-size:13px;line-height:1.55;color:var(--muted);margin:17px 0 10px}
 .branch-card>small{color:#8797a0}
 .distance{align-self:flex-start;margin-top:12px;padding:7px 9px;border-radius:10px;background:#efeafe;color:#5c49b2;font-size:11px;font-weight:800}
-.branch-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}
+.branch-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}.branch-actions.single{grid-template-columns:1fr}
 .branch-actions a{text-align:center;padding:11px;border-radius:12px;font-size:12px;font-weight:800}
 .call-link{background:var(--navy);color:#fff}
 .map-link{background:#eef9fb;color:var(--navy)}
@@ -315,7 +315,7 @@ img{display:block;max-width:100%}
 footer{background:#061d2d;color:#fff;padding:42px 0}
 .footer-grid{display:grid;grid-template-columns:1fr 1fr auto;align-items:center;gap:30px}
 .footer-brand{display:flex;align-items:center;gap:11px}
-.footer-brand img{width:50px;height:50px;border-radius:15px}
+.footer-brand img{width:54px;height:54px;object-fit:contain;border-radius:50%;background:#fff}
 .footer-brand div{display:flex;flex-direction:column}
 .footer-brand strong{letter-spacing:.1em}
 .footer-brand small{font-size:9px;letter-spacing:.12em;color:#baf8ff;margin-top:5px}
@@ -964,8 +964,8 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
       <a class="brand" href="#home">
         <img src="assets/zam-zam-pharm-trade-logo.png" alt="Zam Zam Pharm Trade logosi">
         <span>
-          <strong>ZAM ZAM PHARM TRADE</strong>
-          <small>DORIXONA PLATFORMASI</small>
+          <strong>Zam-Zam Pharm Trade</strong>
+          <small>ISHONCHLI DORIXONA PLATFORMASI</small>
         </span>
       </a>
 
@@ -1596,7 +1596,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
         <div class="form-stack">
           <input id="prescriptionName" type="text" placeholder="Ism va familiya">
           <input id="prescriptionPhone" type="tel" placeholder="Telefon: +998 ...">
-          <select id="prescriptionBranch"><option value="">Filialni tanlang</option><option>Toshkent filiali</option><option>Samarqand filiali</option><option>Andijon filiali</option><option>Farg‘ona filiali</option><option>Namangan filiali</option></select>
+          <select id="prescriptionBranch"><option value="">Filialni tanlang</option><option>Chilonzor Parvus</option><option>Mirabod</option><option>Qoasuv 1</option><option>TTZ Yuzrabod ko‘chasi</option><option>TTZ Buyuk Ipak yo‘li ko‘chasi</option><option>Mirzo Ulug‘bek Pushkin</option><option>Sebzor</option><option>S-1</option></select>
           <label class="consent-row"><input id="prescriptionConsent" type="checkbox"> <span>Retseptni farmatsevt ko‘rib chiqishiga roziman.</span></label>
         </div>
       </div>
@@ -1614,12 +1614,8 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
       <p>Brauzer ruxsat so‘rasa, “Ruxsat berish” tugmasini bosing.</p>
       <button id="detectLocation" class="primary-button full-button" type="button">Lokatsiyani aniqlash</button>
       <select id="citySelect">
-        <option value="">Yoki hududni tanlang</option>
-        <option value="tashkent">Toshkent</option>
-        <option value="samarkand">Samarqand</option>
-        <option value="andijan">Andijon</option>
-        <option value="fergana">Farg‘ona</option>
-        <option value="namangan">Namangan</option>
+        <option value="">Hududni tanlang</option>
+        <option value="tashkent">Toshkent — barcha filiallar</option>
       </select>
       <button id="manualLocation" class="soft-button full-button" type="button">Tanlangan hududni ko‘rsatish</button>
       <div id="locationStatus" class="status hidden"></div>
@@ -1713,7 +1709,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
         <div class="dmed-patient-grid">
           <article><span>👤</span><div><small>BEMOR</small><b>M*** A***</b><em>1987-yil • ma’lumot yashirilgan</em></div></article>
           <article><span>🩺</span><div><small>SHIFOKOR</small><b>D. Karimova</b><em>Oilaviy poliklinika №12</em></div></article>
-          <article><span>🏥</span><div><small>QABUL FILIALI</small><b id="dmedSelectedBranch">Toshkent filiali</b><em>Ombor qoldig‘i tekshirildi</em></div></article>
+          <article><span>🏥</span><div><small>QABUL FILIALI</small><b id="dmedSelectedBranch">Chilonzor Parvus</b><em>Ombor qoldig‘i tekshirildi</em></div></article>
         </div>
 
         <div class="dmed-prescription-table-wrap">
@@ -1901,11 +1897,14 @@ var products = [
 ];
 
 var branches = [
-  {id:"tashkent",city:"tashkent",name:"Zam Zam Pharm Trade — Toshkent",address:"Toshkent shahri, aniq manzilni shu yerga yozasiz",phone:"+998900000000",lat:41.311081,lon:69.240562},
-  {id:"samarkand",city:"samarkand",name:"Zam Zam Pharm Trade — Samarqand",address:"Samarqand shahri, aniq manzilni shu yerga yozasiz",phone:"+998900000001",lat:39.6542,lon:66.9597},
-  {id:"andijan",city:"andijan",name:"Zam Zam Pharm Trade — Andijon",address:"Andijon shahri, aniq manzilni shu yerga yozasiz",phone:"+998900000002",lat:40.7821,lon:72.3442},
-  {id:"fergana",city:"fergana",name:"Zam Zam Pharm Trade — Farg‘ona",address:"Farg‘ona shahri, aniq manzilni shu yerga yozasiz",phone:"+998900000003",lat:40.3894,lon:71.787},
-  {id:"namangan",city:"namangan",name:"Zam Zam Pharm Trade — Namangan",address:"Namangan shahri, aniq manzilni shu yerga yozasiz",phone:"+998900000004",lat:40.9983,lon:71.6726}
+  {id:"chilonzor-parvus",city:"tashkent",name:"Chilonzor Parvus",address:"Toshkent shahri, Chilonzor Parvus filiali",phone:"",lat:null,lon:null},
+  {id:"mirabod",city:"tashkent",name:"Mirabod",address:"Toshkent shahri, Mirabod filiali",phone:"",lat:null,lon:null},
+  {id:"qoasuv-1",city:"tashkent",name:"Qoasuv 1",address:"Toshkent shahri, Qoasuv 1 filiali",phone:"",lat:null,lon:null},
+  {id:"ttz-yuzrabod",city:"tashkent",name:"TTZ Yuzrabod ko‘chasi",address:"Toshkent shahri, TTZ Yuzrabod ko‘chasi filiali",phone:"",lat:null,lon:null},
+  {id:"ttz-buyuk-ipak-yoli",city:"tashkent",name:"TTZ Buyuk Ipak yo‘li ko‘chasi",address:"Toshkent shahri, TTZ Buyuk Ipak yo‘li ko‘chasi filiali",phone:"",lat:null,lon:null},
+  {id:"mirzo-ulugbek-pushkin",city:"tashkent",name:"Mirzo Ulug‘bek Pushkin",address:"Toshkent shahri, Mirzo Ulug‘bek Pushkin filiali",phone:"",lat:null,lon:null},
+  {id:"sebzor",city:"tashkent",name:"Sebzor",address:"Toshkent shahri, Sebzor filiali",phone:"",lat:null,lon:null},
+  {id:"s-1",city:"tashkent",name:"S-1",address:"Toshkent shahri, S-1 filiali",phone:"",lat:null,lon:null}
 ];
 
 var selectedCategory = "all";
@@ -2144,14 +2143,16 @@ function formatDistance(value) {
 }
 
 function directionLink(branch) {
-  if (currentLocation) {
+  var hasCoordinates = typeof branch.lat === "number" && typeof branch.lon === "number" &&
+    isFinite(branch.lat) && isFinite(branch.lon) && !(branch.lat === 0 && branch.lon === 0);
+  if (currentLocation && hasCoordinates) {
     return "https://www.google.com/maps/dir/?api=1&origin=" +
       currentLocation.lat + "," + currentLocation.lon +
       "&destination=" + branch.lat + "," + branch.lon +
       "&travelmode=driving";
   }
-
-  return "https://www.google.com/maps/search/?api=1&query=" + branch.lat + "," + branch.lon;
+  return "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(branch.address + ", Toshkent, Zam-Zam Pharm Trade");
 }
 
 function renderBranches(list) {
@@ -2172,9 +2173,9 @@ function renderBranches(list) {
       '<p>' + branch.address + '</p>' +
       '<small>Har kuni: 08:00–22:00</small>' +
       (typeof branch.distance === "number" ? '<span class="distance">' + formatDistance(branch.distance) + '</span>' : '') +
-      '<div class="branch-actions">' +
-      '<a class="call-link" href="tel:' + branch.phone + '">Qo‘ng‘iroq</a>' +
-      '<a class="map-link" target="_blank" rel="noopener" href="' + directionLink(branch) + '">Yo‘nalish</a>' +
+      '<div class="branch-actions' + (!branch.phone ? ' single' : '') + '">' +
+      (branch.phone ? '<a class="call-link" href="tel:' + branch.phone + '">Qo‘ng‘iroq</a>' : '') +
+      '<a class="map-link" target="_blank" rel="noopener" href="' + directionLink(branch) + '">Xaritada ko‘rish</a>' +
       '</div></article>';
   }
 
@@ -2185,31 +2186,35 @@ function useCoordinates(lat, lon) {
   var sorted = [];
   var i;
   var branch;
+  var hasExactLocation = false;
 
   currentLocation = {lat:lat, lon:lon};
 
   for (i = 0; i < branches.length; i++) {
     branch = branches[i];
-    sorted.push({
-      id:branch.id,
-      city:branch.city,
-      name:branch.name,
-      address:branch.address,
-      phone:branch.phone,
-      lat:branch.lat,
-      lon:branch.lon,
-      distance:distanceKm(lat, lon, branch.lat, branch.lon)
-    });
+    var item = {
+      id:branch.id, city:branch.city, name:branch.name, address:branch.address,
+      phone:branch.phone, lat:branch.lat, lon:branch.lon
+    };
+    if (typeof branch.lat === "number" && typeof branch.lon === "number" &&
+        isFinite(branch.lat) && isFinite(branch.lon) && !(branch.lat === 0 && branch.lon === 0)) {
+      item.distance = distanceKm(lat, lon, branch.lat, branch.lon);
+      hasExactLocation = true;
+    }
+    sorted.push(item);
   }
 
   sorted.sort(function (a, b) {
+    if (typeof a.distance !== "number") return 1;
+    if (typeof b.distance !== "number") return -1;
     return a.distance - b.distance;
   });
 
   renderBranches(sorted);
   document.getElementById("nearestResult").className = "nearest-result";
-  document.getElementById("nearestResult").innerHTML =
-    "<b>Eng yaqin filial:</b> " + sorted[0].name + " — " + formatDistance(sorted[0].distance);
+  document.getElementById("nearestResult").innerHTML = hasExactLocation
+    ? "<b>Eng yaqin filial:</b> " + sorted[0].name + " — " + formatDistance(sorted[0].distance)
+    : "<b>Filiallar ko‘rsatildi.</b> Aniq lokatsiyalar kiritilgach eng yaqin filial avtomatik hisoblanadi.";
 
   closeModal("locationModal");
 }

@@ -760,7 +760,7 @@ def prescription_file(prescription_id: int):
 @bp.get("/stock")
 @role_required("pharmacist", "accountant", "manager", "admin")
 def stock():
-    rows = Stock.query.join(Product).join(Branch).order_by(Product.name_uz, Branch.id).all()
+    rows = Stock.query.join(Product).join(Branch).filter(Branch.is_active.is_(True)).order_by(Product.name_uz, Branch.id).all()
     return jsonify(
         {
             "ok": True,
@@ -770,7 +770,7 @@ def stock():
                     "product_id": row.product_id,
                     "product": row.product.name_uz,
                     "branch_id": row.branch_id,
-                    "branch": row.branch.city,
+                    "branch": row.branch.name,
                     "quantity": row.quantity,
                     "minimum_quantity": row.minimum_quantity,
                     "low": row.quantity <= row.minimum_quantity,
@@ -880,8 +880,8 @@ def export_orders_xlsx():
 
     stock_sheet = workbook.create_sheet("Ombor")
     stock_sheet.append(["Mahsulot", "Filial", "Qoldiq", "Minimal qoldiq", "Holat"])
-    for row in Stock.query.join(Product).join(Branch).order_by(Product.name_uz, Branch.id).all():
-        stock_sheet.append([row.product.name_uz, row.branch.city, row.quantity, row.minimum_quantity, "Kam" if row.quantity <= row.minimum_quantity else "Yetarli"])
+    for row in Stock.query.join(Product).join(Branch).filter(Branch.is_active.is_(True)).order_by(Product.name_uz, Branch.id).all():
+        stock_sheet.append([row.product.name_uz, row.branch.name, row.quantity, row.minimum_quantity, "Kam" if row.quantity <= row.minimum_quantity else "Yetarli"])
 
     output = io.BytesIO()
     workbook.save(output)
