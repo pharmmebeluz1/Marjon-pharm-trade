@@ -1,0 +1,107 @@
+(function(){
+  "use strict";
+  var state={csrf:"",user:null,requireOtp:false,appointments:[],orders:[],vault:{reminders:[],family_members:[],reservations:[]},branches:[],activeAiAppointment:null};
+  var authPinBuffer="";
+
+  function el(id){return document.getElementById(id)}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function setMsg(id,msg,type){var x=el(id);if(!x)return;x.textContent=msg||"";x.className="zz-message"+(id==="loginMessage"?" zz-message-center":"")+(msg?" show":"")+(type?" "+type:"")}
+  function formatDate(value){if(!value)return"-";try{return new Intl.DateTimeFormat("uz-UZ",{dateStyle:"medium",timeStyle:"short"}).format(new Date(value))}catch(e){return value}}
+  function money(v){try{return new Intl.NumberFormat("uz-UZ").format(Number(v)||0)+" so‘m"}catch(e){return v+" so‘m"}}
+  async function ensureCsrf(){if(state.csrf)return state.csrf;var r=await fetch("/api/auth/csrf",{credentials:"same-origin",cache:"no-store"}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"Himoya kodi olinmadi");state.csrf=d.csrf_token;return state.csrf}
+  async function api(path,opt){opt=opt||{};var method=(opt.method||"GET").toUpperCase(),headers=Object.assign({Accept:"application/json"},opt.headers||{});if(!["GET","HEAD","OPTIONS"].includes(method))headers["X-CSRF-Token"]=await ensureCsrf();if(opt.body&&!(opt.body instanceof FormData)&&typeof opt.body!=="string"){headers["Content-Type"]="application/json";opt.body=JSON.stringify(opt.body)}var r=await fetch(path,Object.assign({},opt,{method:method,headers:headers,credentials:"same-origin",cache:"no-store"})),ct=r.headers.get("content-type")||"",d=ct.includes("application/json")?await r.json():null;if(!r.ok){throw new Error(d&&d.error||"Server xatosi: "+r.status)}return d}
+
+  function authTab(name){document.querySelectorAll("[data-auth-tab]").forEach(function(b){b.classList.toggle("active",b.dataset.authTab===name)});document.querySelectorAll("[data-auth-panel]").forEach(function(p){p.classList.toggle("active",p.dataset.authPanel===name)})}
+  function panel(name){document.querySelectorAll("[data-panel]").forEach(function(p){p.classList.toggle("active",p.dataset.panel===name)});var active=document.querySelector('[data-panel="'+name+'"]');if(active)active.scrollIntoView({behavior:"smooth",block:"start"})}
+
+  function syncPinUI(){document.querySelectorAll("[data-pin-slot]").forEach(function(slot,index){slot.classList.toggle("filled",index<authPinBuffer.length)});if(el("loginPin"))el("loginPin").value=authPinBuffer}
+  function resetPin(silent){authPinBuffer="";syncPinUI();if(!silent)setMsg("loginMessage","")}
+  function currentPhone(){return (el("loginPhone")&&el("loginPhone").value||"").trim()}
+  function syncPhoneUI(){var phone=currentPhone();if(el("savedPhoneText"))el("savedPhoneText").textContent=phone||"Telefon raqami kiritilmagan";if(el("managePhoneInput")&&el("managePhoneInput")!==document.activeElement)el("managePhoneInput").value=phone;if(el("setupPhone")&&el("setupPhone")!==document.activeElement)el("setupPhone").value=phone}
+  function savePhoneLocally(phone){try{if(phone)localStorage.setItem("zamZamCustomerPhone",phone);else localStorage.removeItem("zamZamCustomerPhone")}catch(e){}}
+  function setPhone(phone){phone=(phone||"").trim();if(el("loginPhone"))el("loginPhone").value=phone;if(el("managePhoneInput"))el("managePhoneInput").value=phone;if(el("setupPhone"))el("setupPhone").value=phone;savePhoneLocally(phone);syncPhoneUI()}
+  function openManage(tab){var box=el("authManageBox");if(box)box.classList.remove("hidden");authTab(tab||"login")}
+  function closeManage(){var box=el("authManageBox");if(box)box.classList.add("hidden")}
+
+  async function refreshMe(){var d=await api("/api/auth/me");state.user=d.user;state.csrf=d.csrf_token||state.csrf;state.requireOtp=!!d.require_sms_otp;if(el("otpWrap"))el("otpWrap").classList.toggle("hidden",!state.requireOtp);return d}
+  function validPin(pin){return /^\d{4}$/.test(pin)}
+
+  async function submitPinLogin(){setMsg("loginMessage","");var phone=currentPhone();if(!phone){setMsg("loginMessage","Avval telefon raqamini kiriting.","error");openManage("login");return}if(!validPin(authPinBuffer)){setMsg("loginMessage","PIN aynan 4 ta raqam bo‘lsin.","error");return}try{var d=await api("/api/auth/pin-login",{method:"POST",body:{phone:phone,pin:authPinBuffer,remember:true}});state.user=d.user;state.csrf=d.csrf_token||state.csrf;resetPin(true);closeManage();await showDashboard()}catch(err){setMsg("loginMessage",err.message,"error");resetPin(true)}}
+  async function login(e){if(e&&e.preventDefault)e.preventDefault();authPinBuffer=(el("loginPin")&&el("loginPin").value.trim())||authPinBuffer;syncPinUI();await submitPinLogin()}
+  function handlePinKey(value){if(value==="delete"){authPinBuffer=authPinBuffer.slice(0,-1);syncPinUI();return}if(!/^\d$/.test(value)||authPinBuffer.length>=4)return;authPinBuffer+=value;syncPinUI();if(authPinBuffer.length===4){submitPinLogin()}}
+  function savePhoneFromManager(){var value=(el("managePhoneInput")&&el("managePhoneInput").value||"").trim();if(!value){setMsg("loginMessage","Telefon raqamini kiriting.","error");openManage("login");return}setPhone(value);closeManage();setMsg("loginMessage","Telefon saqlandi. Endi 4 xonali PIN kodni kiriting.","show")}
+  async function register(e){e.preventDefault();setMsg("registerMessage","");var p1=el("regPin").value.trim(),p2=el("regPin2").value.trim();if(!validPin(p1)){setMsg("registerMessage","PIN aynan 4 ta raqam bo‘lsin.","error");return}if(p1!==p2){setMsg("registerMessage","PIN raqamlari bir xil emas.","error");return}try{var d=await api("/api/auth/register",{method:"POST",body:{name:el("regName").value,phone:el("regPhone").value,pin:p1,address:el("regAddress").value,language:"uz",consent:el("regConsent").checked,otp:el("regOtp").value}});state.user=d.user;state.csrf=d.csrf_token||state.csrf;setPhone(state.user.phone||el("regPhone").value);resetPin(true);await showDashboard()}catch(err){setMsg("registerMessage",err.message,"error")}}
+  async function setupPin(e){e.preventDefault();setMsg("setupMessage","");var p1=el("setupPin").value.trim(),p2=el("setupPin2").value.trim();if(!validPin(p1)){setMsg("setupMessage","PIN aynan 4 ta raqam bo‘lsin.","error");return}if(p1!==p2){setMsg("setupMessage","PIN raqamlari bir xil emas.","error");return}try{var d=await api("/api/auth/setup-pin",{method:"POST",body:{phone:el("setupPhone").value,password:el("setupPassword").value,pin:p1}});state.user=d.user;state.csrf=d.csrf_token||state.csrf;setPhone(state.user.phone||el("setupPhone").value);resetPin(true);await showDashboard()}catch(err){setMsg("setupMessage",err.message,"error")}}
+  async function requestOtp(){try{var d=await api("/api/auth/request-otp",{method:"POST",body:{phone:el("regPhone").value,purpose:"register"}});setMsg("registerMessage",d.message+(d.demo_code?" Kod: "+d.demo_code:""),d.sent?"":"warn");if(d.demo_code)el("regOtp").value=d.demo_code}catch(err){setMsg("registerMessage",err.message,"error")}}
+  async function logout(){try{await api("/api/auth/logout",{method:"POST",body:{}})}catch(e){}state.user=null;state.csrf="";resetPin(true);if(el("dashboardView"))el("dashboardView").classList.add("hidden");if(el("authView"))el("authView").classList.remove("hidden");syncPhoneUI()}
+  async function switchAccount(){try{await api("/api/auth/logout",{method:"POST",body:{}})}catch(e){}state.user=null;state.csrf="";setPhone("");resetPin(true);if(el("dashboardView"))el("dashboardView").classList.add("hidden");if(el("authView"))el("authView").classList.remove("hidden");openManage("login");setMsg("loginMessage","Boshqa mijoz uchun telefon raqamini kiriting.","warn")}
+  async function showDashboard(){if(!state.user||state.user.role!=="patient")throw new Error("Bu sahifa faqat mijozlar uchun.");setPhone(state.user.phone||currentPhone());if(el("authView"))el("authView").classList.add("hidden");if(el("dashboardView"))el("dashboardView").classList.remove("hidden");if(el("userName"))el("userName").textContent=state.user.name||"Mijoz";if(el("userPhone"))el("userPhone").textContent=state.user.phone||"";await loadAll()}
+
+  async function safeGet(path,fallback){try{return await api(path)}catch(err){console.error(path,err);return fallback}}
+  async function loadAll(){var results=await Promise.all([safeGet("/api/appointments",{appointments:[]}),safeGet("/api/orders",{orders:[]}),safeGet("/api/patient-vault",{vault:{reminders:[],family_members:[],reservations:[]}}),safeGet("/api/branches",{branches:[]}),safeGet("/api/health-passport",{passport:{}})]);state.appointments=results[0].appointments||[];state.orders=results[1].orders||[];state.vault=results[2].vault||{reminders:[],family_members:[],reservations:[]};state.branches=results[3].branches||[];renderAppointments();renderOrders();renderReminders();renderStats();renderBranches();fillHealth(results[4].passport||{});renderAiBanner()}
+  function renderStats(){if(el("ordersCount"))el("ordersCount").textContent=state.orders.length;var active=state.orders.filter(function(o){return !["Yetkazildi","Bekor qilindi","Yetkazilmadi"].includes(o.status)});if(el("activeOrdersText"))el("activeOrdersText").textContent=active.length?active.length+" ta faol buyurtma":"Faol buyurtma yo‘q";if(el("appointmentsCount"))el("appointmentsCount").textContent=state.appointments.length;var upcoming=state.appointments.filter(function(a){return a.status!=="yakunlandi"}).sort(function(a,b){return new Date(a.scheduled_at)-new Date(b.scheduled_at)})[0];if(el("nextAppointmentText"))el("nextAppointmentText").textContent=upcoming?formatDate(upcoming.scheduled_at):"Qabul belgilanmagan";if(el("remindersCount"))el("remindersCount").textContent=(state.vault.reminders||[]).length}
+  function renderAiBanner(){var unread=state.appointments.filter(function(a){return a.ai_message&&!a.ai_read_at}).sort(function(a,b){return new Date(b.ai_sent_at||0)-new Date(a.ai_sent_at||0)})[0];var box=el("aiFollowupBanner");if(!box)return;if(!unread){box.classList.add("hidden");state.activeAiAppointment=null;return}state.activeAiAppointment=unread;el("aiFollowupText").textContent=unread.ai_message;box.classList.remove("hidden")}
+  function renderAppointments(){var list=el("appointmentsList");if(!list)return;if(!state.appointments.length){list.innerHTML='<div class="zz-empty">Hozircha qabul yozuvi yo‘q. Yuqoridagi formadan yangi qabul kiriting.</div>';return}list.innerHTML=state.appointments.map(function(a){var completed=a.status==="yakunlandi",ai=a.ai_message?'<div class="zz-ai-card">'+esc(a.ai_message)+'</div>':"";return '<article class="zz-list-card"><div><b>'+esc(a.doctor_name)+' · '+esc(a.specialty)+'</b><small>'+esc(a.clinic||"Klinika ko‘rsatilmagan")+'<br>'+formatDate(a.scheduled_at)+'</small><em>'+esc(completed?"Qabul yakunlandi":"Rejalashtirilgan")+'</em>'+ai+'</div><div class="zz-list-actions">'+(!completed?'<button class="done" data-complete-appointment="'+a.id+'">Qabuldan chiqdim</button>':'<button data-open-panel="ai">AI savol</button>')+'</div></article>'}).join("")}
+  async function createAppointment(e){e.preventDefault();setMsg("appointmentMessage","");try{await api("/api/appointments",{method:"POST",body:{doctor_name:el("doctorName").value,specialty:el("specialty").value,clinic:el("clinic").value,scheduled_at:new Date(el("scheduledAt").value).toISOString(),patient_note:el("appointmentNote").value}});e.target.reset();setMsg("appointmentMessage","Qabul saqlandi.");await loadAll()}catch(err){setMsg("appointmentMessage",err.message,"error")}}
+  async function completeAppointment(id){try{var d=await api("/api/appointments/"+id+"/complete",{method:"PATCH",body:{}});await loadAll();panel("appointments");alert("Zam-Zam AI xabari tayyorlandi 🌿\n\n"+d.message)}catch(err){alert(err.message)}}
+  async function markAiRead(){if(!state.activeAiAppointment)return;try{await api("/api/appointments/"+state.activeAiAppointment.id+"/read",{method:"PATCH",body:{}});await loadAll()}catch(err){alert(err.message)}}
+  function renderOrders(){var list=el("ordersList");if(!list)return;if(!state.orders.length){list.innerHTML='<div class="zz-empty">Buyurtmalar yo‘q. Dori katalogidan kerakli mahsulotni tanlang.</div>';return}list.innerHTML=state.orders.map(function(o){var items=(o.items||[]).map(function(i){return esc(i.name)+" × "+i.qty}).join(", ");var track='<button data-track-order="'+esc(o.code)+'" data-track-token="'+esc(o.tracking_token||"")+'">Jonli xarita</button>';return '<article class="zz-list-card"><div><b>'+esc(o.code)+' · '+esc(o.status)+'</b><small>'+esc(items||"Mahsulot")+'<br>'+formatDate(o.created)+' · '+money(o.total)+'</small></div><div class="zz-list-actions">'+track+'</div></article>'}).join("")}
+  async function trackOrder(code,token){try{var d=await api("/api/orders/"+encodeURIComponent(code)+"/tracking"+(token?"?token="+encodeURIComponent(token):""));var loc=d.location;if(loc&&loc.lat!=null&&loc.lon!=null){window.open("https://maps.google.com/?q="+loc.lat+","+loc.lon,"_blank");return}alert("Buyurtma holati: "+((d.order&&d.order.status)||"Noma’lum")+"\nKuryerning jonli lokatsiyasi hali yoqilmagan.")}catch(err){alert(err.message)}}
+  function renderBranches(){var select=el("rxBranch");if(!select)return;select.innerHTML=state.branches.map(function(b){return '<option value="'+esc(b.slug)+'">'+esc(b.name)+' · '+esc(b.city)+'</option>'}).join("")}
+  async function uploadPrescription(e){e.preventDefault();setMsg("rxMessage","");var f=el("rxFile").files[0];if(!f){setMsg("rxMessage","Retsept faylini tanlang.","error");return}var fd=new FormData();fd.append("file",f);fd.append("branch",el("rxBranch").value);fd.append("consent",el("rxConsent").checked?"true":"false");try{var d=await api("/api/prescriptions",{method:"POST",body:fd});setMsg("rxMessage","Retsept qabul qilindi. Kod: "+d.prescription.code);e.target.reset()}catch(err){setMsg("rxMessage",err.message,"error")}}
+  function fillHealth(p){if(el("healthBirth"))el("healthBirth").value=p.birth||"";if(el("healthBlood"))el("healthBlood").value=p.blood||"";if(el("healthAllergy"))el("healthAllergy").value=p.allergy||"";if(el("healthMedicines"))el("healthMedicines").value=p.medicines||"";if(el("healthEmergencyName"))el("healthEmergencyName").value=p.emergency_name||"";if(el("healthEmergencyPhone"))el("healthEmergencyPhone").value=p.emergency_phone||""}
+  async function saveHealth(e){e.preventDefault();setMsg("healthMessage","");try{await api("/api/health-passport",{method:"PUT",body:{name:state.user.name,birth:el("healthBirth").value,blood:el("healthBlood").value,allergy:el("healthAllergy").value,medicines:el("healthMedicines").value,emergency_name:el("healthEmergencyName").value,emergency_phone:el("healthEmergencyPhone").value,consent:true}});setMsg("healthMessage","Sog‘liq pasporti xavfsiz saqlandi.")}catch(err){setMsg("healthMessage",err.message,"error")}}
+  function renderReminders(){var a=state.vault.reminders||[],list=el("remindersList");if(!list)return;if(!a.length){list.innerHTML='<div class="zz-empty">Dori eslatmasi qo‘shilmagan.</div>';return}list.innerHTML=a.map(function(r,i){return '<article class="zz-list-card"><div><b>'+esc(r.medicine)+' · '+esc(r.time)+'</b><small>'+esc(r.note||"Har kuni")+'</small></div><div class="zz-list-actions"><button data-remove-reminder="'+i+'">O‘chirish</button></div></article>'}).join("")}
+  async function saveVault(){var d=await api("/api/patient-vault",{method:"PUT",body:state.vault});state.vault=d.vault||state.vault;renderReminders();renderStats()}
+  async function addReminder(e){e.preventDefault();state.vault.reminders=state.vault.reminders||[];state.vault.reminders.push({id:Date.now(),medicine:el("reminderMedicine").value,time:el("reminderTime").value,note:el("reminderNote").value,active:true});await saveVault();e.target.reset()}
+  async function removeReminder(index){state.vault.reminders.splice(index,1);await saveVault()}
+  function bubble(text,type){var x=document.createElement("div");x.className="zz-bubble "+type;x.textContent=text;el("aiChat").appendChild(x);el("aiChat").scrollTop=el("aiChat").scrollHeight;return x}
+  async function askAi(e){e.preventDefault();var q=el("aiQuestion").value.trim();if(!q)return;bubble(q,"user");el("aiQuestion").value="";var wait=bubble("Javob tayyorlanmoqda…","bot");try{var d=await api("/api/ai/ask",{method:"POST",body:{question:q,language:"uz"}});wait.textContent=d.answer+"\n\n"+(d.disclaimer||"")}catch(err){wait.textContent=err.message}}
+
+  function bind(){
+    document.querySelectorAll("[data-auth-tab]").forEach(function(b){b.onclick=function(){authTab(b.dataset.authTab)}});
+    document.querySelectorAll("[data-open-panel]").forEach(function(b){b.onclick=function(){panel(b.dataset.openPanel)}});
+    document.querySelectorAll(".zz-panel-close").forEach(function(b){if(b.id!=="closeManageButton")b.onclick=function(){b.closest(".zz-panel").classList.remove("active")}});
+    document.querySelectorAll("[data-auth-key]").forEach(function(b){b.onclick=function(){handlePinKey(b.dataset.authKey)}});
+    if(el("savePhoneButton"))el("savePhoneButton").onclick=savePhoneFromManager;
+    if(el("changePhoneButton"))el("changePhoneButton").onclick=function(){openManage("login")};
+    if(el("openRegisterLink"))el("openRegisterLink").onclick=function(){openManage("register")};
+    if(el("openSetupLink"))el("openSetupLink").onclick=function(){openManage("setup")};
+    if(el("closeManageButton"))el("closeManageButton").onclick=closeManage;
+    if(el("switchAccountButton"))el("switchAccountButton").onclick=switchAccount;
+    if(el("pinLoginForm"))el("pinLoginForm").onsubmit=login;
+    if(el("pinRegisterForm"))el("pinRegisterForm").onsubmit=register;
+    if(el("pinSetupForm"))el("pinSetupForm").onsubmit=setupPin;
+    if(el("requestOtpButton"))el("requestOtpButton").onclick=requestOtp;
+    if(el("logoutButton"))el("logoutButton").onclick=logout;
+    if(el("refreshButton"))el("refreshButton").onclick=loadAll;
+    if(el("appointmentForm"))el("appointmentForm").onsubmit=createAppointment;
+    if(el("prescriptionForm"))el("prescriptionForm").onsubmit=uploadPrescription;
+    if(el("healthForm"))el("healthForm").onsubmit=saveHealth;
+    if(el("reminderForm"))el("reminderForm").onsubmit=addReminder;
+    if(el("aiForm"))el("aiForm").onsubmit=askAi;
+    if(el("markAiRead"))el("markAiRead").onclick=markAiRead;
+    document.addEventListener("keydown",function(e){if(el("dashboardView")&&!el("dashboardView").classList.contains("hidden"))return;if(/^\d$/.test(e.key)){handlePinKey(e.key)}else if(e.key==="Backspace"){handlePinKey("delete")}else if(e.key==="Escape"){closeManage()}});
+    document.body.addEventListener("click",function(e){var c=e.target.closest("[data-complete-appointment]");if(c)completeAppointment(c.dataset.completeAppointment);var r=e.target.closest("[data-remove-reminder]");if(r)removeReminder(Number(r.dataset.removeReminder));var t=e.target.closest("[data-track-order]");if(t)trackOrder(t.dataset.trackOrder,t.dataset.trackToken||"");var p=e.target.closest("[data-open-panel]");if(p)panel(p.dataset.openPanel)})
+  }
+
+  document.addEventListener("DOMContentLoaded",async function(){
+    bind();
+    syncPinUI();
+    try{setPhone(localStorage.getItem("zamZamCustomerPhone")||"")}catch(e){syncPhoneUI()}
+    try{
+      var d=await refreshMe();
+      if(d.authenticated&&d.user&&d.user.role==="patient"){
+        await showDashboard();
+      }else{
+        el("authView").classList.remove("hidden");
+        if(!currentPhone())openManage("login");
+      }
+    }catch(err){
+      el("authView").classList.remove("hidden");
+      if(!currentPhone())openManage("login");
+      setMsg("loginMessage","Server bilan aloqa bo‘lmadi: "+err.message,"error")
+    }
+    if("serviceWorker" in navigator){navigator.serviceWorker.register("/service-worker.js").catch(function(err){console.warn("Service worker:",err)})}
+  })
+})();
