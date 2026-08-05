@@ -1,19 +1,38 @@
-ZAM ZAM PHARM TRADE — GITHUB VA RENDERGA YUKLASH
+databases:
+  - name: marjon-platform-db
+    databaseName: marjon_platform
+    user: marjon_platform
+    plan: free
 
-1. ZIP faylni oching.
-2. Shu papka ichidagi BARCHA fayl va papkalarni belgilang.
-3. GitHub > Marjon-pharm-trade reposi > Add file > Upload files ni bosing.
-4. Barcha fayllarni yuklang.
-5. Izohga yozing: Zam Zam Pharm Trade nomi va yangi logosi to‘liq yangilandi
-6. Commit changes ni bosing.
-7. Render > marjon-platform > Manual Deploy > Deploy latest commit ni bosing.
-8. Deploy tugagach saytni Ctrl + F5 bilan yangilang. Kerak bo‘lsa havola oxiriga ?v=12 yozing.
-
-MUHIM:
-- marjon_app papkasini o‘chirmang. Bu ichki texnik papka, sayt nomi emas.
-- Renderdagi marjon-platform nomi va eski GitHub repo nomi sayt brendiga ta’sir qilmaydi.
-- GitHubda eski ortiqcha fayllar qolsa, keyin o‘chirish mumkin:
-  1_BOSING_MARJON_DMED.html
-  assets/zam-zam-pharm-trade-logo.png
-  static/assets/zam-zam-pharm-trade-logo.png
-  GITHUBGA_YUKLASH.txt
+services:
+  - type: web
+    name: marjon-platform
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SESSION_COOKIE_SECURE
+        value: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: marjon-platform-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATA_ENCRYPTION_KEY
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: PHARMACIST_PASSWORD
+        sync: false
+      - key: COURIER_PASSWORD
+        sync: false
+      - key: ACCOUNTANT_PASSWORD
+        sync: false
+      - key: REQUIRE_SMS_OTP
+        value: false

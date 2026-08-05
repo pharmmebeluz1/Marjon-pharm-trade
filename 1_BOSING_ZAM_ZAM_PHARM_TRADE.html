@@ -932,8 +932,6 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
 @media(max-width:600px){.tracker-modal-card{width:100%;max-height:100vh;border-radius:0}.tracker-header{padding:16px}.tracker-header h2{font-size:19px}.tracker-layout{padding:9px}.live-map{min-height:435px;border-radius:18px}.tracker-side{display:flex}.map-topbar{align-items:flex-start}.eta-pill{flex-direction:column;gap:2px;padding:8px 10px}.live-pill{padding:9px 10px}.map-turn-card{left:9px;right:9px;bottom:9px;max-width:none}.tracker-kpis{grid-template-columns:repeat(3,1fr)}.courier-live-actions{grid-template-columns:1fr}.courier-stop{grid-column:auto}}
 </style>
 
-  <link rel="stylesheet" href="/static/secure.css">
-  <script>window.MARJON_AI_ENDPOINT="/api/ai/ask";</script>
 </head>
 <body>
   <a class="skip-link" href="#mainContent">Asosiy mazmunga o‘tish</a>
@@ -1284,7 +1282,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
           <article class="smart-card delivery-card">
             <div class="smart-card-head"><span>🚚</span><div><small>BUYURTMA KUZATUVI</small><h3>Yetkazib berish holatini biling</h3></div></div>
             <div class="inline-search">
-              <input id="trackingCode" type="text" placeholder="Masalan: MJ-2026-103">
+              <input id="trackingCode" type="text" placeholder="Masalan: P360-2026-103">
               <button id="trackOrderButton" type="button">Kuzatish</button>
             </div>
             <div id="deliveryResult" class="delivery-timeline compact-timeline">
@@ -1472,7 +1470,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
             <h2 data-platform-i18n="platformTitle">Bemor buyurtmasidan buxgalter Exceligacha</h2>
             <p data-platform-i18n="platformText">Bemor telefonidan buyurtma beradi, lokatsiyasini ruxsat bilan yuboradi. Farmatsevt tayyorlaydi, kuryer yetkazadi, buxgalter esa barcha to‘lovlarni Excelga oladi.</p>
           </div>
-          <span class="platform-demo-pill" data-platform-i18n="demoMode">● SERVER VA UMUMIY BAZA FAOL</span>
+          <span class="platform-demo-pill" data-platform-i18n="demoMode">● SERVERGA TAYYOR DEMO</span>
         </div>
         <div class="platform-role-grid">
           <button class="platform-role-card" type="button" data-platform-role="patient"><span>👤</span><h3 data-platform-i18n="patient">Bemor</h3><p data-platform-i18n="patientText">Ro‘yxatdan o‘tish, dori tanlash, lokatsiya va buyurtma kuzatuvi.</p><b data-platform-i18n="openCabinet">Kabinetni ochish →</b></button>
@@ -1487,7 +1485,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
           <div><span>3</span><b data-platform-i18n="flow3">Kuryer yetkazadi</b></div>
           <div><span>4</span><b data-platform-i18n="flow4">Hisobot Excelga tushadi</b></div>
         </div>
-        <div class="platform-note" data-platform-i18n="localWarning">Buyurtmalar, kabinetlar va kuryer GPS ma’lumotlari umumiy server bazasida saqlanadi. Har bir foydalanuvchi faqat o‘z roli bo‘yicha ruxsat oladi.</div>
+        <div class="platform-note" data-platform-i18n="localWarning">Hozirgi shablonda ma’lumotlar faqat shu brauzerning localStorage xotirasida saqlanadi. Turli bemorlarning telefonlari o‘rtasida ma’lumot almashishi uchun keyingi bosqichda server va umumiy baza ulanadi.</div>
       </div>
     </section>
 
@@ -1499,10 +1497,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
             <h2>Savdo, qoldiq va muddati nazoratda</h2>
             <p>Bu bo‘lim dorixona xodimlari uchun namuna boshqaruv panelidir.</p>
           </div>
-          <div class="management-actions">
-            <button id="addMedicineButton" class="primary-button" type="button">＋ Dori qo‘shish</button>
-            <button id="refreshDashboard" class="soft-button" type="button">↻ Yangilash</button>
-          </div>
+          <button id="refreshDashboard" class="soft-button" type="button">↻ Yangilash</button>
         </div>
 
         <div class="management-stats">
@@ -1820,9 +1815,9 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
     <div class="modal-card gp-modal-card">
       <button id="gpClosePassport" class="modal-close" type="button">×</button>
       <div class="modal-icon">🛡</div>
-      <span class="section-label">GLOBAL HEALTH ID • HIMOYALANGAN</span>
+      <span class="section-label">GLOBAL HEALTH ID • DEMO</span>
       <h2>Shaxsiy sog‘liq pasporti</h2>
-      <p>Ma’lumotlar serverda shifrlangan holda saqlanadi va faqat hisob egasiga ko‘rsatiladi.</p>
+      <p>Ma’lumotlar hozircha faqat shu qurilmaning brauzerida saqlanadi. Haqiqiy tizimda server, shifrlash va ruxsat nazorati talab qilinadi.</p>
       <div class="gp-form-grid">
         <label><span>Ism va familiya</span><input id="gpPassName" type="text" placeholder="Ismingiz"></label>
         <label><span>Tug‘ilgan sana</span><input id="gpPassBirth" type="date"></label>
@@ -1830,7 +1825,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
         <label><span>Favqulodda kontakt</span><input id="gpPassPhone" type="tel" placeholder="+998 ..."></label>
         <label class="full"><span>Allergiyalar</span><textarea id="gpPassAllergy" placeholder="Dori yoki modda nomlari"></textarea></label>
         <label class="full"><span>Doimiy qabul qilinadigan dorilar</span><textarea id="gpPassMedicines" placeholder="Dori nomi va jadvali"></textarea></label>
-        <label class="full gp-consent-box"><input id="gpPassConsent" type="checkbox"><span>Sog‘liq ma’lumotlarini shifrlangan server bazasida saqlashga roziman. Bu tibbiy tashxis yoki rasmiy tibbiy karta emas.</span></label>
+        <label class="full gp-consent-box"><input id="gpPassConsent" type="checkbox"><span>Ushbu demo qurilmada ma’lumotlarni saqlashga roziman. Bu tibbiy tashxis yoki rasmiy tibbiy karta emas.</span></label>
       </div>
       <div id="gpPassportStatus" class="status hidden gp-modal-status"></div>
       <div class="gp-global-actions"><button id="gpSavePassport" class="gp-save" type="button">Pasportni saqlash</button><button id="gpClearPassport" class="gp-clear" type="button">Ma’lumotni tozalash</button></div>
@@ -1868,10 +1863,10 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
           <div class="map-turn-card"><div class="turn-icon" id="trackerTurnIcon">↱</div><div><small id="trackerTurnLabel">Keyingi harakat</small><b id="trackerTurnText">300 metr to‘g‘ri, keyin o‘ngga buriling</b></div></div>
         </div>
         <aside class="tracker-side">
-          <section class="tracker-card"><h3 id="trackerCourierHeading">Kuryer ma’lumoti</h3><div class="courier-profile"><div class="courier-avatar">🧑‍✈️</div><div><b>Kuryer biriktirilmagan</b><small>Zam Zam Express</small><small id="trackerLastUpdate">GPS hali yuborilmagan</small></div></div><div class="tracker-contact-row"><a href="#" id="trackerCall" aria-disabled="true">📞 Qo‘ng‘iroq</a><button id="trackerMessage" type="button">💬 Xabar</button></div></section>
+          <section class="tracker-card"><h3 id="trackerCourierHeading">Kuryer ma’lumoti</h3><div class="courier-profile"><div class="courier-avatar">🧑‍✈️</div><div><b>Jamshid Karimov</b><small>Zam Zam Express · ⭐ 4.9</small><small id="trackerLastUpdate">Hozirgina yangilandi</small></div></div><div class="tracker-contact-row"><a href="tel:+998901112233" id="trackerCall">📞 Qo‘ng‘iroq</a><button id="trackerMessage" type="button">💬 Xabar</button></div></section>
           <section class="tracker-card"><h3 id="trackerRouteHeading">Marshrut holati</h3><div class="tracker-progress"><span id="trackerProgressBar"></span></div><div class="tracker-kpis"><div class="tracker-kpi"><span id="trackerDistanceLabel">Qoldi</span><strong id="trackerDistance">3.6 km</strong></div><div class="tracker-kpi"><span id="trackerSpeedLabel">Tezlik</span><strong id="trackerSpeed">28 km/soat</strong></div><div class="tracker-kpi"><span id="trackerAccuracyLabel">Aniqlik</span><strong id="trackerAccuracy">±8 m</strong></div></div></section>
           <section class="tracker-card tracker-order-data" id="trackerOrderData"></section>
-          <section class="tracker-card tracker-note" id="trackerDemoNote">Kuryer koordinatasi server orqali yangilanadi. Bemor boshqa telefondan ham shu buyurtmaning jonli holatini ko‘ra oladi.</section>
+          <section class="tracker-card tracker-note" id="trackerDemoNote">Bu hozircha jonli kuzatuv shabloni. Bitta brauzerda demo harakat ishlaydi. Kuryer va bemor turli telefonlarda bir vaqtda ko‘rishi uchun server, WebSocket va xarita API ulanadi.</section>
         </aside>
       </div>
     </div>
@@ -1887,8 +1882,7 @@ var categories = [
   {id:"pain", icon:"💊", uz:"Og‘riq qoldiruvchi", en:"Pain relief", ru:"Обезболивающие"},
   {id:"children", icon:"🧸", uz:"Bolalar uchun", en:"For children", ru:"Для детей"},
   {id:"medical", icon:"🩺", uz:"Tibbiy jihozlar", en:"Medical devices", ru:"Медтехника"},
-  {id:"care", icon:"🧴", uz:"Parvarish", en:"Personal care", ru:"Уход"},
-  {id:"other", icon:"✚", uz:"Boshqa", en:"Other", ru:"Другое"}
+  {id:"care", icon:"🧴", uz:"Parvarish", en:"Personal care", ru:"Уход"}
 ];
 
 var products = [
@@ -1919,8 +1913,17 @@ var currentLang = (function(){try{return localStorage.getItem("marjonLang") || "
 var currentLocation = null;
 var cart = {};
 var favorites = {};
-var lastCartMemory = null;
-var reminderMemory = null;
+
+try {
+  cart = JSON.parse(localStorage.getItem("marjonWowCart") || "{}");
+} catch (error) {
+  cart = {};
+}
+try {
+  favorites = JSON.parse(localStorage.getItem("marjonFavorites") || "{}");
+} catch (error) {
+  favorites = {};
+}
 
 function formatMoney(value) {
   try {
@@ -2055,6 +2058,7 @@ function removeFromCart(id) {
 }
 
 function saveCart() {
+  localStorage.setItem("marjonWowCart", JSON.stringify(cart));
   renderCart();
 }
 
@@ -2277,6 +2281,7 @@ function toggleFavorite(id) {
   } else {
     favorites[id] = true;
   }
+  localStorage.setItem("marjonFavorites", JSON.stringify(favorites));
   renderFavoriteCount();
   renderProducts();
 }
@@ -2292,16 +2297,19 @@ function saveMedicineReminder() {
     return;
   }
 
-  reminderMemory = {medicine:medicine,time:time};
-  if (typeof window.marjonSecureVaultSave === "function") {
-    window.marjonSecureVaultSave("marjonReminders", [{id:Date.now(),medicine:medicine,time:time,active:true}]);
-  }
+  var reminder = {medicine:medicine,time:time};
+  localStorage.setItem("marjonMedicineReminder", JSON.stringify(reminder));
   showSavedReminder();
 }
 
 function showSavedReminder() {
   var result = document.getElementById("savedReminder");
-  var saved = reminderMemory;
+  var saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem("marjonMedicineReminder") || "null");
+  } catch (error) {
+    saved = null;
+  }
 
   if (!saved) {
     result.className = "saved-reminder hidden";
@@ -2331,7 +2339,12 @@ function addBundle(type) {
 }
 
 function quickReorder() {
-  var lastOrder = lastCartMemory;
+  var lastOrder = null;
+  try {
+    lastOrder = JSON.parse(localStorage.getItem("marjonLastOrder") || "null");
+  } catch (error) {
+    lastOrder = null;
+  }
 
   if (!lastOrder) {
     cart[1] = (cart[1] || 0) + 1;
@@ -2345,7 +2358,7 @@ function quickReorder() {
 }
 
 function saveCurrentAsLastOrder() {
-  lastCartMemory = JSON.parse(JSON.stringify(cart));
+  localStorage.setItem("marjonLastOrder", JSON.stringify(cart));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -2611,52 +2624,16 @@ document.addEventListener("DOMContentLoaded", function () {
     8:{tashkent:8,samarkand:14,andijan:3,fergana:9,namangan:6}
   };
   var branchLabels = {tashkent:"Toshkent",samarkand:"Samarqand",andijan:"Andijon",fergana:"Farg‘ona",namangan:"Namangan"};
-  window.marjonHydrateProductStock = function(serverProducts, serverBranches) {
-    stockByProduct = {};
-    (serverProducts || []).forEach(function(product) {
-      stockByProduct[product.id] = product.stock || {};
-    });
-    (serverBranches || []).forEach(function(branch) {
-      branchLabels[branch.slug] = branch.city;
-    });
-    try { renderProducts(); } catch (e) {}
-  };
-  var smartMemory = {
-    marjonReminders: [],
-    marjonHealthProfile: {},
-    marjonOrderHistory: [],
-    marjonFamilyMembers: [],
-    marjonReservations: []
-  };
-  var reminders = [];
-  var healthProfile = {};
-  var orderHistory = [];
-  var familyMembers = [];
+  var reminders = safeJson("marjonReminders", []);
+  var healthProfile = safeJson("marjonHealthProfile", {});
+  var orderHistory = safeJson("marjonOrderHistory", []);
+  var familyMembers = safeJson("marjonFamilyMembers", []);
 
   function safeJson(key, fallback) {
-    var value = smartMemory[key];
-    if (value === undefined || value === null) return fallback;
-    try { return JSON.parse(JSON.stringify(value)); }
+    try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
     catch (e) { return fallback; }
   }
-  function saveJson(key, value) {
-    smartMemory[key] = value;
-    if (typeof window.marjonSecureVaultSave === "function") window.marjonSecureVaultSave(key, value);
-  }
-  window.marjonHydrateSmartData = function(payload) {
-    payload = payload || {};
-    var vault = payload.vault || {};
-    smartMemory.marjonReminders = Array.isArray(vault.reminders) ? vault.reminders : [];
-    smartMemory.marjonFamilyMembers = Array.isArray(vault.family_members) ? vault.family_members : [];
-    smartMemory.marjonReservations = Array.isArray(vault.reservations) ? vault.reservations : [];
-    smartMemory.marjonHealthProfile = payload.health_profile || {};
-    smartMemory.marjonOrderHistory = Array.isArray(payload.orders) ? payload.orders : [];
-    reminders = safeJson("marjonReminders", []);
-    healthProfile = safeJson("marjonHealthProfile", {});
-    orderHistory = safeJson("marjonOrderHistory", []);
-    familyMembers = safeJson("marjonFamilyMembers", []);
-    try { updateProfileSummary(); showSavedReminder(); } catch (e) {}
-  };
+  function saveJson(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
   function escapeHtml(text) { return String(text || "").replace(/[&<>\"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
   function getProductName(product) {
     if (currentLang === "ru") return product.ru;
@@ -2708,12 +2685,12 @@ document.addEventListener("DOMContentLoaded", function () {
     result.className="smart-result";result.innerHTML=stockResultsFor(list[0]);
   }
   window.checkSingleStock=function(id){var p=findProduct(id);if(!p)return;document.getElementById("smartMedicineSearch").value=p.uz;runStockSearch(p.uz);document.getElementById("smartServices").scrollIntoView({behavior:"smooth"});};
-  window.reserveProduct=function(id,branch){var p=findProduct(id);if(!p)return;addToCart(id);showToast(p.uz+" savatga qo‘shildi. Haqiqiy band buyurtma serverga yuborilganda bajariladi.","success");};
+  window.reserveProduct=function(id,branch){var p=findProduct(id);var code="RSV-"+String(Date.now()).slice(-6);var reservations=safeJson("marjonReservations",[]);reservations.unshift({code:code,product:p.uz,branch:branchLabels[branch],expires:Date.now()+30*60*1000});saveJson("marjonReservations",reservations);showToast(p.uz+" "+branchLabels[branch]+" filialida 30 daqiqaga band qilindi. Kod: "+code,"success");};
 
   saveMedicineReminder = function(){
     var medicine=document.getElementById("reminderMedicine").value.trim(),time=document.getElementById("reminderTime").value,result=document.getElementById("savedReminder");
     if(!medicine||!time){result.className="saved-reminder";result.textContent="Dori nomi va vaqtini kiriting.";return;}
-    reminders.unshift({id:Date.now(),medicine:medicine,time:time,active:true}); saveJson("marjonReminders",reminders); showSavedReminder();
+    reminders.unshift({id:Date.now(),medicine:medicine,time:time,active:true}); saveJson("marjonReminders",reminders); localStorage.setItem("marjonMedicineReminder",JSON.stringify({medicine:medicine,time:time})); showSavedReminder();
     if("Notification" in window && window.Notification && Notification.permission==="default") Notification.requestPermission();
     showToast("Eslatma saqlandi: "+medicine+" — "+time,"success");
   };
@@ -2744,7 +2721,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function cartTotalValue(){var total=0;Object.keys(cart).forEach(function(id){var p=findProduct(Number(id));if(p)total+=p.price*cart[id];});return total;}
   function openCheckout(){if(!Object.keys(cart).length){showToast("Savat bo‘sh.","warn");return;}closeCart();document.getElementById("checkoutSummary").textContent="Jami: "+formatMoney(cartTotalValue())+" • "+Object.keys(cart).length+" turdagi mahsulot";openModal("checkoutModal");}
-  function placeOrder(){var phone=document.getElementById("checkoutPhone").value.trim(),address=document.getElementById("checkoutAddress").value.trim(),consent=document.getElementById("checkoutConsent").checked,status=document.getElementById("checkoutStatus");if(!phone||!address||!consent){status.className="status error";status.textContent="Telefon, manzil/filial va tasdiqlash belgisini to‘ldiring.";return;}var code="MJ-2026-"+String(Date.now()).slice(-5),total=cartTotalValue(),method=document.getElementById("checkoutMethod").value;orderHistory.unshift({code:code,date:new Date().toLocaleString("uz-UZ"),status:method==="pickup"?"Filialda band qilindi":"Tayyorlanmoqda",total:total});saveJson("marjonOrderHistory",orderHistory);saveCurrentAsLastOrder();cart={};saveCart();status.className="status";status.innerHTML='<b>Buyurtma qabul qilindi.</b><br>Kuzatuv kodi: '+code;document.getElementById("trackingCode").value=code;showToast("Buyurtma qabul qilindi: "+code,"success");setTimeout(function(){closeModal("checkoutModal");},1800);}
+  function placeOrder(){var phone=document.getElementById("checkoutPhone").value.trim(),address=document.getElementById("checkoutAddress").value.trim(),consent=document.getElementById("checkoutConsent").checked,status=document.getElementById("checkoutStatus");if(!phone||!address||!consent){status.className="status error";status.textContent="Telefon, manzil/filial va tasdiqlash belgisini to‘ldiring.";return;}var code="P360-2026-"+String(Date.now()).slice(-5),total=cartTotalValue(),method=document.getElementById("checkoutMethod").value;orderHistory.unshift({code:code,date:new Date().toLocaleString("uz-UZ"),status:method==="pickup"?"Filialda band qilindi":"Tayyorlanmoqda",total:total});saveJson("marjonOrderHistory",orderHistory);saveCurrentAsLastOrder();cart={};saveCart();status.className="status";status.innerHTML='<b>Buyurtma qabul qilindi.</b><br>Kuzatuv kodi: '+code;document.getElementById("trackingCode").value=code;showToast("Buyurtma qabul qilindi: "+code,"success");setTimeout(function(){closeModal("checkoutModal");},1800);}
 
   function trackOrder(){var code=document.getElementById("trackingCode").value.trim(),timeline=document.getElementById("deliveryResult");if(!code){showToast("Kuzatuv kodini kiriting.","warn");return;}var order=orderHistory.filter(function(o){return o.code.toLowerCase()===code.toLowerCase();})[0],step=order?1:Math.abs(code.length)%4;var labels=["Qabul qilindi","Tayyorlanmoqda","Kuryerda","Yetkazildi"],html="";labels.forEach(function(l,i){html+='<span class="'+(i<step?'done':(i===step?'active':''))+'">'+l+'</span>';});timeline.innerHTML=html;showToast(order?"Buyurtma topildi: "+order.status:"Namuna kuzatuv holati ko‘rsatildi.","success");}
 
@@ -2807,8 +2784,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function $(id){return document.getElementById(id);}
   function nowText(){return new Date().toLocaleString("uz-UZ",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});}
-  function saveAudit(){}
-  function loadAudit(){audit=[{time:nowText(),text:"DMED demo moduli ochildi"}];}
+  function saveAudit(){try{localStorage.setItem("marjonDmedAudit",JSON.stringify(audit.slice(0,30)));}catch(e){}}
+  function loadAudit(){try{var value=JSON.parse(localStorage.getItem("marjonDmedAudit")||"[]");audit=Array.isArray(value)?value:[];}catch(e){audit=[];}if(!audit.length)audit=[{time:nowText(),text:"DMED demo moduli ochildi"}];}
   function addAudit(text){audit.unshift({time:nowText(),text:text});saveAudit();renderAudit();}
   function renderAudit(){var box=$("dmedAuditLog");if(!box)return;box.innerHTML=audit.map(function(item){return '<div class="dmed-log-item"><i></i><div><b>'+escapeDmed(item.time)+'</b><br>'+escapeDmed(item.text)+'</div></div>';}).join("");}
   function escapeDmed(text){return String(text||"").replace(/[&<>\"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
@@ -3068,6 +3045,83 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 }
 </script>
 
+<script id="platform-template-script">
+(function(){
+  "use strict";
+  var KEY_ORDERS="marjonPlatformOrdersV1", KEY_PROFILE="marjonPatientProfileV1", KEY_RETURNS="marjonReturnsV1";
+  var activeRole="patient", platformLocation=null;
+  var KEY_TRACK="marjonCourierTrackV1", trackerOrderId=null, trackerTimer=null, trackerPoll=null, gpsWatchId=null;
+  var T={
+    uz:{navPlatform:"Kabinetlar",platformLabel:"YAGONA DORIXONA PLATFORMASI",platformTitle:"Bemor buyurtmasidan buxgalter Exceligacha",platformText:"Bemor telefonidan buyurtma beradi, lokatsiyasini ruxsat bilan yuboradi. Farmatsevt tayyorlaydi, kuryer yetkazadi, buxgalter esa barcha to‘lovlarni Excelga oladi.",demoMode:"● SERVERGA TAYYOR DEMO",patient:"Bemor",pharmacist:"Farmatsevt",courier:"Kuryer",accountant:"Buxgalter",manager:"Rahbar",patientText:"Ro‘yxatdan o‘tish, dori tanlash, lokatsiya va buyurtma kuzatuvi.",pharmacistText:"Yangi buyurtmalar, retsept tekshiruvi va dori tayyorlash.",courierText:"Jonli GPS uzatish, marshrut, burilishlar va yetkazish boshqaruvi.",accountantText:"Naqd, Click, Payme va boshqa to‘lovlar bo‘yicha Excel hisoboti.",managerText:"Savdo, foyda, filiallar, ombor va xodimlar nazorati.",openCabinet:"Kabinetni ochish →",flow1:"Bemor buyurtma beradi",flow2:"Farmatsevt tayyorlaydi",flow3:"Kuryer yetkazadi",flow4:"Hisobot Excelga tushadi",localWarning:"Hozirgi shablonda ma’lumotlar faqat shu brauzerning localStorage xotirasida saqlanadi. Turli bemorlarning telefonlari o‘rtasida ma’lumot almashishi uchun keyingi bosqichda server va umumiy baza ulanadi.",paymentLabel:"To‘lov",addressLabel:"Manzil yoki filial"},
+    ru:{navPlatform:"Кабинеты",platformLabel:"ЕДИНАЯ АПТЕЧНАЯ ПЛАТФОРМА",platformTitle:"От заказа пациента до Excel бухгалтера",platformText:"Пациент заказывает с телефона и с разрешения отправляет геолокацию. Фармацевт готовит, курьер доставляет, бухгалтер выгружает платежи в Excel.",demoMode:"● ДЕМО, ГОТОВОЕ К СЕРВЕРУ",patient:"Пациент",pharmacist:"Фармацевт",courier:"Курьер",accountant:"Бухгалтер",manager:"Руководитель",patientText:"Регистрация, выбор лекарства, геолокация и отслеживание заказа.",pharmacistText:"Новые заказы, проверка рецепта и подготовка лекарств.",courierText:"Передача GPS, маршрут, повороты и управление доставкой в реальном времени.",accountantText:"Excel-отчёт по наличным, Click, Payme и другим оплатам.",managerText:"Продажи, прибыль, филиалы, склад и сотрудники.",openCabinet:"Открыть кабинет →",flow1:"Пациент оформляет заказ",flow2:"Фармацевт готовит",flow3:"Курьер доставляет",flow4:"Отчёт попадает в Excel",localWarning:"В этом шаблоне данные хранятся только в localStorage этого браузера. Для обмена данными между телефонами пациентов на следующем этапе подключаются сервер и общая база.",paymentLabel:"Оплата",addressLabel:"Адрес или филиал"},
+    en:{navPlatform:"Portals",platformLabel:"UNIFIED PHARMACY PLATFORM",platformTitle:"From patient order to accountant Excel",platformText:"Patients order from their phones and share location with permission. Pharmacists prepare, couriers deliver, and accountants export payments to Excel.",demoMode:"● SERVER-READY DEMO",patient:"Patient",pharmacist:"Pharmacist",courier:"Courier",accountant:"Accountant",manager:"Manager",patientText:"Registration, medicine selection, location and order tracking.",pharmacistText:"New orders, prescription review and medicine preparation.",courierText:"Live GPS sharing, route turns, ETA and delivery control.",accountantText:"Excel reports for cash, Click, Payme and other payments.",managerText:"Sales, profit, branches, stock and staff control.",openCabinet:"Open portal →",flow1:"Patient places order",flow2:"Pharmacist prepares",flow3:"Courier delivers",flow4:"Report exports to Excel",localWarning:"In this template, data is stored only in this browser's localStorage. A server and shared database will be connected later so different patient phones can exchange data.",paymentLabel:"Payment",addressLabel:"Address or branch"}
+  };
+  function lang(){try{return localStorage.getItem("marjonLang")||window.currentLang||"uz";}catch(e){return "uz";}}
+  function tr(k){var l=lang();return (T[l]&&T[l][k])||T.uz[k]||k;}
+  function esc(v){return String(v==null?"":v).replace(/[&<>\"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function read(key,def){try{var v=JSON.parse(localStorage.getItem(key)||"");return v==null?def:v;}catch(e){return def;}}
+  function write(key,v){try{localStorage.setItem(key,JSON.stringify(v));}catch(e){}}
+  function money(n){try{return new Intl.NumberFormat("uz-UZ").format(Number(n)||0)+" so‘m";}catch(e){return String(n)+" so‘m";}}
+  function nowISO(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+  function dateTime(){return new Date().toLocaleString("uz-UZ");}
+  function demoOrders(){
+    var base=Date.now(), names=["Aziza Karimova","Jasur Ahmedov","Madina Tursunova","Sherzod Aliyev","Dilnoza Rahimova","Akmal Qodirov"], pays=["Naqd","Click","Payme","Uzcard / Humo","Terminal","Bank o‘tkazmasi"], sts=["Yangi","Tayyorlanmoqda","Kuryerga berildi","Yetkazildi","Yetkazildi","Bekor qilindi"], totals=[98000,340000,65000,126000,22000,41000];
+    return names.map(function(n,i){var d=new Date(base-i*86400000);return {id:"MJ-DEMO-"+(101+i),code:"MJ-DEMO-"+(101+i),created:d.toISOString(),date:d.toLocaleString("uz-UZ"),customer:n,phone:"+998 90 000 0"+(10+i),address:i%2?"Toshkent, Chilonzor tumani":"Samarqand, markaz",lat:i%2?41.285:39.654,lon:i%2?69.203:66.959,branch:i%2?"Toshkent":"Samarqand",payment:pays[i],method:"delivery",status:sts[i],total:totals[i],cost:Math.round(totals[i]*.72),items:[{name:i%2?"Paratsetamol 500 mg №10":"Teraflyu kukun №10",qty:i%3+1,price:totals[i]}],source:"demo"};});
+  }
+  function orders(){var a=read(KEY_ORDERS,[]);if(!a.length){a=demoOrders();write(KEY_ORDERS,a);}return a;}
+  function saveOrders(a){write(KEY_ORDERS,a);}
+  function profile(){return read(KEY_PROFILE,{name:"",phone:"",language:lang(),address:"",lat:null,lon:null,consent:false});}
+  function statusClass(s){if(s==="Bekor qilindi")return "cancelled";if(s==="Kuryerga berildi")return "delivery";if(s==="Tayyorlanmoqda"||s==="Yangi")return "preparing";return "";}
+  function applyLanguage(){document.querySelectorAll("[data-platform-i18n]").forEach(function(el){var k=el.getAttribute("data-platform-i18n");if(T[lang()]&&T[lang()][k])el.textContent=T[lang()][k];});if(document.getElementById("platformModal")&&document.getElementById("platformModal").classList.contains("show"))render(activeRole);}
+  window.marjonApplyPlatformLanguage=applyLanguage;
+  function open(role){activeRole=role||"patient";if(typeof openModal==="function")openModal("platformModal");else document.getElementById("platformModal").classList.add("show");document.querySelectorAll("[data-platform-tab]").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-platform-tab")===activeRole);});render(activeRole);}
+  function close(){if(typeof closeModal==="function")closeModal("platformModal");else document.getElementById("platformModal").classList.remove("show");}
+  function setTitle(role){var title=document.getElementById("platformModalTitle");var map={patient:"patient",pharmacist:"pharmacist",courier:"courier",accountant:"accountant",manager:"manager"};title.textContent=tr(map[role]||"navPlatform")+" kabineti";}
+  function registerPatient(){var p={name:document.getElementById("ptName").value.trim(),phone:document.getElementById("ptPhone").value.trim(),language:document.getElementById("ptLang").value,address:document.getElementById("ptAddress").value.trim(),lat:platformLocation&&platformLocation.lat,lon:platformLocation&&platformLocation.lon,consent:document.getElementById("ptConsent").checked};if(!p.name||!p.phone||!p.consent){notify("Ism, telefon va rozilikni to‘ldiring.","warn");return;}write(KEY_PROFILE,p);try{localStorage.setItem("marjonLang",p.language);}catch(e){}window.currentLang=p.language;applyLanguage();notify("Bemor profili demo xotiraga saqlandi.","success");render("patient");}
+  function getLocation(target){if(!navigator.geolocation){notify("Bu brauzer lokatsiyani qo‘llamaydi.","warn");return;}notify("Lokatsiya uchun ruxsat so‘ralmoqda…","");navigator.geolocation.getCurrentPosition(function(pos){platformLocation={lat:Number(pos.coords.latitude.toFixed(6)),lon:Number(pos.coords.longitude.toFixed(6))};var input=document.getElementById(target);if(input)input.value=platformLocation.lat+", "+platformLocation.lon;notify("Lokatsiya olindi. Faqat ruxsat bilan.","success");if(target==="checkoutAddress"){var n=document.getElementById("checkoutLocationNote");if(n)n.innerHTML='<a target="_blank" rel="noopener" href="https://maps.google.com/?q='+platformLocation.lat+','+platformLocation.lon+'">Xaritada ko‘rish</a>';window.currentLocation={lat:platformLocation.lat,lon:platformLocation.lon};}},function(){notify("Lokatsiyaga ruxsat berilmadi. Manzilni qo‘lda yozing.","warn");},{enableHighAccuracy:true,timeout:10000,maximumAge:60000});}
+  function notify(m,t){if(window.marjonShowToast)window.marjonShowToast(m,t);else alert(m);}
+  function itemNames(o){return (o.items||[]).map(function(i){return (i.name||"Mahsulot")+" × "+(i.qty||1);}).join(", ")||"Dori buyurtmasi";}
+  function orderRows(list,role){if(!list.length)return '<div class="platform-empty">Buyurtmalar topilmadi.</div>';return '<div class="platform-table-wrap"><table class="platform-table"><thead><tr><th>KOD / SANA</th><th>BEMOR</th><th>DORILAR</th><th>TO‘LOV</th><th>MANZIL</th><th>HOLAT</th><th>AMAL</th></tr></thead><tbody>'+list.map(function(o){var actions="";if(role==="pharmacist")actions='<div class="platform-order-actions"><button data-order-status="'+esc(o.id)+'|Tayyorlanmoqda">Tayyorlash</button><button data-order-status="'+esc(o.id)+'|Kuryerga berildi">Kuryerga</button><button data-order-status="'+esc(o.id)+'|Bekor qilindi">Bekor</button></div>';else if(role==="courier")actions='<div class="platform-order-actions"><button class="track-table-button" data-courier-start="'+esc(o.id)+'">📡 Kuzatuv</button><button data-order-status="'+esc(o.id)+'|Yetkazildi">Yetkazildi</button>'+(o.lat?'<a target="_blank" rel="noopener" href="https://maps.google.com/?q='+o.lat+','+o.lon+'">Xarita</a>':'')+'</div>';else if(role==="patient"&&(o.status==="Kuryerga berildi"||o.status==="Tayyorlanmoqda"))actions='<div class="platform-order-actions"><button class="track-table-button" data-track-order="'+esc(o.id)+'">🛵 Jonli xarita</button></div>';else actions='<span class="platform-badge-live"><i></i> Jonli</span>';return '<tr><td><b>'+esc(o.code)+'</b><small>'+esc(o.date||o.created)+'</small></td><td><b>'+esc(o.customer||"Bemor")+'</b><small>'+esc(o.phone||"")+'</small></td><td>'+esc(itemNames(o))+'</td><td><b>'+money(o.total)+'</b><small>'+esc(o.payment||"Naqd")+'</small></td><td>'+esc(o.address||o.branch||"")+'</td><td><span class="platform-status '+statusClass(o.status)+'">'+esc(o.status)+'</span></td><td>'+actions+'</td></tr>';}).join("")+'</tbody></table></div>';}
+  function renderPatient(){var p=profile(),list=orders().filter(function(o){return !p.phone||o.phone===p.phone||o.source==="demo";}).slice(0,5);return '<div class="platform-local-warning"><span>🔒</span><div><b>Demo maxfiylik:</b> ma’lumotlar faqat shu qurilmada. Server ulangach SMS orqali haqiqiy hisob ochiladi.</div></div><div class="platform-panel-grid"><section class="platform-panel"><h3>Bemor ro‘yxatdan o‘tishi</h3><div class="platform-form"><label>Ism va familiya<input id="ptName" value="'+esc(p.name)+'" placeholder="Ismingiz"></label><label>Telefon<input id="ptPhone" value="'+esc(p.phone)+'" placeholder="+998 ..."></label><label>Til<select id="ptLang"><option value="uz" '+(p.language==="uz"?"selected":"")+'>O‘zbek</option><option value="ru" '+(p.language==="ru"?"selected":"")+'>Русский</option><option value="en" '+(p.language==="en"?"selected":"")+'>English</option></select></label><label>Lokatsiya / manzil<input id="ptAddress" value="'+esc(p.address)+'" placeholder="Manzil yoki koordinata"></label><label class="full"><input id="ptConsent" type="checkbox" '+(p.consent?"checked":"")+'> Shaxsiy ma’lumotlarni demo qurilmada saqlashga roziman.</label></div><div class="platform-action-row"><button id="ptLocation" class="platform-secondary" type="button">📍 Lokatsiyani olish</button><button id="ptSave" class="platform-primary" type="button">Profilni saqlash</button><button id="ptCatalog" class="platform-secondary" type="button">Dori buyurtma qilish</button></div></section><aside class="platform-panel"><h3>Qulayliklar</h3><div class="platform-map-box"><strong>Telefoningiz ilovaga aylanadi</strong><p>Chrome menyusidan bosh ekranga qo‘shing. Dori tanlang, savatga joylang va buyurtmada lokatsiyangizni yuboring.</p><a href="#catalog" data-close-platform="1">Katalogni ochish</a></div><div class="platform-login-demo"><button>SMS kirish</button><button>3 til</button><button>Buyurtma kuzatuvi</button><button>Retsept</button><button>103 SOS</button></div></aside></div><section class="patient-sound-card"><div class="patient-sound-icon">🧸</div><div class="patient-sound-copy"><small id="patientSoundSmall">BOLALAR UCHUN QULAYLIK</small><h3 id="patientSoundTitle">Dori ichirishda quvnoq musiqa</h3><p id="patientSoundText">30 soniyalik original ohang, rangli taymer va “Qahramon bo‘lding!” rag‘bati. Faqat kattalar nazoratida.</p></div><div class="patient-sound-actions"><button id="childMedicineMode" class="kid-open" type="button">🧸 Bolalar rejimini ochish</button><button id="clinicSoundToggle" class="clinic-toggle" type="button">🔊 Kirish ovozi: yoqilgan</button></div></section><section class="platform-panel" style="margin-top:15px"><h3>Buyurtmalarim</h3>'+orderRows(list,"patient")+'</section>';}
+  function renderPharmacist(){var a=orders(),fresh=a.filter(function(o){return o.status!=="Yetkazildi"&&o.status!=="Bekor qilindi";});return '<div class="platform-dashboard-grid"><div class="platform-stat"><span>Yangi</span><strong>'+a.filter(function(o){return o.status==="Yangi";}).length+'</strong></div><div class="platform-stat"><span>Tayyorlanmoqda</span><strong>'+a.filter(function(o){return o.status==="Tayyorlanmoqda";}).length+'</strong></div><div class="platform-stat"><span>Kuryerga tayyor</span><strong>'+a.filter(function(o){return o.status==="Kuryerga berildi";}).length+'</strong></div><div class="platform-stat"><span>Jami faol</span><strong>'+fresh.length+'</strong></div></div><section class="platform-panel"><h3>Farmatsevt ish stoli</h3>'+orderRows(fresh,"pharmacist")+'<p class="platform-print-note">Retseptli dori yakuniy berilishidan oldin farmatsevt va rasmiy tizim tasdig‘i talab qilinadi.</p></section>';}
+  function renderCourier(){var a=orders().filter(function(o){return o.status==="Kuryerga berildi"||o.status==="Tayyorlanmoqda";});var opts=a.map(function(o){return '<option value="'+esc(o.id)+'">'+esc(o.code)+' — '+esc(o.customer)+'</option>';}).join("");return '<div class="platform-panel-grid"><section class="platform-panel"><h3>Yetkazish ro‘yxati</h3>'+orderRows(a,"courier")+'</section><aside class="platform-panel"><h3>Jonli kuryer uzatishi</h3><div class="courier-control"><label style="font-size:11px;font-weight:900;color:#536b78">Buyurtmani tanlang</label><select id="courierTrackOrder">'+(opts||'<option value="">Faol buyurtma yo‘q</option>')+'</select><div class="courier-live-actions"><button id="courierDemoStart" class="courier-start" type="button">▶ Demo harakat</button><button id="courierGpsStart" class="courier-gps" type="button">📍 Telefon GPS</button><button id="courierTrackStop" class="courier-stop" type="button">■ Kuzatuvni to‘xtatish</button></div><div id="courierSignal" class="courier-signal"><b>Signal tayyor.</b><br>Kuryer telefonida lokatsiyaga ruxsat berilganda koordinata yangilanadi. Demo tugmasi xaritadagi harakatni ko‘rsatadi.</div></div><div class="platform-action-row"><button id="courierOpenMap" class="platform-primary" type="button">🛵 Bemor ko‘radigan xaritani ochish</button></div><p class="platform-print-note">Hozirgi shablonda bir brauzer ichida ishlaydi. Turli telefonlar uchun server va WebSocket talab qilinadi.</p></aside></div>';}
+  function filteredOrders(){var a=orders(),s=document.getElementById("accStart"),e=document.getElementById("accEnd"),b=document.getElementById("accBranch");var sv=s&&s.value,ev=e&&e.value,bv=b&&b.value;return a.filter(function(o){var d=(o.created||"").slice(0,10);return (!sv||d>=sv)&&(!ev||d<=ev)&&(!bv||o.branch===bv);});}
+  function totals(a){return a.reduce(function(r,o){if(o.status!=="Bekor qilindi"){r.sales+=Number(o.total)||0;r.cost+=Number(o.cost)||0;r.count++;r.pay[o.payment||"Naqd"]=(r.pay[o.payment||"Naqd"]||0)+(Number(o.total)||0);}return r;},{sales:0,cost:0,count:0,pay:{}});}
+  function renderAccountant(){var a=orders(),t=totals(a);return '<div class="platform-dashboard-grid"><div class="platform-stat"><span>Jami savdo</span><strong id="accSales">'+money(t.sales)+'</strong></div><div class="platform-stat"><span>Sof foyda (demo)</span><strong id="accProfit">'+money(t.sales-t.cost)+'</strong></div><div class="platform-stat"><span>Buyurtmalar</span><strong id="accCount">'+t.count+'</strong></div><div class="platform-stat"><span>To‘lov turlari</span><strong>'+Object.keys(t.pay).length+'</strong></div></div><section class="platform-panel"><h3>Buxgalter hisoboti</h3><div class="platform-filter-row"><input id="accStart" type="date"><input id="accEnd" type="date"><select id="accBranch"><option value="">Barcha filiallar</option><option>Toshkent</option><option>Samarqand</option><option>Andijon</option><option>Farg‘ona</option><option>Namangan</option></select><button id="accExport" class="platform-primary" type="button">⬇ Excel yuklash</button></div><div id="accTable">'+orderRows(a,"accountant")+'</div><p class="platform-print-note">Excel faylida Savdolar, To‘lovlar, Buyurtmalar, Qaytarishlar, Ombor va Filiallar varaqlari bo‘ladi.</p></section>';}
+  function renderManager(){var a=orders(),t=totals(a),del=a.filter(function(o){return o.status==="Yetkazildi";}).length;var top={};a.forEach(function(o){(o.items||[]).forEach(function(i){top[i.name]=(top[i.name]||0)+(i.qty||1);});});var topName=Object.keys(top).sort(function(x,y){return top[y]-top[x];})[0]||"Hali yo‘q";return '<div class="platform-dashboard-grid"><div class="platform-stat"><span>Umumiy savdo</span><strong>'+money(t.sales)+'</strong></div><div class="platform-stat"><span>Demo foyda</span><strong>'+money(t.sales-t.cost)+'</strong></div><div class="platform-stat"><span>Yetkazilgan</span><strong>'+del+'</strong></div><div class="platform-stat"><span>Eng ko‘p sotilgan</span><strong style="font-size:15px">'+esc(topName)+'</strong></div></div><div class="platform-panel-grid"><section class="platform-panel"><h3>Rahbar nazorati</h3>'+orderRows(a.slice(0,8),"manager")+'</section><aside class="platform-panel"><h3>Serverga ulash holati</h3><div class="platform-map-box"><strong>Frontend tayyor</strong><p>Keyingi bosqich: API, PostgreSQL baza, SMS kirish, rollar, to‘lov provayderlari, audit log va DMED rasmiy integratsiyasi.</p></div><div class="platform-action-row"><button id="managerDemoOrder" class="platform-secondary" type="button">+ Demo buyurtma</button><button id="managerClearDemo" class="platform-danger" type="button">Demo savdolarni tiklash</button></div></aside></div>';}
+
+  var TRACK_POINTS=[
+    {x:8,y:83,h:-18,icon:"↑"},{x:16,y:77,h:-25,icon:"↑"},{x:27,y:66,h:-35,icon:"↱"},{x:40,y:64,h:0,icon:"→"},{x:51,y:55,h:-48,icon:"↱"},{x:63,y:42,h:-28,icon:"↑"},{x:74,y:34,h:-16,icon:"↰"},{x:82,y:24,h:-50,icon:"↑"},{x:89,y:16,h:-24,icon:"⌂"}
+  ];
+  var TRACK_TEXT={
+    uz:{live:"Jonli yangilanmoqda",eta:"Yetib keladi",turn:"Keyingi harakat",courier:"Kuryer ma’lumoti",route:"Marshrut holati",left:"Qoldi",speed:"Tezlik",accuracy:"Aniqlik",call:"📞 Qo‘ng‘iroq",message:"💬 Xabar",demo:"DEMO JONLI KUZATUV",real:"GPS JONLI KUZATUV",steps:["1.8 km to‘g‘ri harakatlaning","500 metrdan keyin chap tomonga o‘ting","300 metr to‘g‘ri, keyin o‘ngga buriling","O‘ngga burildi — markaziy ko‘cha","Ko‘prikdan o‘tib to‘g‘ri davom eting","Keyingi chorrahagacha 900 metr","Chapga burildi — mahalla yo‘li","Manzil ko‘chasiga kirdi","Kuryer manzilga yetib kelmoqda"]},
+    ru:{live:"Обновляется в реальном времени",eta:"Приедет через",turn:"Следующий манёвр",courier:"Информация о курьере",route:"Состояние маршрута",left:"Осталось",speed:"Скорость",accuracy:"Точность",call:"📞 Позвонить",message:"💬 Сообщение",demo:"ДЕМО-ТРЕКИНГ",real:"GPS-ТРЕКИНГ",steps:["Двигайтесь прямо 1,8 км","Через 500 м держитесь левее","300 м прямо, затем направо","Поворот направо — центральная улица","Через мост и продолжайте прямо","900 м до следующего перекрёстка","Поворот налево — дорога махалли","Курьер въехал на улицу адреса","Курьер почти у адреса"]},
+    en:{live:"Updating live",eta:"Arrives in",turn:"Next direction",courier:"Courier details",route:"Route status",left:"Left",speed:"Speed",accuracy:"Accuracy",call:"📞 Call",message:"💬 Message",demo:"LIVE TRACKING DEMO",real:"LIVE GPS TRACKING",steps:["Continue straight for 1.8 km","Keep left in 500 m","Go straight 300 m, then turn right","Turned right onto the main road","Cross the bridge and continue straight","900 m to the next junction","Turned left onto the neighborhood road","Courier entered the destination street","Courier is arriving at the address"]}
+  };
+  function trackLang(){var l=lang();return TRACK_TEXT[l]||TRACK_TEXT.uz;}
+  function trackState(){return read(KEY_TRACK,{});}
+  function saveTrack(s){write(KEY_TRACK,s);try{window.dispatchEvent(new CustomEvent("marjon-track-update",{detail:s}));}catch(e){}}
+  function findOrder(id){return orders().filter(function(o){return String(o.id)===String(id);})[0]||orders()[0];}
+  function trackerStateFor(id){var s=trackState();if(String(s.orderId)!==String(id)){s={orderId:id,index:2,active:false,mode:"demo",updated:Date.now(),speed:28,accuracy:8};saveTrack(s);}return s;}
+  function estimateTrack(s){var idx=Math.max(0,Math.min(TRACK_POINTS.length-1,Number(s.index)||0)),progress=Math.round((idx/(TRACK_POINTS.length-1))*100),eta=Math.max(1,Math.round((TRACK_POINTS.length-1-idx)*1.6)),distance=Math.max(.2,((TRACK_POINTS.length-1-idx)*.55)).toFixed(1);return {idx:idx,progress:progress,eta:eta,distance:distance,p:TRACK_POINTS[idx]};}
+  function openCourierTracker(id){var order=findOrder(id);if(!order)return;trackerOrderId=order.id;var modal=document.getElementById("courierTrackModal");if(!modal)return;modal.classList.add("open");document.body.style.overflow="hidden";var s=trackerStateFor(order.id);if(!s.active&&s.mode!=="gps")startDemoTrack(order.id,true);renderTracker();clearInterval(trackerPoll);trackerPoll=setInterval(renderTracker,900);}
+  function closeCourierTracker(){var modal=document.getElementById("courierTrackModal");if(modal)modal.classList.remove("open");clearInterval(trackerPoll);trackerPoll=null;document.body.style.overflow="";}
+  function renderTracker(){if(!trackerOrderId)return;var order=findOrder(trackerOrderId),s=trackerStateFor(trackerOrderId),e=estimateTrack(s),tx=trackLang(),p=e.p,marker=document.getElementById("courierMarker");if(!order||!marker)return;marker.style.left=p.x+"%";marker.style.top=p.y+"%";marker.style.transform="rotate("+(p.h||0)+"deg)";var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};set("trackerModeLabel","● "+(s.mode==="gps"?tx.real:tx.demo));set("trackerTitle",order.code+" — "+order.customer);set("trackerLiveText",s.active?tx.live:"Kuzatuv vaqtincha to‘xtagan");set("trackerEtaLabel",tx.eta);set("trackerEta",e.eta+" "+(lang()==="ru"?"мин":lang()==="en"?"min":"daqiqa"));set("trackerTurnLabel",tx.turn);set("trackerTurnText",tx.steps[e.idx]);set("trackerTurnIcon",p.icon);set("trackerCourierHeading",tx.courier);set("trackerRouteHeading",tx.route);set("trackerDistanceLabel",tx.left);set("trackerSpeedLabel",tx.speed);set("trackerAccuracyLabel",tx.accuracy);set("trackerDistance",e.distance+" km");set("trackerSpeed",(s.speed||28)+" km/soat");set("trackerAccuracy","±"+(s.accuracy||8)+" m");set("trackerLastUpdate",new Date(s.updated||Date.now()).toLocaleTimeString()+" · "+(s.lat?Number(s.lat).toFixed(5)+", "+Number(s.lon).toFixed(5):"demo koordinata"));set("trackerCall",tx.call);set("trackerMessage",tx.message);var bar=document.getElementById("trackerProgressBar");if(bar)bar.style.width=e.progress+"%";var data=document.getElementById("trackerOrderData");if(data)data.innerHTML='<h3>Buyurtma ma’lumoti</h3><div class="tracker-order-line"><span>Kod</span><b>'+esc(order.code)+'</b></div><div class="tracker-order-line"><span>Dorilar</span><b>'+esc(itemNames(order))+'</b></div><div class="tracker-order-line"><span>Manzil</span><b>'+esc(order.address||order.branch)+'</b></div><div class="tracker-order-line"><span>To‘lov</span><b>'+esc(order.payment)+' · '+money(order.total)+'</b></div>';}
+  function startDemoTrack(id,keepIndex){stopTrack(false);var old=trackerStateFor(id),idx=keepIndex?Math.min(Number(old.index)||2,TRACK_POINTS.length-2):0;saveTrack({orderId:id,index:idx,active:true,mode:"demo",updated:Date.now(),speed:28,accuracy:8});trackerTimer=setInterval(function(){var s=trackState();if(String(s.orderId)!==String(id))return;var next=(Number(s.index)||0)+1;if(next>=TRACK_POINTS.length){next=TRACK_POINTS.length-1;s.active=false;clearInterval(trackerTimer);trackerTimer=null;}s.index=next;s.updated=Date.now();s.speed=next>6?18:28;saveTrack(s);renderTracker();},2200);}
+  function startGpsTrack(id){if(!navigator.geolocation){notify("Bu telefonda GPS mavjud emas.","error");return;}stopTrack(false);var base=trackerStateFor(id);saveTrack({orderId:id,index:Number(base.index)||2,active:true,mode:"gps",updated:Date.now(),speed:0,accuracy:0});gpsWatchId=navigator.geolocation.watchPosition(function(pos){var s=trackState(),lastLat=s.lat,lastLon=s.lon;s.orderId=id;s.active=true;s.mode="gps";s.lat=pos.coords.latitude;s.lon=pos.coords.longitude;s.accuracy=Math.round(pos.coords.accuracy||0);s.speed=Math.max(0,Math.round((pos.coords.speed||0)*3.6));s.updated=Date.now();if(lastLat!=null&&lastLon!=null){var moved=Math.abs(s.lat-lastLat)+Math.abs(s.lon-lastLon);if(moved>.00002)s.index=Math.min(TRACK_POINTS.length-1,(Number(s.index)||0)+1);}saveTrack(s);var signal=document.getElementById("courierSignal");if(signal)signal.innerHTML='<b>GPS uzatilmoqda.</b><br>'+s.lat.toFixed(6)+', '+s.lon.toFixed(6)+' · aniqlik ±'+s.accuracy+' m';renderTracker();},function(err){notify("GPS ruxsati berilmadi: "+err.message,"error");var signal=document.getElementById("courierSignal");if(signal)signal.innerHTML='<b>GPS ulanmagan.</b><br>Telefon sozlamasidan lokatsiyaga ruxsat bering.';},{enableHighAccuracy:true,maximumAge:3000,timeout:12000});}
+  function stopTrack(showMessage){clearInterval(trackerTimer);trackerTimer=null;if(gpsWatchId!=null&&navigator.geolocation){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null;}var s=trackState();if(s&&s.orderId){s.active=false;s.updated=Date.now();saveTrack(s);}if(showMessage!==false)notify("Kuryer kuzatuvi to‘xtatildi.","success");renderTracker();}
+  function selectedCourierOrder(){var el=document.getElementById("courierTrackOrder");return el&&el.value?el.value:(orders().filter(function(o){return o.status==="Kuryerga berildi"||o.status==="Tayyorlanmoqda";})[0]||{}).id;}
+
+  function render(role){activeRole=role;setTitle(role);var box=document.getElementById("platformContent");if(!box)return;if(role==="patient")box.innerHTML=renderPatient();else if(role==="pharmacist")box.innerHTML=renderPharmacist();else if(role==="courier")box.innerHTML=renderCourier();else if(role==="accountant")box.innerHTML=renderAccountant();else box.innerHTML=renderManager();bindRole();}
+  function updateStatus(id,status){if(status==="Yetkazildi"&&String((trackState()||{}).orderId)===String(id))stopTrack(false);var a=orders();a.forEach(function(o){if(String(o.id)===String(id)){o.status=status;o.updated=dateTime();}});saveOrders(a);notify("Buyurtma holati: "+status,"success");render(activeRole);}
+  function bindRole(){document.querySelectorAll("[data-order-status]").forEach(function(b){b.onclick=function(){var x=this.getAttribute("data-order-status").split("|");updateStatus(x[0],x[1]);};});document.querySelectorAll("[data-track-order]").forEach(function(b){b.onclick=function(){openCourierTracker(this.getAttribute("data-track-order"));};});document.querySelectorAll("[data-courier-start]").forEach(function(b){b.onclick=function(){var id=this.getAttribute("data-courier-start");startDemoTrack(id,false);openCourierTracker(id);};});var cb=document.getElementById("courierDemoStart");if(cb)cb.onclick=function(){var id=selectedCourierOrder();if(!id){notify("Faol buyurtma topilmadi.","error");return;}startDemoTrack(id,false);var sig=document.getElementById("courierSignal");if(sig)sig.innerHTML='<b>Demo signal uzatilmoqda.</b><br>Bemor kabinetida “Jonli xarita” tugmasini oching.';};cb=document.getElementById("courierGpsStart");if(cb)cb.onclick=function(){var id=selectedCourierOrder();if(!id){notify("Faol buyurtma topilmadi.","error");return;}startGpsTrack(id);};cb=document.getElementById("courierTrackStop");if(cb)cb.onclick=function(){stopTrack(true);};cb=document.getElementById("courierOpenMap");if(cb)cb.onclick=function(){var id=selectedCourierOrder();if(id)openCourierTracker(id);};var b=document.getElementById("ptLocation");if(b)b.onclick=function(){getLocation("ptAddress");};b=document.getElementById("ptSave");if(b)b.onclick=registerPatient;b=document.getElementById("ptCatalog");if(b)b.onclick=function(){close();document.getElementById("catalog").scrollIntoView({behavior:"smooth"});};["accStart","accEnd","accBranch"].forEach(function(id){var e=document.getElementById(id);if(e)e.onchange=function(){var a=filteredOrders(),t=totals(a);document.getElementById("accSales").textContent=money(t.sales);document.getElementById("accProfit").textContent=money(t.sales-t.cost);document.getElementById("accCount").textContent=t.count;document.getElementById("accTable").innerHTML=orderRows(a,"accountant");};});b=document.getElementById("accExport");if(b)b.onclick=exportExcel;b=document.getElementById("managerDemoOrder");if(b)b.onclick=function(){var a=orders();a.unshift({id:"MJ-"+Date.now(),code:"MJ-"+String(Date.now()).slice(-6),created:new Date().toISOString(),date:dateTime(),customer:"Yangi bemor",phone:"+998 90 123 45 67",address:"Lokatsiya orqali",lat:41.31,lon:69.24,branch:"Toshkent",payment:"Click",method:"delivery",status:"Yangi",total:90000,cost:64000,items:[{name:"Teraflyu kukun №10",qty:1,price:90000}],source:"demo-added"});saveOrders(a);render("manager");notify("Demo buyurtma qo‘shildi.","success");};b=document.getElementById("managerClearDemo");if(b)b.onclick=function(){write(KEY_ORDERS,demoOrders());render("manager");notify("Demo ma’lumotlar tiklandi.","success");};}
+  function xmlCell(v,type){return '<Cell><Data ss:Type="'+(type||"String")+'">'+esc(v)+'</Data></Cell>';}
+  function worksheet(name,rows){return '<Worksheet ss:Name="'+esc(name)+'"><Table>'+rows.map(function(r){return '<Row>'+r.map(function(c){return xmlCell(c.v,c.t);}).join("")+'</Row>';}).join("")+'</Table></Worksheet>';}
+  function exportExcel(){var a=filteredOrders(),payments={},branches={};a.forEach(function(o){payments[o.payment||"Naqd"]=(payments[o.payment||"Naqd"]||0)+(Number(o.total)||0);branches[o.branch||"Noma’lum"]=(branches[o.branch||"Noma’lum"]||0)+(Number(o.total)||0);});var sales=[[{v:"Buyurtma kodi"},{v:"Sana"},{v:"Bemor"},{v:"Telefon"},{v:"Filial"},{v:"Dorilar"},{v:"Jami"},{v:"Tannarx"},{v:"Foyda"},{v:"To‘lov"},{v:"Holat"},{v:"Manzil"}]];a.forEach(function(o){sales.push([{v:o.code},{v:o.date||o.created},{v:o.customer},{v:o.phone},{v:o.branch},{v:itemNames(o)},{v:o.total,t:"Number"},{v:o.cost,t:"Number"},{v:(o.total-o.cost),t:"Number"},{v:o.payment},{v:o.status},{v:o.address}]);});var pay=[[{v:"To‘lov turi"},{v:"Jami"}]];Object.keys(payments).forEach(function(k){pay.push([{v:k},{v:payments[k],t:"Number"}]);});var ord=[[{v:"Kod"},{v:"Qabul qilindi"},{v:"Usul"},{v:"Holat"},{v:"Lokatsiya"}]];a.forEach(function(o){ord.push([{v:o.code},{v:o.created},{v:o.method},{v:o.status},{v:o.lat?o.lat+", "+o.lon:""}]);});var ret=[[{v:"Qaytarish kodi"},{v:"Sana"},{v:"Buyurtma"},{v:"Summa"},{v:"Sabab"}]];read(KEY_RETURNS,[]).forEach(function(r){ret.push([{v:r.code},{v:r.date},{v:r.order},{v:r.total,t:"Number"},{v:r.reason}]);});var stock=[[{v:"Mahsulot"},{v:"Toshkent"},{v:"Samarqand"},{v:"Andijon"},{v:"Farg‘ona"},{v:"Namangan"}]];if(window.products){window.products.forEach(function(p){var s=(window.stockByProduct&&window.stockByProduct[p.id])||{};stock.push([{v:p.uz},{v:s.tashkent||0,t:"Number"},{v:s.samarkand||0,t:"Number"},{v:s.andijan||0,t:"Number"},{v:s.fergana||0,t:"Number"},{v:s.namangan||0,t:"Number"}]);});}var br=[[{v:"Filial"},{v:"Savdo"}]];Object.keys(branches).forEach(function(k){br.push([{v:k},{v:branches[k],t:"Number"}]);});var xml='<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'+worksheet("Savdolar",sales)+worksheet("To‘lovlar",pay)+worksheet("Buyurtmalar",ord)+worksheet("Qaytarishlar",ret)+worksheet("Ombor",stock)+worksheet("Filiallar",br)+'</Workbook>';var blob=new Blob([xml],{type:"application/vnd.ms-excel;charset=utf-8"}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download="Zam_Zam_Hisobot_"+nowISO()+".xls";document.body.appendChild(link);link.click();document.body.removeChild(link);setTimeout(function(){URL.revokeObjectURL(url);},1000);notify("Excel hisoboti tayyorlandi.","success");}
+  function captureCheckoutOrder(){var btn=document.getElementById("placeOrderButton");if(!btn)return;var original=btn.onclick;btn.onclick=function(ev){var before=Object.assign({},window.cart||{}),phone=document.getElementById("checkoutPhone").value.trim(),address=document.getElementById("checkoutAddress").value.trim(),consent=document.getElementById("checkoutConsent").checked;if(!phone||!address||!consent){if(original)original.call(this,ev);return;}var total=0,items=[];Object.keys(before).forEach(function(id){var qty=before[id],p=window.findProduct?window.findProduct(Number(id)):null;if(p){total+=p.price*qty;items.push({id:p.id,name:p.uz,qty:qty,price:p.price});}});var code="MJ-"+String(Date.now()).slice(-7),prof=profile(),pay=document.getElementById("checkoutPayment").value,method=document.getElementById("checkoutMethod").value,branch=/samarqand/i.test(address)?"Samarqand":"Toshkent";var rec={id:code,code:code,created:new Date().toISOString(),date:dateTime(),customer:prof.name||"Bemor",phone:phone,address:address,lat:platformLocation&&platformLocation.lat,lon:platformLocation&&platformLocation.lon,branch:branch,payment:pay,method:method,status:method==="pickup"?"Tayyorlanmoqda":"Yangi",total:total,cost:Math.round(total*.72),items:items,source:"checkout"};var a=orders();a.unshift(rec);saveOrders(a);if(original)original.call(this,ev);};}
+  document.addEventListener("DOMContentLoaded",function(){orders();applyLanguage();document.querySelectorAll("[data-platform-role]").forEach(function(b){b.onclick=function(){open(this.getAttribute("data-platform-role"));};});document.querySelectorAll("[data-platform-tab]").forEach(function(b){b.onclick=function(){activeRole=this.getAttribute("data-platform-tab");document.querySelectorAll("[data-platform-tab]").forEach(function(x){x.classList.toggle("active",x===b);});render(activeRole);};});document.getElementById("platformClose").onclick=close;document.getElementById("platformModal").onclick=function(e){if(e.target===this)close();};var loc=document.getElementById("checkoutUseLocation");if(loc)loc.onclick=function(){getLocation("checkoutAddress");};var lb=document.getElementById("langButton"),old=lb&&lb.onclick;if(lb)lb.onclick=function(e){if(old)old.call(this,e);setTimeout(applyLanguage,30);};var tc=document.getElementById("trackerClose");if(tc)tc.onclick=closeCourierTracker;var tm=document.getElementById("courierTrackModal");if(tm)tm.onclick=function(e){if(e.target===this)closeCourierTracker();};var msg=document.getElementById("trackerMessage");if(msg)msg.onclick=function(){notify("Kuryerga demo xabar yuborildi.","success");};window.addEventListener("storage",function(e){if(e.key===KEY_TRACK)renderTracker();});window.addEventListener("marjon-track-update",renderTracker);captureCheckoutOrder();});
+})();
+</script>
 
 
   <div id="childMedicineModal" class="kid-medicine-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="kidTitle">
@@ -3148,6 +3202,5 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 })();
 </script>
 
-  <script src="/static/secure-client.js" defer></script>
 </body>
 </html>

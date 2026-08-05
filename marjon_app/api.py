@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import base64
+import binascii
 import io
 import json
+import secrets
 from datetime import datetime, time, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -48,6 +51,50 @@ bp = Blueprint("api", __name__, url_prefix="/api")
 def _json() -> dict[str, Any]:
     value = request.get_json(silent=True)
     return value if isinstance(value, dict) else {}
+
+
+def _money_value(value: Any, label: str, *, allow_zero: bool = True) -> Decimal:
+    try:
+        parsed = Decimal(str(value or 0))
+    except Exception:
+        raise ValueError(f"{label} raqam bilan yozilishi kerak.")
+    if not parsed.is_finite() or parsed < 0 or (not allow_zero and parsed <= 0):
+        raise ValueError(f"{label} noto‘g‘ri.")
+    try:
+        return parsed.quantize(Decimal("0.01"))
+    except Exception:
+        raise ValueError(f"{label} noto‘g‘ri.")
+
+
+def _product_image(value: Any) -> str:
+    image = str(value or "").strip()
+    if not image:
+        return ""
+    allowed_prefixes = (
+        "data:image/jpeg;base64,",
+        "data:image/png;base64,",
+        "data:image/webp;base64,",
+    )
+    if not image.startswith(allowed_prefixes):
+        raise ValueError("Rasm JPG, PNG yoki WEBP formatida bo‘lsin.")
+    encoded = image.split(",", 1)[1]
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError):
+        raise ValueError("Rasm fayli noto‘g‘ri kodlangan.")
+    if len(raw) > 2_000_000:
+        raise ValueError("Rasm hajmi 2 MB dan oshmasin.")
+    return image
+
+
+def _unique_product_sku(requested: Any = "") -> str:
+    requested_sku = str(requested or "").strip().upper()[:60]
+    if requested_sku and not Product.query.filter_by(sku=requested_sku).first():
+        return requested_sku
+    while True:
+        generated = f"ZZ-{utcnow().strftime('%Y%m%d%H%M%S')}-{secrets.token_hex(2).upper()}"
+        if not Product.query.filter_by(sku=generated).first():
+            return generated
 
 
 def _parse_date(value: str | None, end: bool = False) -> datetime | None:
@@ -183,6 +230,95 @@ def products():
             or_(Product.name_uz.ilike(like), Product.name_ru.ilike(like), Product.name_en.ilike(like), Product.sku.ilike(like))
         )
     return jsonify({"ok": True, "products": [product.to_dict() for product in query.all()]})
+
+
+@bp.post("/products")
+@role_required("manager", "admin")
+def create_product():
+    payload = _json()
+    name_uz = str(payload.get("name_uz") or payload.get("uz") or "").strip()[:180]
+    if not name_uz:
+        return jsonify({"ok": False, "error": "Dori nomini kiriting."}), 400
+
+    allowed_categories = {"cold", "vitamin", "pain", "children", "medical", "care", "other"}
+    category = str(payload.get("category", "other")).strip().lower()[:50]
+    if category not in allowed_categories:
+        category = "other"
+
+    try:
+        price = _money_value(payload.get("price"), "Sotuv narxi", allow_zero=False)
+        cost_price = _money_value(payload.get("cost_price", payload.get("price")), "Tannarx")
+        old_price = _money_value(payload.get("old_price", 0), "Eski narx")
+        quantity = int(payload.get("quantity", 0))
+        minimum_quantity = int(payload.get("minimum_quantity", 5))
+        image_data = _product_image(payload.get("image"))
+    except (ValueError, TypeError) as error:
+        return jsonify({"ok": False, "error": str(error)}), 400
+    if quantity < 0 or minimum_quantity < 0:
+        return jsonify({"ok": False, "error": "Qoldiq manfiy bo‘lishi mumkin emas."}), 400
+
+    branch = None
+    branch_id = payload.get("branch_id")
+    branch_slug = str(payload.get("branch", "")).strip()
+    if branch_id not in (None, ""):
+        try:
+            branch = db.session.get(Branch, int(branch_id))
+        except (TypeError, ValueError):
+            branch = None
+    if not branch and branch_slug:
+        branch = Branch.query.filter_by(slug=branch_slug, is_active=True).first()
+    if not branch:
+        branch = Branch.query.filter_by(is_active=True).order_by(Branch.id).first()
+    if not branch:
+        return jsonify({"ok": False, "error": "Faol filial topilmadi."}), 400
+
+    product = Product(
+        sku=_unique_product_sku(payload.get("sku")),
+        category=category,
+        name_uz=name_uz,
+        name_ru=str(payload.get("name_ru") or name_uz).strip()[:180],
+        name_en=str(payload.get("name_en") or name_uz).strip()[:180],
+        price=price,
+        cost_price=cost_price,
+        old_price=old_price if old_price > 0 else None,
+        emoji=str(payload.get("emoji") or "💊").strip()[:20] or "💊",
+        badge=str(payload.get("badge") or "Yangi").strip()[:40],
+        image_data=image_data or None,
+        prescription_required=bool(payload.get("prescription_required")),
+        is_active=True,
+    )
+    db.session.add(product)
+    db.session.flush()
+
+    for active_branch in Branch.query.filter_by(is_active=True).order_by(Branch.id).all():
+        db.session.add(
+            Stock(
+                branch_id=active_branch.id,
+                product_id=product.id,
+                quantity=quantity if active_branch.id == branch.id else 0,
+                minimum_quantity=minimum_quantity,
+            )
+        )
+    audit(
+        "product_created",
+        "product",
+        product.id,
+        f"{name_uz}; price={int(price)}; branch={branch.slug}; quantity={quantity}",
+    )
+    db.session.commit()
+    return jsonify({"ok": True, "product": product.to_dict()}), 201
+
+
+@bp.delete("/products/<int:product_id>")
+@role_required("manager", "admin")
+def deactivate_product(product_id: int):
+    product = db.session.get(Product, product_id)
+    if not product:
+        return jsonify({"ok": False, "error": "Mahsulot topilmadi."}), 404
+    product.is_active = False
+    audit("product_deactivated", "product", product.id, product.name_uz)
+    db.session.commit()
+    return jsonify({"ok": True})
 
 
 @bp.get("/branches")
