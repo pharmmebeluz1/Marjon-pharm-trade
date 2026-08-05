@@ -862,7 +862,14 @@
 
   function wireStaticButtons() {
     document.querySelectorAll("[data-platform-role]").forEach(function (button) {
-      button.onclick = function () { openRole(button.getAttribute("data-platform-role")); };
+      button.onclick = function () {
+        var role = button.getAttribute("data-platform-role");
+        if (role === "patient") { window.location.href = "/mijoz"; return; }
+        openRole(role);
+      };
+    });
+    document.querySelectorAll("[data-customer-portal]").forEach(function (button) {
+      button.onclick = function () { window.location.href = "/mijoz"; };
     });
     document.querySelectorAll("[data-platform-tab]").forEach(function (button) {
       button.onclick = function () {

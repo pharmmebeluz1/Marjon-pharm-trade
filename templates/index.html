@@ -1475,7 +1475,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
           <span class="platform-demo-pill" data-platform-i18n="demoMode">● SERVER VA UMUMIY BAZA FAOL</span>
         </div>
         <div class="platform-role-grid">
-          <button class="platform-role-card" type="button" data-platform-role="patient"><span>👤</span><h3 data-platform-i18n="patient">Bemor</h3><p data-platform-i18n="patientText">Ro‘yxatdan o‘tish, dori tanlash, lokatsiya va buyurtma kuzatuvi.</p><b data-platform-i18n="openCabinet">Kabinetni ochish →</b></button>
+          <a class="platform-role-card" href="/mijoz"><span>👤</span><h3 data-platform-i18n="patient">Mijoz</h3><p data-platform-i18n="patientText">Dori katalogi, buyurtmalar va kuryerni jonli kuzatish.</p><b data-platform-i18n="openCabinet">Mijoz kabinetini ochish →</b></a>
           <button class="platform-role-card" type="button" data-platform-role="pharmacist"><span>⚕</span><h3 data-platform-i18n="pharmacist">Farmatsevt</h3><p data-platform-i18n="pharmacistText">Yangi buyurtmalar, retsept tekshiruvi va dori tayyorlash.</p><b data-platform-i18n="openCabinet">Kabinetni ochish →</b></button>
           <button class="platform-role-card" type="button" data-platform-role="courier"><span>🛵</span><h3 data-platform-i18n="courier">Kuryer</h3><p data-platform-i18n="courierText">Yetkaziladigan buyurtmalar, telefon va xaritadagi manzil.</p><b data-platform-i18n="openCabinet">Kabinetni ochish →</b></button>
           <button class="platform-role-card" type="button" data-platform-role="accountant"><span>📊</span><h3 data-platform-i18n="accountant">Buxgalter</h3><p data-platform-i18n="accountantText">Naqd, Click, Payme va boshqa to‘lovlar bo‘yicha Excel hisoboti.</p><b data-platform-i18n="openCabinet">Kabinetni ochish →</b></button>
@@ -1841,7 +1841,7 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
     <div class="modal-card platform-modal-card">
       <div class="platform-modal-top"><div><small data-platform-i18n="platformLabel">YAGONA DORIXONA PLATFORMASI</small><h2 id="platformModalTitle">Kabinetlar</h2></div><button id="platformClose" type="button">×</button></div>
       <div class="platform-tabs">
-        <button type="button" data-platform-tab="patient">👤 <span data-platform-i18n="patient">Bemor</span></button>
+        <button type="button" data-customer-portal>👤 <span data-platform-i18n="patient">Mijoz</span></button>
         <button type="button" data-platform-tab="pharmacist">⚕ <span data-platform-i18n="pharmacist">Farmatsevt</span></button>
         <button type="button" data-platform-tab="courier">🛵 <span data-platform-i18n="courier">Kuryer</span></button>
         <button type="button" data-platform-tab="accountant">📊 <span data-platform-i18n="accountant">Buxgalter</span></button>
@@ -3148,6 +3148,6 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 })();
 </script>
 
-  <script src="/static/secure-client.js" defer></script>
+  <script src="/static/secure-client.js?v=20260805-2" defer></script>
 </body>
 </html>
