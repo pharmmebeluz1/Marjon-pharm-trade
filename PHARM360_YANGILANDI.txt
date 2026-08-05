@@ -1,10 +1,9 @@
-ZAM ZAM PHARM TRADE YANGILANDI
+ZAM ZAM PHARM TRADE — MIJOZ KABINETI
 
-1. Server ochilish sahifasi templates/index.html ichida Zam Zam Pharm Trade nomi va yangi logo bilan yangilandi.
-2. GitHub Pages uchun index.html va 1_BOSING_PHARM360_DMED.html yangilandi.
-3. PWA ikonkalari va manifestlar yangi Zam Zam Pharm Trade logosi bilan yangilandi.
-4. Service worker keshi v12 ga ko‘tarildi — eski Zam Zam Pharm Trade logosi avtomatik o‘chadi.
-5. Backend xizmat nomi, filiallar, SMS matni, Excel va chek fayl nomlari Zam Zam Pharm Trade bo‘ldi.
-6. marjon_app papkasi va ayrim ichki kod nomlari server buzilmasligi uchun texnik nom sifatida saqlandi.
-
-GitHubga ushbu papka ichidagi barcha fayl va papkalarni yuklang. Renderda Deploy latest commit qiling.
+1. Mijoz uchun alohida manzil: /mijoz
+2. Kirish: telefon raqami + 4 xonali PIN.
+3. Yangi mijoz shu sahifada PIN bilan ro‘yxatdan o‘tadi.
+4. Eski hisob egasi “PIN yaratish” bo‘limida eski parolini kiritib PIN o‘rnatadi.
+5. Kabinetda: shifokor qabuli, Zam-Zam AI xabari, buyurtmalar, retsept, sog‘liq pasporti, dori eslatmasi, katalog va 103 mavjud.
+6. Qabul tugaganda “Qabuldan chiqdim” tugmasi Zam-Zam AI xabarini chiqaradi.
+7. DEMD integratsiyasi uchun DMED_WEBHOOK_TOKEN server o‘zgaruvchisi va /api/integrations/dmed/visit-completed endpointi tayyor.

@@ -22,58 +22,110 @@
   </header>
 
   <main class="zz-shell">
-    <section id="authView" class="zz-auth-layout">
-      <div class="zz-welcome">
-        <div class="zz-logo-orbit"><img src="/assets/zam-zam-pharm-trade-logo.png" alt="Zam Zam Pharm Trade"></div>
-        <span class="zz-kicker">TELEFON UCHUN ALOHIDA KIRISH</span>
-        <h1>Sog‘lig‘ingiz doimo nazoratda</h1>
-        <p>Telefon raqamingiz va faqat o‘zingiz biladigan 4 xonali PIN bilan kiring. Buyurtma, retsept, qabul va Zam-Zam AI xabarlari bir joyda.</p>
-        <div class="zz-trust-row"><span>🔐 PIN himoyasi</span><span>✦ Zam-Zam AI</span><span>⚕ 103 tez yordam</span></div>
-      </div>
+    <section id="authView" class="zz-auth-layout zz-auth-single hidden">
+      <div class="zz-pin-app">
+        <img class="zz-pin-logo" src="/assets/zam-zam-pharm-trade-logo.png" alt="Zam Zam Pharm Trade logosi">
+        <p class="zz-pin-brand">Zam-Zam Pharm Trade</p>
 
-      <div class="zz-auth-card">
-        <div class="zz-auth-tabs">
-          <button type="button" data-auth-tab="login" class="active">Kirish</button>
-          <button type="button" data-auth-tab="register">Yangi mijoz</button>
-          <button type="button" data-auth-tab="setup">PIN yaratish</button>
+        <div class="zz-phone-pill">
+          <span id="savedPhoneText">Telefon raqami kiritilmagan</span>
+          <button type="button" id="changePhoneButton">Telefonni o‘zgartirish</button>
         </div>
 
-        <form id="pinLoginForm" class="zz-form active" data-auth-panel="login">
-          <div class="zz-form-head"><span>👤</span><div><h2>Mijoz kabinetiga kirish</h2><p>Telefon va 4 xonali PIN</p></div></div>
-          <label><span>Telefon raqami</span><input id="loginPhone" type="tel" inputmode="tel" autocomplete="username" placeholder="+998 90 123 45 67" required></label>
-          <label><span>4 xonali PIN</span><input id="loginPin" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" placeholder="••••" required></label>
-          <label class="zz-check"><input id="loginRemember" type="checkbox" checked><span>Shu telefonda kirishni eslab qolish</span></label>
-          <button class="zz-primary" type="submit">Kabinetga kirish</button>
-          <div id="loginMessage" class="zz-message"></div>
-        </form>
+        <h1 class="zz-pin-title">Pin-kodni kiriting</h1>
 
-        <form id="pinRegisterForm" class="zz-form" data-auth-panel="register">
-          <div class="zz-form-head"><span>✨</span><div><h2>Yangi mijoz profili</h2><p>Bir daqiqada ro‘yxatdan o‘ting</p></div></div>
-          <label><span>Ism va familiya</span><input id="regName" autocomplete="name" placeholder="Ismingiz" required></label>
-          <label><span>Telefon raqami</span><input id="regPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67" required></label>
-          <div class="zz-two">
-            <label><span>Yangi PIN</span><input id="regPin" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
-            <label><span>PIN takror</span><input id="regPin2" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
-          </div>
-          <label><span>Manzil</span><input id="regAddress" autocomplete="street-address" placeholder="Shahar, tuman, ko‘cha"></label>
-          <div id="otpWrap" class="zz-otp hidden"><label><span>SMS tasdiqlash kodi</span><div><input id="regOtp" inputmode="numeric" maxlength="6" placeholder="6 xonali kod"><button id="requestOtpButton" type="button">Kod olish</button></div></label></div>
-          <label class="zz-check"><input id="regConsent" type="checkbox" required><span>Ma’lumotlarimni xizmat ko‘rsatish uchun qayta ishlashga roziman.</span></label>
-          <button class="zz-primary" type="submit">Mijoz profilini yaratish</button>
-          <div id="registerMessage" class="zz-message"></div>
-        </form>
+        <div class="zz-pin-boxes" aria-label="PIN holati">
+          <div class="zz-pin-box" data-pin-slot="0"></div>
+          <div class="zz-pin-box" data-pin-slot="1"></div>
+          <div class="zz-pin-box" data-pin-slot="2"></div>
+          <div class="zz-pin-box" data-pin-slot="3"></div>
+        </div>
 
-        <form id="pinSetupForm" class="zz-form" data-auth-panel="setup">
-          <div class="zz-form-head"><span>🔢</span><div><h2>Eski hisobga PIN qo‘yish</h2><p>Oldingi parolingiz bilan tasdiqlang</p></div></div>
-          <label><span>Telefon raqami</span><input id="setupPhone" type="tel" placeholder="+998 90 123 45 67" required></label>
-          <label><span>Eski parol</span><input id="setupPassword" type="password" autocomplete="current-password" required></label>
-          <div class="zz-two">
-            <label><span>Yangi PIN</span><input id="setupPin" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
-            <label><span>PIN takror</span><input id="setupPin2" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
-          </div>
-          <button class="zz-primary" type="submit">PIN yaratish va kirish</button>
-          <div id="setupMessage" class="zz-message"></div>
-        </form>
+        <div id="loginMessage" class="zz-message zz-message-center"></div>
+
+        <div class="zz-keypad" aria-label="PIN klaviaturasi">
+          <button type="button" class="zz-key" data-auth-key="1">1</button>
+          <button type="button" class="zz-key" data-auth-key="2">2</button>
+          <button type="button" class="zz-key" data-auth-key="3">3</button>
+          <button type="button" class="zz-key" data-auth-key="4">4</button>
+          <button type="button" class="zz-key" data-auth-key="5">5</button>
+          <button type="button" class="zz-key" data-auth-key="6">6</button>
+          <button type="button" class="zz-key" data-auth-key="7">7</button>
+          <button type="button" class="zz-key" data-auth-key="8">8</button>
+          <button type="button" class="zz-key" data-auth-key="9">9</button>
+          <span class="zz-key-spacer" aria-hidden="true"></span>
+          <button type="button" class="zz-key zz-key-zero" data-auth-key="0">0</button>
+          <button type="button" class="zz-key zz-key-delete" data-auth-key="delete" aria-label="O‘chirish">⌫</button>
+        </div>
+
+        <div class="zz-auth-actions-row">
+          <button type="button" class="zz-text-action" id="switchAccountButton">Hisobdan chiqish</button>
+        </div>
+
+        <div class="zz-sub-links">
+          <button type="button" class="zz-sub-link" id="openRegisterLink">Yangi mijoz</button>
+          <button type="button" class="zz-sub-link" id="openSetupLink">PIN yaratish</button>
+        </div>
+
+        <p class="zz-auth-note">Mijoz kabinetiga alohida kirish 4 xonali PIN kod bilan himoyalangan.</p>
       </div>
+
+      <div id="authManageBox" class="zz-auth-manage hidden">
+        <div class="zz-auth-card">
+          <div class="zz-manage-head">
+            <div>
+              <small>MIJOZ KABINETINI SOZLASH</small>
+              <h2>Telefon va PIN boshqaruvi</h2>
+            </div>
+            <button type="button" id="closeManageButton" class="zz-panel-close">×</button>
+          </div>
+
+          <div class="zz-auth-tabs">
+            <button type="button" data-auth-tab="login" class="active">Telefon</button>
+            <button type="button" data-auth-tab="register">Yangi mijoz</button>
+            <button type="button" data-auth-tab="setup">PIN yaratish</button>
+          </div>
+
+          <div class="zz-form active" data-auth-panel="login">
+            <div class="zz-form-head"><span>📱</span><div><h2>Telefon raqami</h2><p>PIN yuqoridagi klaviaturadan kiritiladi</p></div></div>
+            <label><span>Telefon raqami</span><input id="managePhoneInput" type="tel" inputmode="tel" autocomplete="username" placeholder="+998 90 123 45 67"></label>
+            <button class="zz-primary" id="savePhoneButton" type="button">Telefonni saqlash</button>
+          </div>
+
+          <form id="pinRegisterForm" class="zz-form" data-auth-panel="register">
+            <div class="zz-form-head"><span>✨</span><div><h2>Yangi mijoz profili</h2><p>Bir daqiqada ro‘yxatdan o‘ting</p></div></div>
+            <label><span>Ism va familiya</span><input id="regName" autocomplete="name" placeholder="Ismingiz" required></label>
+            <label><span>Telefon raqami</span><input id="regPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67" required></label>
+            <div class="zz-two">
+              <label><span>Yangi PIN</span><input id="regPin" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
+              <label><span>PIN takror</span><input id="regPin2" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
+            </div>
+            <label><span>Manzil</span><input id="regAddress" autocomplete="street-address" placeholder="Shahar, tuman, ko‘cha"></label>
+            <div id="otpWrap" class="zz-otp hidden"><label><span>SMS tasdiqlash kodi</span><div><input id="regOtp" inputmode="numeric" maxlength="6" placeholder="6 xonali kod"><button id="requestOtpButton" type="button">Kod olish</button></div></label></div>
+            <label class="zz-check"><input id="regConsent" type="checkbox" required><span>Ma’lumotlarimni xizmat ko‘rsatish uchun qayta ishlashga roziman.</span></label>
+            <button class="zz-primary" type="submit">Mijoz profilini yaratish</button>
+            <div id="registerMessage" class="zz-message"></div>
+          </form>
+
+          <form id="pinSetupForm" class="zz-form" data-auth-panel="setup">
+            <div class="zz-form-head"><span>🔢</span><div><h2>Eski hisobga PIN qo‘yish</h2><p>Oldingi parolingiz bilan tasdiqlang</p></div></div>
+            <label><span>Telefon raqami</span><input id="setupPhone" type="tel" placeholder="+998 90 123 45 67" required></label>
+            <label><span>Eski parol</span><input id="setupPassword" type="password" autocomplete="current-password" required></label>
+            <div class="zz-two">
+              <label><span>Yangi PIN</span><input id="setupPin" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
+              <label><span>PIN takror</span><input id="setupPin2" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
+            </div>
+            <button class="zz-primary" type="submit">PIN yaratish va kirish</button>
+            <div id="setupMessage" class="zz-message"></div>
+          </form>
+        </div>
+      </div>
+
+      <form id="pinLoginForm" class="hidden" autocomplete="on">
+        <input id="loginPhone" type="tel" inputmode="tel" autocomplete="username" placeholder="+998 90 123 45 67">
+        <input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password">
+        <input id="loginRemember" type="checkbox" checked>
+      </form>
     </section>
 
     <section id="dashboardView" class="zz-dashboard hidden">

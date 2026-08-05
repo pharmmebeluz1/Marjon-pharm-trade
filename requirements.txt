@@ -1,10 +1,10 @@
-Flask>=3.1,<4
-Flask-SQLAlchemy>=3.1,<4
-Flask-Login>=0.6.3,<1
-cryptography>=46,<48
-openpyxl>=3.1,<4
-requests>=2.32,<3
-python-dotenv>=1.0,<2
-gunicorn>=23,<24
-psycopg[binary]>=3.2,<4
-pytest>=8,<9
+ZAM ZAM PHARM TRADE YANGILANDI
+
+1. Server ochilish sahifasi templates/index.html ichida Zam Zam Pharm Trade nomi va yangi logo bilan yangilandi.
+2. GitHub Pages uchun index.html va 1_BOSING_PHARM360_DMED.html yangilandi.
+3. PWA ikonkalari va manifestlar yangi Zam Zam Pharm Trade logosi bilan yangilandi.
+4. Service worker keshi v12 ga ko‘tarildi — eski Zam Zam Pharm Trade logosi avtomatik o‘chadi.
+5. Backend xizmat nomi, filiallar, SMS matni, Excel va chek fayl nomlari Zam Zam Pharm Trade bo‘ldi.
+6. marjon_app papkasi va ayrim ichki kod nomlari server buzilmasligi uchun texnik nom sifatida saqlandi.
+
+GitHubga ushbu papka ichidagi barcha fayl va papkalarni yuklang. Renderda Deploy latest commit qiling.

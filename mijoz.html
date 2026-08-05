@@ -1,223 +1,919 @@
-<!doctype html>
-<html lang="uz">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#006b3c">
-  <meta name="description" content="Zam Zam Pharm Trade mijoz kabineti — 4 xonali PIN, qabul nazorati va Zam-Zam AI.">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" href="/assets/zam-zam-favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/zam-zam-apple-touch-icon.png">
-  <link rel="stylesheet" href="/static/mijoz.css?v=20260725-2">
-  <title>Zam Zam Pharm Trade — Mijoz kabineti</title>
-</head>
-<body>
-  <div class="zz-bg"><i></i><i></i><i></i></div>
-  <header class="zz-topbar">
-    <a class="zz-brand" href="/mijoz" aria-label="Zam Zam Pharm Trade">
-      <img src="/assets/zam-zam-icon-192.png" alt="Zam Zam Pharm Trade logosi">
-      <span><b>Zam Zam</b><small>PHARM TRADE · MIJOZ KABINETI</small></span>
-    </a>
-    <a class="zz-home-link" href="/">Dori katalogi</a>
-  </header>
+(function () {
+  "use strict";
 
-  <main class="zz-shell">
-    <section id="authView" class="zz-auth-layout zz-auth-single hidden">
-      <div class="zz-pin-app">
-        <img class="zz-pin-logo" src="/assets/zam-zam-pharm-trade-logo.png" alt="Zam Zam Pharm Trade logosi">
-        <p class="zz-pin-brand">Zam-Zam Pharm Trade</p>
+  var state = {
+    user: null,
+    csrf: "",
+    environment: "development",
+    requireOtp: false,
+    activeRole: "patient",
+    requestedRole: "patient",
+    products: [],
+    branches: [],
+    orders: [],
+    couriers: [],
+    gpsWatchId: null,
+    gpsOrderCode: null,
+    trackerTimer: null,
+    trackerCode: null,
+    trackerToken: "",
+    checkoutLocation: null,
+    authMode: "login",
+    vault: {reminders: [], family_members: [], reservations: []},
+    vaultTimer: null
+  };
 
-        <div class="zz-phone-pill">
-          <span id="savedPhoneText">Telefon raqami kiritilmagan</span>
-          <button type="button" id="changePhoneButton">Telefonni o‘zgartirish</button>
-        </div>
+  var roleLabels = {
+    patient: "Bemor",
+    pharmacist: "Farmatsevt",
+    courier: "Kuryer",
+    accountant: "Buxgalter",
+    manager: "Rahbar",
+    admin: "Administrator"
+  };
 
-        <h1 class="zz-pin-title">Pin-kodni kiriting</h1>
+  function el(id) { return document.getElementById(id); }
+  function esc(value) {
+    return String(value == null ? "" : value).replace(/[&<>\"]/g, function (char) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[char];
+    });
+  }
+  function money(value) {
+    try { return new Intl.NumberFormat("uz-UZ").format(Number(value) || 0) + " so‘m"; }
+    catch (e) { return String(value || 0) + " so‘m"; }
+  }
+  function toast(message, type) {
+    if (window.marjonShowToast) window.marjonShowToast(message, type || "");
+    else alert(message);
+  }
+  function statusClass(status) {
+    if (status === "Yetkazildi") return "delivered";
+    if (status === "Bekor qilindi" || status === "Yetkazilmadi") return "cancelled";
+    if (status === "Kuryerga berildi" || status === "Yetkazilmoqda") return "delivery";
+    if (status === "Yangi" || status === "Tasdiqlandi" || status === "Tayyorlanmoqda") return "pending";
+    return "";
+  }
+  function showModal(id) {
+    if (typeof window.openModal === "function") window.openModal(id);
+    else if (el(id)) el(id).className = "modal open";
+  }
+  function hideModal(id) {
+    if (typeof window.closeModal === "function") window.closeModal(id);
+    else if (el(id)) el(id).className = "modal";
+  }
+  function setMessage(target, message, type) {
+    var box = typeof target === "string" ? el(target) : target;
+    if (!box) return;
+    box.className = "secure-message " + (type || "");
+    box.textContent = message;
+  }
+  function isMutation(method) {
+    return !["GET", "HEAD", "OPTIONS"].includes((method || "GET").toUpperCase());
+  }
 
-        <div class="zz-pin-boxes" aria-label="PIN holati">
-          <div class="zz-pin-box" data-pin-slot="0"></div>
-          <div class="zz-pin-box" data-pin-slot="1"></div>
-          <div class="zz-pin-box" data-pin-slot="2"></div>
-          <div class="zz-pin-box" data-pin-slot="3"></div>
-        </div>
+  async function ensureCsrf() {
+    if (state.csrf) return state.csrf;
+    var response = await fetch("/api/auth/csrf", {credentials: "same-origin", cache: "no-store"});
+    var data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.error || "CSRF token olinmadi.");
+    state.csrf = data.csrf_token;
+    return state.csrf;
+  }
 
-        <div id="loginMessage" class="zz-message zz-message-center"></div>
+  async function api(path, options) {
+    options = options || {};
+    var method = (options.method || "GET").toUpperCase();
+    var headers = Object.assign({"Accept": "application/json"}, options.headers || {});
+    if (isMutation(method)) headers["X-CSRF-Token"] = await ensureCsrf();
+    if (options.body && !(options.body instanceof FormData) && typeof options.body !== "string") {
+      headers["Content-Type"] = "application/json";
+      options.body = JSON.stringify(options.body);
+    }
+    var response = await fetch(path, Object.assign({}, options, {method: method, headers: headers, credentials: "same-origin", cache: "no-store"}));
+    var contentType = response.headers.get("content-type") || "";
+    var data = contentType.indexOf("application/json") > -1 ? await response.json() : null;
+    if (!response.ok) {
+      var error = new Error((data && data.error) || ("Server xatosi: " + response.status));
+      error.status = response.status;
+      error.code = data && data.code;
+      error.data = data;
+      throw error;
+    }
+    return data;
+  }
 
-        <div class="zz-keypad" aria-label="PIN klaviaturasi">
-          <button type="button" class="zz-key" data-auth-key="1">1</button>
-          <button type="button" class="zz-key" data-auth-key="2">2</button>
-          <button type="button" class="zz-key" data-auth-key="3">3</button>
-          <button type="button" class="zz-key" data-auth-key="4">4</button>
-          <button type="button" class="zz-key" data-auth-key="5">5</button>
-          <button type="button" class="zz-key" data-auth-key="6">6</button>
-          <button type="button" class="zz-key" data-auth-key="7">7</button>
-          <button type="button" class="zz-key" data-auth-key="8">8</button>
-          <button type="button" class="zz-key" data-auth-key="9">9</button>
-          <span class="zz-key-spacer" aria-hidden="true"></span>
-          <button type="button" class="zz-key zz-key-zero" data-auth-key="0">0</button>
-          <button type="button" class="zz-key zz-key-delete" data-auth-key="delete" aria-label="O‘chirish">⌫</button>
-        </div>
+  function clearSensitiveDemoStorage() {
+    [
+      "marjonGlobalHealthPassport", "marjonHealthProfile", "marjonPatientProfileV1",
+      "marjonPlatformOrdersV1", "marjonCourierTrackV1", "marjonReturnsV1",
+      "marjonWowCart", "marjonFavorites", "marjonMedicineReminder", "marjonLastOrder",
+      "marjonReminders", "marjonOrderHistory", "marjonFamilyMembers", "marjonReservations", "marjonDmedAudit"
+    ].forEach(function (key) {
+      try { localStorage.removeItem(key); } catch (e) {}
+    });
+  }
 
-        <div class="zz-auth-actions-row">
-          <button type="button" class="zz-text-action" id="switchAccountButton">Hisobdan chiqish</button>
-        </div>
+  function legacyHealthProfile(passport) {
+    passport = passport || {};
+    return {
+      name: passport.name || "",
+      age: passport.age || "",
+      allergies: passport.allergy || "",
+      medicines: passport.medicines || "",
+      emergencyName: passport.emergency_name || "",
+      emergencyPhone: passport.emergency_phone || ""
+    };
+  }
 
-        <div class="zz-sub-links">
-          <button type="button" class="zz-sub-link" id="openRegisterLink">Yangi mijoz</button>
-          <button type="button" class="zz-sub-link" id="openSetupLink">PIN yaratish</button>
-        </div>
+  function hydrateSmartData(passport, vault, orders) {
+    state.vault = vault || {reminders: [], family_members: [], reservations: []};
+    if (typeof window.marjonHydrateSmartData === "function") {
+      window.marjonHydrateSmartData({
+        health_profile: legacyHealthProfile(passport),
+        vault: state.vault,
+        orders: (orders || []).map(function (order) {
+          return {code:order.code, date:order.date || order.created, status:order.status, total:order.total};
+        })
+      });
+    }
+  }
 
-        <p class="zz-auth-note">Mijoz kabinetiga alohida kirish 4 xonali PIN kod bilan himoyalangan.</p>
-      </div>
+  async function syncPatientData(knownOrders) {
+    if (!state.user || state.user.role !== "patient") {
+      hydrateSmartData({}, {reminders: [], family_members: [], reservations: []}, []);
+      return;
+    }
+    var results = await Promise.all([
+      api("/api/health-passport"),
+      api("/api/patient-vault"),
+      knownOrders ? Promise.resolve({orders:knownOrders}) : api("/api/orders")
+    ]);
+    hydrateSmartData(results[0].passport || {}, results[1].vault || {}, results[2].orders || []);
+  }
 
-      <div id="authManageBox" class="zz-auth-manage hidden">
-        <div class="zz-auth-card">
-          <div class="zz-manage-head">
-            <div>
-              <small>MIJOZ KABINETINI SOZLASH</small>
-              <h2>Telefon va PIN boshqaruvi</h2>
-            </div>
-            <button type="button" id="closeManageButton" class="zz-panel-close">×</button>
-          </div>
+  window.marjonSecureVaultSave = function (key, value) {
+    if (!state.user || state.user.role !== "patient") {
+      toast("Eslatma va oila ma’lumotlarini saqlash uchun bemor hisobiga kiring.", "warn");
+      return;
+    }
+    var map = {marjonReminders:"reminders", marjonFamilyMembers:"family_members", marjonReservations:"reservations"};
+    var field = map[key];
+    if (!field) return;
+    state.vault[field] = Array.isArray(value) ? value : [];
+    if (state.vaultTimer) clearTimeout(state.vaultTimer);
+    state.vaultTimer = setTimeout(async function () {
+      try {
+        var result = await api("/api/patient-vault", {method:"PUT", body:state.vault});
+        state.vault = result.vault || state.vault;
+      } catch (error) {
+        toast("Xavfsiz saqlashda xato: " + error.message, "error");
+      }
+    }, 250);
+  };
 
-          <div class="zz-auth-tabs">
-            <button type="button" data-auth-tab="login" class="active">Telefon</button>
-            <button type="button" data-auth-tab="register">Yangi mijoz</button>
-            <button type="button" data-auth-tab="setup">PIN yaratish</button>
-          </div>
+  async function refreshMe() {
+    var data = await api("/api/auth/me");
+    state.user = data.user;
+    state.csrf = data.csrf_token || state.csrf;
+    state.environment = data.environment || "development";
+    state.requireOtp = !!data.require_sms_otp;
+    return data;
+  }
 
-          <div class="zz-form active" data-auth-panel="login">
-            <div class="zz-form-head"><span>📱</span><div><h2>Telefon raqami</h2><p>PIN yuqoridagi klaviaturadan kiritiladi</p></div></div>
-            <label><span>Telefon raqami</span><input id="managePhoneInput" type="tel" inputmode="tel" autocomplete="username" placeholder="+998 90 123 45 67"></label>
-            <button class="zz-primary" id="savePhoneButton" type="button">Telefonni saqlash</button>
-          </div>
+  function allowedRole(role) {
+    if (!state.user) return false;
+    if (state.user.role === "admin") return true;
+    if (state.user.role === "manager") return role === "manager" || role === "accountant";
+    return state.user.role === role;
+  }
 
-          <form id="pinRegisterForm" class="zz-form" data-auth-panel="register">
-            <div class="zz-form-head"><span>✨</span><div><h2>Yangi mijoz profili</h2><p>Bir daqiqada ro‘yxatdan o‘ting</p></div></div>
-            <label><span>Ism va familiya</span><input id="regName" autocomplete="name" placeholder="Ismingiz" required></label>
-            <label><span>Telefon raqami</span><input id="regPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67" required></label>
-            <div class="zz-two">
-              <label><span>Yangi PIN</span><input id="regPin" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
-              <label><span>PIN takror</span><input id="regPin2" class="zz-pin-input" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4 raqam" required></label>
-            </div>
-            <label><span>Manzil</span><input id="regAddress" autocomplete="street-address" placeholder="Shahar, tuman, ko‘cha"></label>
-            <div id="otpWrap" class="zz-otp hidden"><label><span>SMS tasdiqlash kodi</span><div><input id="regOtp" inputmode="numeric" maxlength="6" placeholder="6 xonali kod"><button id="requestOtpButton" type="button">Kod olish</button></div></label></div>
-            <label class="zz-check"><input id="regConsent" type="checkbox" required><span>Ma’lumotlarimni xizmat ko‘rsatish uchun qayta ishlashga roziman.</span></label>
-            <button class="zz-primary" type="submit">Mijoz profilini yaratish</button>
-            <div id="registerMessage" class="zz-message"></div>
-          </form>
+  function updateRoleTabs() {
+    document.querySelectorAll("[data-platform-tab]").forEach(function (button) {
+      var role = button.getAttribute("data-platform-tab");
+      button.classList.toggle("active", role === state.activeRole);
+      button.classList.toggle("secure-forbidden", !!state.user && !allowedRole(role));
+    });
+  }
 
-          <form id="pinSetupForm" class="zz-form" data-auth-panel="setup">
-            <div class="zz-form-head"><span>🔢</span><div><h2>Eski hisobga PIN qo‘yish</h2><p>Oldingi parolingiz bilan tasdiqlang</p></div></div>
-            <label><span>Telefon raqami</span><input id="setupPhone" type="tel" placeholder="+998 90 123 45 67" required></label>
-            <label><span>Eski parol</span><input id="setupPassword" type="password" autocomplete="current-password" required></label>
-            <div class="zz-two">
-              <label><span>Yangi PIN</span><input id="setupPin" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
-              <label><span>PIN takror</span><input id="setupPin2" class="zz-pin-input" type="password" inputmode="numeric" maxlength="4" required></label>
-            </div>
-            <button class="zz-primary" type="submit">PIN yaratish va kirish</button>
-            <div id="setupMessage" class="zz-message"></div>
-          </form>
-        </div>
-      </div>
+  function userBar() {
+    if (!state.user) return "";
+    var icon = {patient:"👤",pharmacist:"⚕",courier:"🛵",accountant:"📊",manager:"◉",admin:"🔐"}[state.user.role] || "👤";
+    return '<div class="secure-user-bar"><div class="secure-user-info"><span class="secure-user-avatar">'+icon+'</span><div><b>'+esc(state.user.name)+'</b><small>'+esc(roleLabels[state.user.role] || state.user.role)+' · '+esc(state.user.phone)+'</small></div></div><div class="secure-user-actions"><button class="secure-secondary" data-secure-action="change-password" type="button">Parolni almashtirish</button><button class="secure-danger" data-secure-action="logout" type="button">Chiqish</button></div></div>';
+  }
 
-      <form id="pinLoginForm" class="hidden" autocomplete="on">
-        <input id="loginPhone" type="tel" inputmode="tel" autocomplete="username" placeholder="+998 90 123 45 67">
-        <input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password">
-        <input id="loginRemember" type="checkbox" checked>
-      </form>
-    </section>
+  function authHtml(role) {
+    var registration = state.authMode === "register";
+    var roleText = roleLabels[role] || "Kabinet";
+    var demo = state.environment !== "production" ? '<div class="secure-demo-accounts"><b>Mahalliy demo hisoblar:</b><br>Rahbar: <code>+998900000000 / Marjon2026!</code><br>Farmatsevt: <code>+998900000001 / Farm2026!</code><br>Kuryer: <code>+998900000002 / Kuryer2026!</code><br>Buxgalter: <code>+998900000003 / Hisob2026!</code><br><small>Birinchi kirishda parolni almashtirish so‘ralishi mumkin.</small></div>' : "";
+    var registerSwitch = role === "patient" ? '<button type="button" data-auth-mode="register" class="'+(registration?'active':'')+'">Ro‘yxatdan o‘tish</button>' : '<button type="button" disabled>Faqat rahbar yaratadi</button>';
+    var otpBlock = state.requireOtp ? '<label><span>SMS kodi</span><div class="secure-otp-row"><input id="secureOtp" inputmode="numeric" maxlength="6" placeholder="6 xonali kod"><button class="secure-secondary" type="button" data-secure-action="request-otp">Kod olish</button></div></label>' : "";
+    return '<div class="secure-auth-card"><div class="secure-auth-head"><div><h3>'+esc(roleText)+' kabinetiga xavfsiz kirish</h3><p>Parol serverda xesh holatda saqlanadi. Har bir rol faqat o‘z ma’lumotlarini ko‘radi.</p></div><span class="secure-badge locked">🔒 HIMOYALANGAN</span></div><div class="secure-auth-switch"><button type="button" data-auth-mode="login" class="'+(!registration?'active':'')+'">Kirish</button>'+registerSwitch+'</div>'+(registration ? '<form id="secureRegisterForm" class="secure-form"><label><span>Ism va familiya</span><input id="secureRegName" autocomplete="name" required></label><div class="secure-form-row"><label><span>Telefon</span><input id="secureRegPhone" type="tel" placeholder="+998901234567" autocomplete="tel" required></label><label><span>Til</span><select id="secureRegLang"><option value="uz">O‘zbek</option><option value="ru">Русский</option><option value="en">English</option></select></label></div><label><span>Manzil</span><input id="secureRegAddress" placeholder="Yetkazib berish manzili"></label><label><span>Parol</span><input id="secureRegPassword" type="password" minlength="8" autocomplete="new-password" required></label>'+otpBlock+'<label class="secure-check"><input id="secureRegConsent" type="checkbox" required><span>Shaxsiy ma’lumotlarni buyurtma va yetkazib berish uchun qayta ishlashga roziman.</span></label><button class="secure-primary" type="submit">Bemor hisobini yaratish</button><div id="secureAuthMessage"></div></form>' : '<form id="secureLoginForm" class="secure-form"><label><span>Telefon</span><input id="secureLoginPhone" type="tel" placeholder="+998901234567" autocomplete="username" required></label><label><span>Parol</span><input id="secureLoginPassword" type="password" autocomplete="current-password" required></label><label class="secure-check"><input id="secureRemember" type="checkbox"><span>Bu qurilmada kirishni eslab qolish</span></label><button class="secure-primary" type="submit">Kirish</button><div id="secureAuthMessage"></div></form>')+demo+'</div>';
+  }
 
-    <section id="dashboardView" class="zz-dashboard hidden">
-      <div class="zz-hero-card">
-        <div class="zz-user-line"><div class="zz-avatar">👤</div><div><small>XUSH KELIBSIZ</small><h1 id="userName">Mijoz</h1><p id="userPhone"></p></div></div>
-        <div class="zz-hero-actions"><button id="refreshButton" type="button">↻ Yangilash</button><button id="logoutButton" type="button">Chiqish</button></div>
-        <div class="zz-hero-glow"></div>
-      </div>
+  function passwordChangeHtml() {
+    return userBar() + '<div class="secure-auth-card"><div class="secure-auth-head"><div><h3>Parolni almashtiring</h3><p>Vaqtinchalik yoki eski parol o‘rniga kuchli yangi parol o‘rnating.</p></div><span class="secure-badge locked">🔑 MAJBURIY</span></div><form id="securePasswordForm" class="secure-form"><label><span>Joriy parol</span><input id="secureCurrentPassword" type="password" required></label><label><span>Yangi parol</span><input id="secureNewPassword" type="password" minlength="8" required></label><label><span>Yangi parolni takrorlang</span><input id="secureNewPassword2" type="password" minlength="8" required></label><button class="secure-primary" type="submit">Parolni saqlash</button><div id="secureAuthMessage"></div></form></div>';
+  }
 
-      <div id="aiFollowupBanner" class="zz-ai-followup hidden">
-        <div class="zz-ai-mark">✦</div>
-        <div><small>ZAM-ZAM AI · QABULDAN KEYINGI NAZORAT</small><h2>Hol-ahvolingizni so‘rayman</h2><p id="aiFollowupText"></p><div class="zz-inline-actions"><button data-open-panel="ai" type="button">AI bilan yozishish</button><button data-open-panel="prescription" type="button">Retsept yuborish</button><button id="markAiRead" class="ghost" type="button">O‘qidim</button></div></div>
-      </div>
+  async function openRole(role) {
+    state.requestedRole = role || "patient";
+    state.activeRole = state.requestedRole;
+    showModal("platformModal");
+    updateRoleTabs();
+    await renderActiveRole();
+  }
 
-      <div class="zz-stat-grid">
-        <article><span>📦</span><small>BUYURTMALAR</small><strong id="ordersCount">0</strong><em id="activeOrdersText">Faol buyurtma yo‘q</em></article>
-        <article><span>🩺</span><small>QABULLAR</small><strong id="appointmentsCount">0</strong><em id="nextAppointmentText">Qabul belgilanmagan</em></article>
-        <article><span>⏰</span><small>ESLATMALAR</small><strong id="remindersCount">0</strong><em>Dori va qayta qabul</em></article>
-      </div>
+  async function renderActiveRole() {
+    var content = el("platformContent");
+    if (!content) return;
+    if (el("platformModalTitle")) el("platformModalTitle").textContent = (roleLabels[state.activeRole] || "Kabinet") + " kabineti";
+    content.innerHTML = '<div class="secure-loading">Ma’lumotlar olinmoqda…</div>';
+    if (!state.user) {
+      content.innerHTML = authHtml(state.activeRole);
+      bindContentEvents();
+      return;
+    }
+    if (state.user.must_change_password) {
+      content.innerHTML = passwordChangeHtml();
+      bindContentEvents();
+      return;
+    }
+    if (!allowedRole(state.activeRole)) {
+      content.innerHTML = userBar() + '<div class="secure-message warn">Siz '+esc(roleLabels[state.user.role] || state.user.role)+' sifatida kirgansiz. '+esc(roleLabels[state.activeRole])+' kabinetiga ruxsat yo‘q.</div>';
+      bindContentEvents();
+      return;
+    }
+    try {
+      if (state.activeRole === "patient") await renderPatient();
+      else if (state.activeRole === "pharmacist") await renderPharmacist();
+      else if (state.activeRole === "courier") await renderCourier();
+      else if (state.activeRole === "accountant") await renderAccountant();
+      else await renderManager();
+    } catch (error) {
+      content.innerHTML = userBar() + '<div class="secure-message error">'+esc(error.message)+'</div>';
+    }
+    bindContentEvents();
+  }
 
-      <nav class="zz-quick-grid" aria-label="Mijoz xizmatlari">
-        <button data-open-panel="appointments" type="button"><span>🩺</span><b>Shifokor qabuli</b><small>Yozilish va nazorat</small></button>
-        <button data-open-panel="orders" type="button"><span>📦</span><b>Buyurtmalarim</b><small>Kuryerni kuzatish</small></button>
-        <button data-open-panel="prescription" type="button"><span>📷</span><b>Retsept yuborish</b><small>Farmatsevt tekshiradi</small></button>
-        <button data-open-panel="health" type="button"><span>🫀</span><b>Sog‘liq pasporti</b><small>Allergiya va dorilar</small></button>
-        <button data-open-panel="reminders" type="button"><span>⏰</span><b>Dori eslatmasi</b><small>Vaqtini unutmaslik</small></button>
-        <button data-open-panel="ai" type="button"><span>✦</span><b>Zam-Zam AI</b><small>Savol va yo‘l-yo‘riq</small></button>
-        <a href="/#catalog"><span>💊</span><b>Dori katalogi</b><small>Qidirish va buyurtma</small></a>
-        <a class="emergency" href="tel:103"><span>103</span><b>Tez yordam</b><small>Favqulodda qo‘ng‘iroq</small></a>
-      </nav>
+  function orderItems(order) {
+    return (order.items || []).map(function (item) { return esc(item.name) + " × " + esc(item.qty); }).join(", ") || "Mahsulot";
+  }
 
-      <section class="zz-panel active" data-panel="appointments">
-        <div class="zz-panel-head"><div><small>SHIFOKOR QABULI</small><h2>Qabul va Zam-Zam AI nazorati</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <form id="appointmentForm" class="zz-mini-form">
-          <div class="zz-two"><label><span>Shifokor</span><input id="doctorName" placeholder="Shifokor ismi" required></label><label><span>Yo‘nalish</span><input id="specialty" placeholder="Masalan: Kardiolog"></label></div>
-          <div class="zz-two"><label><span>Klinika</span><input id="clinic" placeholder="Klinika nomi"></label><label><span>Sana va vaqt</span><input id="scheduledAt" type="datetime-local" required></label></div>
-          <label><span>Qisqa izoh</span><textarea id="appointmentNote" placeholder="Qabul sababi yoki savolingiz"></textarea></label>
-          <button class="zz-primary" type="submit">Qabulni saqlash</button>
-          <div id="appointmentMessage" class="zz-message"></div>
-        </form>
-        <div id="appointmentsList" class="zz-list"></div>
-      </section>
+  function orderTable(orders, role) {
+    if (!orders.length) return '<div class="secure-empty">Buyurtmalar topilmadi.</div>';
+    var rows = orders.map(function (order) {
+      var actions = "";
+      if (role === "patient") {
+        actions = '<button class="secure-mini" data-secure-action="track" data-code="'+esc(order.code)+'" data-token="'+esc(order.tracking_token || "")+'">Jonli xarita</button>';
+      } else if (role === "pharmacist" || role === "manager") {
+        var next = [];
+        if (order.status === "Yangi") next.push(["Tasdiqlandi", "Tasdiqlash"]);
+        if (order.status === "Tasdiqlandi") next.push(["Tayyorlanmoqda", "Tayyorlash"]);
+        if (order.status === "Tayyorlanmoqda") next.push(["Tayyor", "Tayyor"]);
+        if (["Yangi","Tasdiqlandi","Tayyorlanmoqda","Tayyor"].includes(order.status)) next.push(["Bekor qilindi", "Bekor"]);
+        actions = next.map(function (item) { return '<button class="secure-mini" data-secure-action="status" data-code="'+esc(order.code)+'" data-status="'+esc(item[0])+'">'+esc(item[1])+'</button>'; }).join("");
+        if (["Tayyor", "Tayyorlanmoqda"].includes(order.status)) {
+          actions += '<select data-courier-select="'+esc(order.code)+'"><option value="">Kuryer tanlang</option>'+state.couriers.map(function (courier) { return '<option value="'+courier.id+'">'+esc(courier.name)+'</option>'; }).join("")+'</select><button class="secure-mini" data-secure-action="assign" data-code="'+esc(order.code)+'">Biriktirish</button>';
+        }
+        actions += '<button class="secure-mini" data-secure-action="track" data-code="'+esc(order.code)+'" data-token="'+esc(order.tracking_token || "")+'">Xarita</button>';
+      } else if (role === "courier") {
+        if (["Kuryerga berildi", "Yetkazilmoqda"].includes(order.status)) {
+          actions += '<button class="secure-mini" data-secure-action="gps-start" data-code="'+esc(order.code)+'">GPS boshlash</button><button class="secure-mini" data-secure-action="track" data-code="'+esc(order.code)+'" data-token="'+esc(order.tracking_token || "")+'">Xarita</button><button class="secure-mini" data-secure-action="status" data-code="'+esc(order.code)+'" data-status="Yetkazildi">Yetkazildi</button><button class="secure-mini" data-secure-action="status" data-code="'+esc(order.code)+'" data-status="Yetkazilmadi">Yetkazilmadi</button>';
+        }
+      }
+      var customerLabel = order.customer || (role === "accountant" ? "Shaxsiy ma’lumot yopiq" : state.user.name);
+      return '<tr><td><b>'+esc(order.code)+'</b><small>'+esc(order.date || order.created)+'</small></td><td><b>'+esc(customerLabel)+'</b><small>'+esc(order.phone || "")+'</small></td><td>'+orderItems(order)+'</td><td><b>'+money(order.total)+'</b><small>'+esc(order.payment)+' · '+esc(order.payment_status || "pending")+'</small></td><td>'+esc(order.address || order.branch_name || order.branch)+'</td><td><span class="secure-status '+statusClass(order.status)+'">'+esc(order.status)+'</span><small>'+esc(order.courier || "")+'</small></td><td><div class="secure-actions">'+actions+'</div></td></tr>';
+    }).join("");
+    return '<div class="secure-table-wrap"><table class="secure-table"><thead><tr><th>KOD / SANA</th><th>BEMOR</th><th>MAHSULOTLAR</th><th>TO‘LOV</th><th>MANZIL</th><th>HOLAT</th><th>AMAL</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }
 
-      <section class="zz-panel" data-panel="orders">
-        <div class="zz-panel-head"><div><small>BUYURTMALAR</small><h2>Dori buyurtmalarim</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <div id="ordersList" class="zz-list"></div>
-      </section>
+  async function loadOrders() {
+    var data = await api("/api/orders");
+    state.orders = data.orders || [];
+    return state.orders;
+  }
 
-      <section class="zz-panel" data-panel="prescription">
-        <div class="zz-panel-head"><div><small>ELEKTRON RETSEPT</small><h2>Retseptni farmatsevtga yuboring</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <form id="prescriptionForm" class="zz-mini-form">
-          <label><span>Retsept rasmi yoki PDF</span><input id="rxFile" type="file" accept="image/png,image/jpeg,application/pdf" required></label>
-          <label><span>Filial</span><select id="rxBranch"></select></label>
-          <label class="zz-check"><input id="rxConsent" type="checkbox" required><span>Retseptni farmatsevt ko‘rishiga roziman.</span></label>
-          <button class="zz-primary" type="submit">Retseptni yuborish</button>
-          <div id="rxMessage" class="zz-message"></div>
-        </form>
-      </section>
+  async function renderPatient() {
+    var orders = await loadOrders();
+    await syncPatientData(orders);
+    var content = el("platformContent");
+    content.innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Buyurtmalar</span><strong>'+orders.length+'</strong><small>Server bazasida</small></div><div class="secure-stat"><span>Yo‘ldagi</span><strong>'+orders.filter(function(o){return ["Kuryerga berildi","Yetkazilmoqda"].includes(o.status);}).length+'</strong><small>Jonli kuzatuv</small></div><div class="secure-stat"><span>Yetkazilgan</span><strong>'+orders.filter(function(o){return o.status==="Yetkazildi";}).length+'</strong><small>Yakunlangan</small></div><div class="secure-stat"><span>Til</span><strong>'+esc((state.user.language || "uz").toUpperCase())+'</strong><small>Shaxsiy sozlama</small></div></div><div class="secure-panel"><div class="secure-panel-head"><div><h3>Mening buyurtmalarim</h3><p>Buyurtma, to‘lov va kuryer holati serverdan olinadi.</p></div><div class="secure-user-actions"><button class="secure-secondary" data-secure-action="catalog">Katalog</button><button class="secure-secondary" data-secure-action="passport">Sog‘liq pasporti</button></div></div>'+orderTable(orders, "patient")+'</div>';
+  }
 
-      <section class="zz-panel" data-panel="health">
-        <div class="zz-panel-head"><div><small>SOG‘LIQ PASPORTI</small><h2>Muhim tibbiy ma’lumotlar</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <form id="healthForm" class="zz-mini-form">
-          <div class="zz-two"><label><span>Tug‘ilgan sana</span><input id="healthBirth" type="date"></label><label><span>Qon guruhi</span><input id="healthBlood" placeholder="Masalan: O(I) Rh+"></label></div>
-          <label><span>Allergiyalar</span><textarea id="healthAllergy" placeholder="Dori yoki oziq-ovqat allergiyasi"></textarea></label>
-          <label><span>Doimiy qabul qilinadigan dorilar</span><textarea id="healthMedicines" placeholder="Dori nomi va qabul vaqti"></textarea></label>
-          <div class="zz-two"><label><span>Favqulodda kontakt</span><input id="healthEmergencyName" placeholder="Ism"></label><label><span>Telefon</span><input id="healthEmergencyPhone" type="tel" placeholder="+998..."></label></div>
-          <button class="zz-primary" type="submit">Sog‘liq pasportini saqlash</button>
-          <div id="healthMessage" class="zz-message"></div>
-        </form>
-      </section>
+  async function renderPharmacist() {
+    var results = await Promise.all([api("/api/orders"), api("/api/users?role=courier"), api("/api/prescriptions")]);
+    state.orders = results[0].orders || [];
+    state.couriers = results[1].users || [];
+    var prescriptions = results[2].prescriptions || [];
+    var rxHtml = prescriptions.length ? prescriptions.map(function (rx) {
+      return '<div class="secure-prescription"><div><b>'+esc(rx.code)+' · '+esc(rx.patient)+'</b><small>'+esc(rx.branch)+' · '+esc(rx.filename)+' · '+esc(rx.status)+'</small></div><div class="secure-actions"><a class="secure-mini" target="_blank" href="/api/prescriptions/'+rx.id+'/file">Fayl</a><button class="secure-mini" data-secure-action="rx-status" data-id="'+rx.id+'" data-status="Tekshirilmoqda">Tekshirish</button><button class="secure-mini" data-secure-action="rx-status" data-id="'+rx.id+'" data-status="Tasdiqlandi">Tasdiqlash</button></div></div>';
+    }).join("") : '<div class="secure-empty">Yangi retsept yo‘q.</div>';
+    el("platformContent").innerHTML = userBar() + '<div class="secure-grid"><div class="secure-panel"><div class="secure-panel-head"><div><h3>Buyurtmalar</h3><p>Qoldiq serverda tekshiriladi, keyin holat o‘zgartiriladi.</p></div><span class="secure-badge"><span class="secure-online-dot"></span> ONLAYN</span></div>'+orderTable(state.orders, "pharmacist")+'</div><div class="secure-panel"><h3 class="secure-section-title">Elektron retseptlar</h3>'+rxHtml+'</div></div>';
+  }
 
-      <section class="zz-panel" data-panel="reminders">
-        <div class="zz-panel-head"><div><small>DORI ESLATMASI</small><h2>Dorini vaqtida qabul qiling</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <form id="reminderForm" class="zz-mini-form">
-          <div class="zz-two"><label><span>Dori nomi</span><input id="reminderMedicine" placeholder="Dori nomi" required></label><label><span>Vaqti</span><input id="reminderTime" type="time" required></label></div>
-          <label><span>Izoh</span><input id="reminderNote" placeholder="Ovqatdan oldin/keyin"></label>
-          <button class="zz-primary" type="submit">Eslatmani qo‘shish</button>
-        </form>
-        <div id="remindersList" class="zz-list"></div>
-      </section>
+  async function renderCourier() {
+    var orders = await loadOrders();
+    el("platformContent").innerHTML = userBar() + '<div class="secure-panel"><div class="secure-panel-head"><div><h3>Menga biriktirilgan yetkazmalar</h3><p>GPS faqat siz tugmani bosganingizdan keyin va brauzer ruxsati bilan uzatiladi.</p></div>'+(state.gpsWatchId !== null ? '<button class="secure-danger" data-secure-action="gps-stop">GPSni to‘xtatish</button>' : '<span class="secure-badge">📍 HTTPS TALAB QILINADI</span>')+'</div>'+orderTable(orders, "courier")+'<div id="secureGpsMessage" class="secure-message">GPS boshlanganda bemor boshqa telefondan ham kuryer joylashuvini ko‘radi.</div></div>';
+  }
 
-      <section class="zz-panel" data-panel="ai">
-        <div class="zz-panel-head"><div><small>ZAM-ZAM AI</small><h2>Savolingizni yozing</h2></div><button class="zz-panel-close" type="button">×</button></div>
-        <div id="aiChat" class="zz-chat"><div class="zz-bubble bot">Assalomu alaykum 🌿 Men Zam-Zam AI yordamchisiman. Dori topish, retsept, buyurtma yoki qabuldan keyingi savollarda yo‘l-yo‘riq beraman. Tashxis qo‘ymayman.</div></div>
-        <form id="aiForm" class="zz-chat-form"><input id="aiQuestion" maxlength="500" placeholder="Savolingizni yozing..." required><button type="submit">Yuborish</button></form>
-        <p class="zz-safety">Nafas qisishi, hushdan ketish, kuchli ko‘krak og‘rig‘i yoki ko‘p qon ketishida AI javobini kutmang — 103 ga qo‘ng‘iroq qiling.</p>
-      </section>
+  async function renderAccountant() {
+    var results = await Promise.all([api("/api/orders"), api("/api/dashboard")]);
+    state.orders = results[0].orders || [];
+    var stats = results[1].stats || {};
+    el("platformContent").innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Savdo</span><strong>'+money(stats.sales)+'</strong><small>Bekor qilinmagan</small></div><div class="secure-stat"><span>Tannarx</span><strong>'+money(stats.cost)+'</strong><small>Mahsulot kartasidan</small></div><div class="secure-stat"><span>Foyda</span><strong>'+money(stats.profit)+'</strong><small>Server hisoblagan</small></div><div class="secure-stat"><span>Buyurtmalar</span><strong>'+esc(stats.orders)+'</strong><small>Tanlangan davr</small></div></div><div class="secure-panel"><div class="secure-panel-head"><div><h3>Moliyaviy hisobot</h3><p>Haqiqiy .xlsx fayl serverdagi ma’lumotlardan yaratiladi.</p></div><button class="secure-primary" data-secure-action="excel">Excel yuklash</button></div>'+orderTable(state.orders, "accountant")+'</div>';
+  }
 
-      <footer class="zz-footer"><b>Zam Zam Pharm Trade</b><span>Ma’lumotlaringiz himoyalangan serverda saqlanadi.</span></footer>
-    </section>
-  </main>
+  function productManagerRows() {
+    if (!state.products.length) return '<div class="secure-empty">Katalogda mahsulot yo‘q.</div>';
+    return state.products.map(function (product) {
+      var media = product.image ? '<img src="'+esc(product.image)+'" alt="">' : esc(product.emoji || "💊");
+      return '<div class="secure-product-row"><div class="secure-product-thumb">'+media+'</div><div><b>'+esc(product.uz)+'</b><small>'+money(product.price)+' · '+esc(product.total_stock || 0)+' dona · '+esc(product.sku)+'</small></div><button class="secure-danger secure-mini" type="button" data-secure-action="product-delete" data-id="'+product.id+'">O‘chirish</button></div>';
+    }).join("");
+  }
 
-  <script src="/static/mijoz.js?v=20260725-2" defer></script>
-</body>
-</html>
+  function productFormHtml() {
+    var branchOptions = state.branches.map(function (branch) { return '<option value="'+esc(branch.slug)+'">'+esc(branch.name)+' — '+esc(branch.city)+'</option>'; }).join("");
+    return '<div class="secure-product-layout"><section class="secure-panel"><div class="secure-panel-head"><div><h3>＋ Yangi dori qo‘shish</h3><p>Rasm, narx va qoldiq server bazasiga saqlanadi.</p></div><span class="secure-badge">KATALOG</span></div><form id="secureProductForm" class="secure-form"><div class="secure-form-row"><label><span>Dori nomi *</span><input id="secureProductName" maxlength="180" placeholder="Masalan: Paratsetamol 500 mg" required></label><label><span>Kategoriya</span><select id="secureProductCategory"><option value="cold">Shamollash</option><option value="vitamin">Vitaminlar</option><option value="pain">Og‘riq qoldiruvchi</option><option value="children">Bolalar uchun</option><option value="medical">Tibbiy jihozlar</option><option value="care">Parvarish</option><option value="other">Boshqa</option></select></label></div><div class="secure-form-row"><label><span>Sotuv narxi *</span><input id="secureProductPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="90000" required></label><label><span>Tannarxi</span><input id="secureProductCost" type="number" min="0" step="100" inputmode="numeric" placeholder="70000"></label></div><div class="secure-form-row"><label><span>Filial</span><select id="secureProductBranch">'+branchOptions+'</select></label><label><span>Qoldiq (dona) *</span><input id="secureProductQuantity" type="number" min="0" step="1" value="10" inputmode="numeric" required></label></div><div class="secure-form-row"><label><span>Belgi</span><input id="secureProductBadge" maxlength="40" value="Yangi" placeholder="Yangi / Aksiya / Top"></label><label><span>Eski narx</span><input id="secureProductOldPrice" type="number" min="0" step="100" inputmode="numeric" placeholder="Aksiya bo‘lsa"></label></div><div class="secure-product-image-field"><div id="secureProductPreview" class="secure-product-preview">Dori rasmi</div><label><span>Rasm yuklash *</span><input id="secureProductImage" type="file" accept="image/jpeg,image/png,image/webp" required><small class="secure-product-file-note">JPG, PNG yoki WEBP. Rasm avtomatik kichraytiriladi va Render bazasida saqlanadi.</small></label></div><label class="secure-check"><input id="secureProductRx" type="checkbox"><span>Retsept bilan sotiladi</span></label><button id="secureProductSubmit" class="secure-primary" type="submit">Dorini katalogga saqlash</button><div id="secureProductMessage"></div></form></section><section class="secure-panel"><div class="secure-panel-head"><div><h3>Katalog mahsulotlari</h3><p>Qo‘shilgan dori barcha mijozlarga ko‘rinadi.</p></div><span class="secure-badge">'+state.products.length+' TA</span></div><div class="secure-product-list">'+productManagerRows()+'</div></section></div>';
+  }
+
+  async function renderManager() {
+    var results = await Promise.all([api("/api/orders"), api("/api/dashboard"), api("/api/stock"), api("/api/audit"), api("/api/products"), api("/api/branches")]);
+    state.orders = results[0].orders || [];
+    var stats = results[1].stats || {};
+    var stock = results[2].stock || [];
+    var logs = results[3].logs || [];
+    state.products = results[4].products || [];
+    state.branches = results[5].branches || [];
+    try { state.couriers = (await api("/api/users?role=courier")).users || []; } catch (e) { state.couriers = []; }
+    var stockHtml = stock.filter(function (row) { return row.low; }).slice(0, 30).map(function (row) {
+      return '<div class="secure-stock-row '+(row.low?'low':'')+'"><div><b>'+esc(row.product)+'</b><small>'+esc(row.branch)+'</small></div><span>'+row.quantity+' dona</span><input type="number" min="0" value="'+row.quantity+'" data-stock-input="'+row.id+'"><button class="secure-mini" data-secure-action="stock-save" data-id="'+row.id+'">Saqlash</button></div>';
+    }).join("") || '<div class="secure-empty">Kam qolgan mahsulot yo‘q.</div>';
+    var auditHtml = logs.slice(0, 80).map(function (log) { return '<div class="secure-audit-row"><b>'+esc(log.action)+' · '+esc(log.user)+'</b><small>'+esc(log.entity_type)+' '+esc(log.entity_id)+' · '+esc(log.created_at)+'</small><small>'+esc(log.detail)+'</small></div>'; }).join("");
+    el("platformContent").innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Savdo</span><strong>'+money(stats.sales)+'</strong><small>Server bazasi</small></div><div class="secure-stat"><span>Foyda</span><strong>'+money(stats.profit)+'</strong><small>Haqiqiy tannarx</small></div><div class="secure-stat"><span>Kam qoldiq</span><strong>'+esc(stats.low_stock)+'</strong><small>Ombor ogohlantirishi</small></div><div class="secure-stat"><span>Yo‘ldagi kuryer</span><strong>'+esc(stats.active_delivery)+'</strong><small>Faol yetkazmalar</small></div></div>'+productFormHtml()+'<div class="secure-grid"><div class="secure-panel"><div class="secure-panel-head"><div><h3>Barcha buyurtmalar</h3><p>Holat, kuryer va to‘lovlar nazorati.</p></div><button class="secure-primary" data-secure-action="excel">Excel</button></div>'+orderTable(state.orders, "manager")+'</div><div class="secure-stack"><div class="secure-panel"><h3 class="secure-section-title">Kam qolgan ombor</h3><div class="secure-stock-list">'+stockHtml+'</div></div><div class="secure-panel"><h3 class="secure-section-title">Audit jurnali</h3><div class="secure-audit">'+auditHtml+'</div></div></div></div>';
+  }
+
+  function bindContentEvents() {
+    var content = el("platformContent");
+    if (!content) return;
+    content.onclick = async function (event) {
+      var modeButton = event.target.closest("[data-auth-mode]");
+      if (modeButton && !modeButton.disabled) {
+        state.authMode = modeButton.getAttribute("data-auth-mode");
+        content.innerHTML = authHtml(state.activeRole);
+        bindContentEvents();
+        return;
+      }
+      var button = event.target.closest("[data-secure-action]");
+      if (!button) return;
+      var action = button.getAttribute("data-secure-action");
+      try {
+        if (action === "logout") await logout();
+        else if (action === "change-password") { content.innerHTML = passwordChangeHtml(); bindContentEvents(); }
+        else if (action === "request-otp") await requestOtp();
+        else if (action === "catalog") { hideModal("platformModal"); el("catalog").scrollIntoView({behavior:"smooth"}); }
+        else if (action === "passport") { await openSecurePassport(); }
+        else if (action === "track") openTracking(button.getAttribute("data-code"), button.getAttribute("data-token") || "");
+        else if (action === "status") await updateStatus(button.getAttribute("data-code"), button.getAttribute("data-status"));
+        else if (action === "assign") await assignCourier(button.getAttribute("data-code"));
+        else if (action === "gps-start") startGps(button.getAttribute("data-code"));
+        else if (action === "gps-stop") stopGps();
+        else if (action === "excel") window.location.href = "/api/reports/orders.xlsx";
+        else if (action === "stock-save") await saveStock(button.getAttribute("data-id"));
+        else if (action === "product-delete") await deactivateProduct(button.getAttribute("data-id"));
+        else if (action === "rx-status") await updatePrescription(button.getAttribute("data-id"), button.getAttribute("data-status"));
+      } catch (error) { toast(error.message, "error"); }
+    };
+    var loginForm = el("secureLoginForm");
+    if (loginForm) loginForm.onsubmit = login;
+    var registerForm = el("secureRegisterForm");
+    if (registerForm) registerForm.onsubmit = register;
+    var passwordForm = el("securePasswordForm");
+    if (passwordForm) passwordForm.onsubmit = changePassword;
+    var productForm = el("secureProductForm");
+    if (productForm) productForm.onsubmit = saveProduct;
+    var productImage = el("secureProductImage");
+    if (productImage) productImage.onchange = previewProductImage;
+  }
+
+  function previewProductImage() {
+    var file = el("secureProductImage") && el("secureProductImage").files[0];
+    var preview = el("secureProductPreview");
+    if (!preview) return;
+    if (!file) { preview.textContent = "Dori rasmi"; return; }
+    var url = URL.createObjectURL(file);
+    preview.innerHTML = '<img src="'+url+'" alt="Rasm ko‘rinishi">';
+    window.setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+  }
+
+  function compressProductImage(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) { reject(new Error("Dori rasmini tanlang.")); return; }
+      if (file.size > 8 * 1024 * 1024) { reject(new Error("Rasm 8 MB dan katta bo‘lmasin.")); return; }
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error("Rasmni o‘qib bo‘lmadi.")); };
+      reader.onload = function () {
+        var image = new Image();
+        image.onerror = function () { reject(new Error("Rasm formati ochilmadi.")); };
+        image.onload = function () {
+          var maxSide = 900;
+          var scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+          var width = Math.max(1, Math.round(image.width * scale));
+          var height = Math.max(1, Math.round(image.height * scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = width; canvas.height = height;
+          var context = canvas.getContext("2d");
+          context.fillStyle = "#ffffff"; context.fillRect(0, 0, width, height);
+          context.drawImage(image, 0, 0, width, height);
+          var data = canvas.toDataURL("image/jpeg", .82);
+          if (data.length > 2_500_000) { reject(new Error("Rasm juda katta. Boshqa rasm tanlang.")); return; }
+          resolve(data);
+        };
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function saveProduct(event) {
+    event.preventDefault();
+    var message = el("secureProductMessage");
+    var submit = el("secureProductSubmit");
+    try {
+      submit.disabled = true;
+      setMessage(message, "Rasm tayyorlanmoqda…", "warn");
+      var image = await compressProductImage(el("secureProductImage").files[0]);
+      var price = Number(el("secureProductPrice").value);
+      var cost = Number(el("secureProductCost").value || price);
+      var data = await api("/api/products", {method:"POST", body:{
+        name_uz:el("secureProductName").value,
+        category:el("secureProductCategory").value,
+        price:price, cost_price:cost, old_price:Number(el("secureProductOldPrice").value || 0),
+        branch:el("secureProductBranch").value, quantity:Number(el("secureProductQuantity").value || 0),
+        badge:el("secureProductBadge").value, prescription_required:el("secureProductRx").checked, image:image
+      }});
+      toast(data.product.uz + " katalogga qo‘shildi.", "success");
+      await syncCatalog();
+      await renderManager();
+      bindContentEvents();
+    } catch (error) { setMessage(message, error.message, "error"); }
+    finally { if (submit) submit.disabled = false; }
+  }
+
+  async function deactivateProduct(productId) {
+    var product = state.products.find(function (item) { return String(item.id) === String(productId); });
+    if (!product || !confirm(product.uz + " katalogdan olib tashlansinmi?")) return;
+    await api("/api/products/"+productId, {method:"DELETE", body:{}});
+    toast("Mahsulot katalogdan olib tashlandi.", "success");
+    await syncCatalog();
+    await renderManager();
+    bindContentEvents();
+  }
+
+  async function login(event) {
+    event.preventDefault();
+    try {
+      var data = await api("/api/auth/login", {method:"POST", body:{phone:el("secureLoginPhone").value, password:el("secureLoginPassword").value, remember:el("secureRemember").checked}});
+      state.user = data.user;
+      state.csrf = data.csrf_token || state.csrf;
+      state.activeRole = state.user.role === "admin" ? "manager" : state.user.role;
+      toast("Tizimga muvaffaqiyatli kirdingiz.", "success");
+      updateRoleTabs();
+      await renderActiveRole();
+    } catch (error) { setMessage("secureAuthMessage", error.message, "error"); }
+  }
+
+  async function register(event) {
+    event.preventDefault();
+    try {
+      var data = await api("/api/auth/register", {method:"POST", body:{name:el("secureRegName").value, phone:el("secureRegPhone").value, password:el("secureRegPassword").value, language:el("secureRegLang").value, address:el("secureRegAddress").value, consent:el("secureRegConsent").checked, otp:el("secureOtp") ? el("secureOtp").value : "", latitude:state.checkoutLocation && state.checkoutLocation.lat, longitude:state.checkoutLocation && state.checkoutLocation.lon}});
+      state.user = data.user;
+      state.csrf = data.csrf_token || state.csrf;
+      state.activeRole = "patient";
+      toast("Bemor hisobi yaratildi.", "success");
+      await renderActiveRole();
+    } catch (error) { setMessage("secureAuthMessage", error.message, "error"); }
+  }
+
+  async function requestOtp() {
+    var phone = el("secureRegPhone") && el("secureRegPhone").value;
+    var data = await api("/api/auth/request-otp", {method:"POST", body:{phone:phone, purpose:"register"}});
+    var message = data.message + (data.demo_code ? " Kod: " + data.demo_code : "");
+    setMessage("secureAuthMessage", message, data.sent ? "success" : "warn");
+    if (data.demo_code && el("secureOtp")) el("secureOtp").value = data.demo_code;
+  }
+
+  async function logout() {
+    await api("/api/auth/logout", {method:"POST", body:{}});
+    state.user = null;
+    state.csrf = "";
+    hydrateSmartData({}, {reminders: [], family_members: [], reservations: []}, []);
+    stopGps();
+    state.authMode = "login";
+    toast("Kabinetdan chiqdingiz.", "success");
+    await refreshMe();
+    await renderActiveRole();
+  }
+
+  async function changePassword(event) {
+    event.preventDefault();
+    var first = el("secureNewPassword").value;
+    var second = el("secureNewPassword2").value;
+    if (first !== second) { setMessage("secureAuthMessage", "Yangi parollar bir xil emas.", "error"); return; }
+    try {
+      var data = await api("/api/auth/change-password", {method:"POST", body:{current_password:el("secureCurrentPassword").value, new_password:first}});
+      state.user = data.user;
+      toast("Parol yangilandi.", "success");
+      await renderActiveRole();
+    } catch (error) { setMessage("secureAuthMessage", error.message, "error"); }
+  }
+
+  async function updateStatus(code, status) {
+    await api("/api/orders/"+encodeURIComponent(code)+"/status", {method:"PATCH", body:{status:status}});
+    toast("Buyurtma holati yangilandi: " + status, "success");
+    await renderActiveRole();
+  }
+
+  async function assignCourier(code) {
+    var select = document.querySelector('[data-courier-select="'+CSS.escape(code)+'"]');
+    if (!select || !select.value) throw new Error("Kuryerni tanlang.");
+    await api("/api/orders/"+encodeURIComponent(code)+"/assign-courier", {method:"PATCH", body:{courier_id:Number(select.value)}});
+    toast("Kuryer buyurtmaga biriktirildi.", "success");
+    await renderActiveRole();
+  }
+
+  async function updatePrescription(id, status) {
+    await api("/api/prescriptions/"+encodeURIComponent(id), {method:"PATCH", body:{status:status}});
+    toast("Retsept holati yangilandi.", "success");
+    await renderActiveRole();
+  }
+
+  async function saveStock(id) {
+    var input = document.querySelector('[data-stock-input="'+CSS.escape(String(id))+'"]');
+    if (!input) return;
+    await api("/api/stock/"+encodeURIComponent(id), {method:"PATCH", body:{quantity:Number(input.value)}});
+    toast("Ombor qoldig‘i saqlandi.", "success");
+    await syncCatalog();
+    await renderActiveRole();
+  }
+
+  function startGps(code) {
+    if (!navigator.geolocation) { toast("Bu brauzer GPSni qo‘llamaydi.", "error"); return; }
+    stopGps();
+    state.gpsOrderCode = code;
+    state.gpsWatchId = navigator.geolocation.watchPosition(async function (position) {
+      try {
+        await api("/api/orders/"+encodeURIComponent(code)+"/courier-location", {method:"POST", body:{latitude:position.coords.latitude, longitude:position.coords.longitude, accuracy:position.coords.accuracy, heading:position.coords.heading, speed:position.coords.speed}});
+        var box = el("secureGpsMessage");
+        if (box) setMessage(box, "GPS serverga yuborildi: " + new Date().toLocaleTimeString("uz-UZ"), "success");
+      } catch (error) {
+        var box2 = el("secureGpsMessage");
+        if (box2) setMessage(box2, error.message, "error");
+      }
+    }, function (error) {
+      toast(error.code === 1 ? "GPS ruxsati berilmadi." : "GPS aniqlanmadi.", "error");
+      stopGps();
+    }, {enableHighAccuracy:true, maximumAge:3000, timeout:15000});
+    toast("Jonli GPS uzatish boshlandi.", "success");
+    renderActiveRole();
+  }
+
+  function stopGps() {
+    if (state.gpsWatchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(state.gpsWatchId);
+    state.gpsWatchId = null;
+    state.gpsOrderCode = null;
+  }
+
+  async function openTracking(code, token) {
+    state.trackerCode = code;
+    state.trackerToken = token || "";
+    showModal("courierTrackModal");
+    if (state.trackerTimer) clearInterval(state.trackerTimer);
+    await refreshTracking();
+    state.trackerTimer = setInterval(refreshTracking, 3000);
+  }
+
+  function closeTracking() {
+    if (state.trackerTimer) clearInterval(state.trackerTimer);
+    state.trackerTimer = null;
+    hideModal("courierTrackModal");
+  }
+
+  async function refreshTracking() {
+    if (!state.trackerCode) return;
+    try {
+      var suffix = state.trackerToken ? "?token="+encodeURIComponent(state.trackerToken) : "";
+      var data = await api("/api/orders/"+encodeURIComponent(state.trackerCode)+"/tracking"+suffix);
+      var order = data.order || {};
+      var loc = data.location;
+      if (el("trackerTitle")) el("trackerTitle").textContent = order.code + " · " + order.status;
+      if (el("trackerModeLabel")) el("trackerModeLabel").textContent = data.tracking_active ? "● JONLI KURYER KUZATUVI" : "● BUYURTMA HOLATI";
+      if (el("trackerEta")) el("trackerEta").textContent = data.eta_minutes ? data.eta_minutes + " daqiqa" : "Kutilmoqda";
+      if (el("trackerDistance")) el("trackerDistance").textContent = data.distance_km != null ? data.distance_km + " km" : "—";
+      if (el("trackerAccuracy")) el("trackerAccuracy").textContent = loc && loc.accuracy ? "±"+Math.round(loc.accuracy)+" m" : "—";
+      if (el("trackerSpeed")) el("trackerSpeed").textContent = loc && loc.speed != null ? Math.max(0, Math.round(loc.speed * 3.6)) + " km/soat" : "—";
+      if (el("trackerLastUpdate")) el("trackerLastUpdate").textContent = loc ? new Date(loc.updated_at).toLocaleTimeString("uz-UZ") + " da yangilandi" : "GPS hali yuborilmagan";
+      var courierName = document.querySelector("#courierTrackModal .courier-profile b");
+      if (courierName) courierName.textContent = order.courier || "Kuryer biriktirilmagan";
+      if (el("trackerCall")) {
+        if (order.courier_phone) {
+          el("trackerCall").href = "tel:" + order.courier_phone;
+          el("trackerCall").removeAttribute("aria-disabled");
+        } else {
+          el("trackerCall").href = "#";
+          el("trackerCall").setAttribute("aria-disabled", "true");
+        }
+      }
+      var progress = data.distance_km == null ? 0 : Math.max(8, Math.min(96, 100 - data.distance_km * 12));
+      if (order.status === "Yetkazildi") progress = 100;
+      if (el("trackerProgressBar")) el("trackerProgressBar").style.width = progress + "%";
+      if (el("courierMarker")) {
+        el("courierMarker").style.left = (8 + progress * 0.78) + "%";
+        el("courierMarker").style.top = (78 - progress * 0.55) + "%";
+      }
+      if (el("trackerTurnText")) el("trackerTurnText").textContent = loc ? "Kuryer GPS signali server orqali yangilanmoqda" : "Kuryer GPS uzatishni hali boshlamagan";
+      if (el("trackerOrderData")) el("trackerOrderData").innerHTML = '<h3>Buyurtma ma’lumoti</h3><div class="tracker-order-line"><span>Kod</span><b>'+esc(order.code)+'</b></div><div class="tracker-order-line"><span>Holat</span><b>'+esc(order.status)+'</b></div><div class="tracker-order-line"><span>Kuryer</span><b>'+esc(order.courier || "Biriktirilmagan")+'</b></div><div class="tracker-order-line"><span>Manzil</span><b>'+esc(order.address || "")+'</b></div>'+(loc?'<a class="secure-track-map-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(loc.lat+","+loc.lon)+'">Kuryerni xaritada ochish</a>':'');
+      if (el("trackerDemoNote")) el("trackerDemoNote").textContent = "Koordinata umumiy server bazasidan olinmoqda. Yangilanish oralig‘i: 3 soniya.";
+    } catch (error) {
+      if (el("trackerDemoNote")) el("trackerDemoNote").textContent = error.message;
+    }
+  }
+
+  async function syncCatalog() {
+    try {
+      var results = await Promise.all([api("/api/products"), api("/api/branches")]);
+      state.products = results[0].products || [];
+      state.branches = results[1].branches || [];
+      window.products = state.products;
+      if (typeof window.marjonHydrateProductStock === "function") window.marjonHydrateProductStock(state.products, state.branches);
+      window.branches = state.branches.map(function (branch) {
+        return {id:branch.slug, city:branch.slug, name:branch.name, address:branch.address, phone:branch.phone, lat:branch.latitude, lon:branch.longitude};
+      });
+      window.renderProducts = renderServerProducts;
+      renderServerProducts();
+      if (typeof window.renderBranches === "function") window.renderBranches(window.branches);
+    } catch (error) { console.warn("Catalog sync failed", error); }
+  }
+
+  function renderServerProducts() {
+    var grid = el("productGrid");
+    if (!grid) return;
+    var category = window.selectedCategory || "all";
+    var search = String(window.searchText || "").toLowerCase();
+    var language = window.currentLang || "uz";
+    var list = state.products.filter(function (product) {
+      var text = (product.uz+" "+product.ru+" "+product.en+" "+product.sku).toLowerCase();
+      return (category === "all" || product.category === category) && text.indexOf(search) !== -1;
+    });
+    grid.innerHTML = list.map(function (product) {
+      var name = language === "ru" ? product.ru : (language === "en" ? product.en : product.uz);
+      var total = Number(product.total_stock || 0);
+      var favorite = window.favorites && window.favorites[product.id];
+      var productMedia = product.image ? '<img class="secure-catalog-photo" src="'+esc(product.image)+'" alt="'+esc(name)+'">' : '<div class="product-pack"><span>'+esc(product.emoji)+'</span><small>ZAM ZAM PHARM TRADE<br>DORIXONA</small></div>';
+      return '<article class="product-card"><div class="product-image"><span class="product-badge">'+esc(product.badge)+'</span><button type="button" class="favorite-product '+(favorite?'active':'')+'" onclick="toggleFavorite('+product.id+')">'+(favorite?'♥':'♡')+'</button>'+productMedia+'</div><div class="product-info"><small>'+esc(typeof window.getCategoryName === "function" ? window.getCategoryName(product.category) : product.category)+'</small><h3>'+esc(name)+'</h3><div class="product-stock-line"><span class="'+(total<15?'stock-low':'stock-number')+'">'+total+' dona mavjud</span><button type="button" data-stock-product="'+product.id+'">Filiallar</button></div><div class="price-row"><div><strong>'+money(product.price)+'</strong>'+(product.old?'<del>'+money(product.old)+'</del>':'')+'</div><button type="button" class="add-button" onclick="addToCart('+product.id+')">+</button></div></div></article>';
+    }).join("");
+    if (el("emptyState")) el("emptyState").className = list.length ? "empty-state hidden" : "empty-state";
+    grid.querySelectorAll("[data-stock-product]").forEach(function (button) {
+      button.onclick = function () {
+        var product = state.products.find(function (item) { return String(item.id) === button.getAttribute("data-stock-product"); });
+        if (!product) return;
+        var detail = Object.keys(product.stock || {}).map(function (slug) {
+          var branch = state.branches.find(function (item) { return item.slug === slug; });
+          return (branch ? branch.city : slug) + ": " + product.stock[slug] + " dona";
+        }).join(" · ");
+        toast(detail || "Qoldiq topilmadi.", "success");
+      };
+    });
+  }
+
+  function cartItemsFromWindow() {
+    var items = [];
+    var cart = window.cart || {};
+    Object.keys(cart).forEach(function (id) {
+      var product = state.products.find(function (item) { return String(item.id) === String(id); });
+      if (product) items.push({id:product.id, qty:Number(cart[id]) || 1});
+    });
+    return items;
+  }
+
+  async function securePlaceOrder() {
+    var status = el("checkoutStatus");
+    if (!state.user || state.user.role !== "patient") {
+      hideModal("checkoutModal");
+      state.authMode = "login";
+      await openRole("patient");
+      toast("Buyurtma berish uchun bemor hisobiga kiring.", "warn");
+      return;
+    }
+    var items = cartItemsFromWindow();
+    var address = el("checkoutAddress").value.trim();
+    if (!items.length || !address || !el("checkoutConsent").checked) {
+      status.className = "status error";
+      status.textContent = "Savat, manzil va tasdiqlash belgisini tekshiring.";
+      return;
+    }
+    var branch = nearestBranchSlug(address);
+    try {
+      status.className = "status";
+      status.textContent = "Buyurtma serverga yuborilmoqda…";
+      var data = await api("/api/orders", {method:"POST", body:{items:items, address:address, method:el("checkoutMethod").value, payment:el("checkoutPayment").value, branch:branch, latitude:state.checkoutLocation && state.checkoutLocation.lat, longitude:state.checkoutLocation && state.checkoutLocation.lon, consent:true}});
+      window.cart = {};
+      if (typeof window.saveCart === "function") window.saveCart();
+      status.className = "status";
+      status.innerHTML = '<b>Buyurtma serverga saqlandi.</b><br>Kuzatuv kodi: '+esc(data.order.code)+'<br>To‘lov holati: '+esc(data.order.payment_status);
+      if (el("trackingCode")) el("trackingCode").value = data.order.code;
+      toast("Buyurtma qabul qilindi: " + data.order.code, "success");
+      setTimeout(function () { hideModal("checkoutModal"); }, 2200);
+    } catch (error) {
+      status.className = "status error";
+      status.textContent = error.message;
+    }
+  }
+
+  function nearestBranchSlug(address) {
+    var lower = String(address || "").toLowerCase();
+    var found = state.branches.find(function (branch) { return lower.indexOf(branch.city.toLowerCase()) > -1 || lower.indexOf(branch.slug) > -1; });
+    if (found) return found.slug;
+    if (!state.checkoutLocation || !state.branches.length) return state.branches[0] ? state.branches[0].slug : "tashkent";
+    var best = state.branches[0], bestDistance = Infinity;
+    state.branches.forEach(function (branch) {
+      var d = Math.pow(branch.latitude-state.checkoutLocation.lat,2)+Math.pow(branch.longitude-state.checkoutLocation.lon,2);
+      if (d < bestDistance) { bestDistance = d; best = branch; }
+    });
+    return best.slug;
+  }
+
+  function getCheckoutLocation() {
+    if (!navigator.geolocation) { toast("Bu brauzer lokatsiyani qo‘llamaydi.", "error"); return; }
+    navigator.geolocation.getCurrentPosition(function (position) {
+      state.checkoutLocation = {lat:Number(position.coords.latitude.toFixed(6)), lon:Number(position.coords.longitude.toFixed(6))};
+      el("checkoutAddress").value = state.checkoutLocation.lat + ", " + state.checkoutLocation.lon;
+      el("checkoutLocationNote").innerHTML = '<a target="_blank" rel="noopener" href="https://maps.google.com/?q='+state.checkoutLocation.lat+','+state.checkoutLocation.lon+'">Xaritada ko‘rish</a>';
+      toast("Lokatsiya olindi.", "success");
+    }, function () { toast("Lokatsiyaga ruxsat berilmadi.", "error"); }, {enableHighAccuracy:true, timeout:12000, maximumAge:30000});
+  }
+
+  async function securePrescription() {
+    if (!state.user || state.user.role !== "patient") {
+      hideModal("prescriptionModal");
+      await openRole("patient");
+      toast("Retsept yuborish uchun bemor hisobiga kiring.", "warn");
+      return;
+    }
+    var file = el("prescriptionFile").files[0];
+    var status = el("prescriptionStatus");
+    if (!file || !el("prescriptionConsent").checked) {
+      status.className = "status error";
+      status.textContent = "Fayl va rozilik belgisini to‘ldiring.";
+      return;
+    }
+    var form = new FormData();
+    form.append("file", file);
+    form.append("consent", "true");
+    var branchText = el("prescriptionBranch").value || "Toshkent";
+    form.append("branch", branchText.split(" ")[0].toLowerCase());
+    try {
+      status.className = "status";
+      status.textContent = "Retsept xavfsiz serverga yuklanmoqda…";
+      var data = await api("/api/prescriptions", {method:"POST", body:form});
+      status.className = "status";
+      status.innerHTML = '<b>Retsept qabul qilindi.</b><br>Kod: '+esc(data.prescription.code)+' · Farmatsevt tekshiradi.';
+      toast("Retsept serverga yuborildi.", "success");
+    } catch (error) {
+      status.className = "status error";
+      status.textContent = error.message;
+    }
+  }
+
+  async function openSecurePassport() {
+    if (!state.user || state.user.role !== "patient") { await openRole("patient"); return; }
+    try {
+      var data = await api("/api/health-passport");
+      fillPassport(data.passport || {});
+      showModal("gpPassportModal");
+    } catch (error) { toast(error.message, "error"); }
+  }
+
+  function fillPassport(passport) {
+    var map = {gpPassName:"name",gpPassBirth:"birth",gpPassBlood:"blood",gpPassPhone:"phone",gpPassAllergy:"allergy",gpPassMedicines:"medicines",profileName:"name",profileAge:"age",profileAllergies:"allergy",profileMedicines:"medicines",profileEmergencyName:"emergency_name",profileEmergencyPhone:"emergency_phone"};
+    Object.keys(map).forEach(function (id) { if (el(id)) el(id).value = passport[map[id]] || ""; });
+    if (el("gpPassConsent")) el("gpPassConsent").checked = !!Object.keys(passport).length;
+    updatePassportCard(passport);
+  }
+
+  function updatePassportCard(passport) {
+    if (el("gpProfileName")) el("gpProfileName").textContent = passport.name || (state.user ? state.user.name : "Mehmon profili");
+    var fields = [passport.name,passport.birth,passport.blood,passport.phone,passport.allergy,passport.medicines];
+    var percent = Math.max(18, Math.round(fields.filter(Boolean).length/fields.length*100));
+    if (el("gpProfilePercent")) el("gpProfilePercent").textContent = percent + "%";
+    if (el("gpProfileRing")) el("gpProfileRing").style.setProperty("--progress", percent + "%");
+    if (el("gpProfileText")) el("gpProfileText").textContent = Object.keys(passport).length ? "Ma’lumotlar shifrlangan server bazasida saqlangan." : "Allergiya, doimiy dori va favqulodda kontaktni xavfsiz saqlang.";
+  }
+
+  async function savePassportFromGlobal() {
+    var status = el("gpPassportStatus");
+    if (!state.user || state.user.role !== "patient") { hideModal("gpPassportModal"); await openRole("patient"); return; }
+    try {
+      var data = await api("/api/health-passport", {method:"PUT", body:{name:el("gpPassName").value, birth:el("gpPassBirth").value, blood:el("gpPassBlood").value, phone:el("gpPassPhone").value, allergy:el("gpPassAllergy").value, medicines:el("gpPassMedicines").value, consent:el("gpPassConsent").checked}});
+      status.className = "status gp-modal-status";
+      status.textContent = "Sog‘liq pasporti shifrlangan server bazasiga saqlandi.";
+      updatePassportCard(data.passport || {});
+      await syncPatientData(state.orders);
+      toast("Sog‘liq pasporti saqlandi.", "success");
+    } catch (error) { status.className = "status error gp-modal-status"; status.textContent = error.message; }
+  }
+
+  async function savePassportFromLegacy() {
+    if (!state.user || state.user.role !== "patient") { hideModal("healthProfileModal"); await openRole("patient"); return; }
+    try {
+      var data = await api("/api/health-passport", {method:"PUT", body:{name:el("profileName").value, age:el("profileAge").value, allergy:el("profileAllergies").value, medicines:el("profileMedicines").value, emergency_name:el("profileEmergencyName").value, emergency_phone:el("profileEmergencyPhone").value, consent:true}});
+      updatePassportCard(data.passport || {});
+      await syncPatientData(state.orders);
+      hideModal("healthProfileModal");
+      toast("Sog‘liq profili serverga saqlandi.", "success");
+    } catch (error) { toast(error.message, "error"); }
+  }
+
+  async function clearPassport() {
+    if (!state.user) return;
+    if (!confirm("Sog‘liq pasportini serverdan o‘chirasizmi?")) return;
+    await api("/api/health-passport", {method:"DELETE", body:{}});
+    fillPassport({});
+    await syncPatientData(state.orders);
+    toast("Sog‘liq pasporti o‘chirildi.", "success");
+  }
+
+  async function openLegacyHealthProfile() {
+    if (!state.user || state.user.role !== "patient") {
+      await openRole("patient");
+      toast("Sog‘liq profilini ko‘rish uchun bemor hisobiga kiring.", "warn");
+      return;
+    }
+    try {
+      var result = await api("/api/health-passport");
+      var profile = legacyHealthProfile(result.passport || {});
+      if (el("profileName")) el("profileName").value = profile.name;
+      if (el("profileAge")) el("profileAge").value = profile.age;
+      if (el("profileAllergies")) el("profileAllergies").value = profile.allergies;
+      if (el("profileMedicines")) el("profileMedicines").value = profile.medicines;
+      if (el("profileEmergencyName")) el("profileEmergencyName").value = profile.emergencyName;
+      if (el("profileEmergencyPhone")) el("profileEmergencyPhone").value = profile.emergencyPhone;
+      showModal("healthProfileModal");
+    } catch (error) { toast(error.message, "error"); }
+  }
+
+  function wireStaticButtons() {
+    document.querySelectorAll("[data-platform-role]").forEach(function (button) {
+      button.onclick = function () { openRole(button.getAttribute("data-platform-role")); };
+    });
+    document.querySelectorAll("[data-platform-tab]").forEach(function (button) {
+      button.onclick = function () {
+        state.activeRole = button.getAttribute("data-platform-tab");
+        updateRoleTabs();
+        renderActiveRole();
+      };
+    });
+    if (el("platformClose")) el("platformClose").onclick = function () { hideModal("platformModal"); };
+    if (el("platformModal")) el("platformModal").onclick = function (event) { if (event.target === el("platformModal")) hideModal("platformModal"); };
+    if (el("trackerClose")) el("trackerClose").onclick = closeTracking;
+    if (el("courierTrackModal")) el("courierTrackModal").onclick = function (event) { if (event.target === el("courierTrackModal")) closeTracking(); };
+    if (el("trackerMessage")) el("trackerMessage").onclick = function () { toast("Xabar moduli uchun SMS/chat provayderi ulanadi.", "warn"); };
+    if (el("placeOrderButton")) el("placeOrderButton").onclick = securePlaceOrder;
+    if (el("checkoutUseLocation")) el("checkoutUseLocation").onclick = getCheckoutLocation;
+    if (el("sendPrescription")) el("sendPrescription").onclick = securePrescription;
+    if (el("gpOpenPassport")) el("gpOpenPassport").onclick = openSecurePassport;
+    if (el("gpSavePassport")) el("gpSavePassport").onclick = savePassportFromGlobal;
+    if (el("gpClearPassport")) el("gpClearPassport").onclick = clearPassport;
+    if (el("saveHealthProfile")) el("saveHealthProfile").onclick = savePassportFromLegacy;
+    if (el("openHealthProfile")) el("openHealthProfile").onclick = openLegacyHealthProfile;
+    if (el("refreshDashboard")) el("refreshDashboard").onclick = function () { openRole("manager"); };
+    if (el("addMedicineButton")) el("addMedicineButton").onclick = function () { openRole("manager"); };
+    if (el("openCabinetTop")) el("openCabinetTop").onclick = function () { window.location.href = "/mijoz"; };
+    if (el("cabinetButton")) el("cabinetButton").onclick = function () { window.location.href = "/mijoz"; };
+    if (el("checkoutButton")) {
+      var originalCheckout = el("checkoutButton").onclick;
+      el("checkoutButton").onclick = function () {
+        if (typeof originalCheckout === "function") originalCheckout.call(this);
+        if (state.user && el("checkoutPhone")) el("checkoutPhone").value = state.user.phone || "";
+        if (state.user && el("checkoutAddress") && !el("checkoutAddress").value) el("checkoutAddress").value = state.user.address || "";
+      };
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    clearSensitiveDemoStorage();
+    try { await refreshMe(); } catch (error) { console.warn(error); }
+    wireStaticButtons();
+    updateRoleTabs();
+    await syncCatalog();
+    if (state.user && state.user.role === "patient") {
+      try {
+        var data = await api("/api/health-passport");
+        fillPassport(data.passport || {});
+        await syncPatientData();
+      } catch (e) { console.warn(e); }
+    } else {
+      hydrateSmartData({}, {reminders: [], family_members: [], reservations: []}, []);
+    }
+    window.Pharm360Secure = {openRole:openRole, refreshMe:refreshMe, openTracking:openTracking, state:state};
+    window.MarjonSecure = window.Pharm360Secure; // eski integratsiyalar bilan moslik
+  });
+})();
