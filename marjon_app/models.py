@@ -122,9 +122,6 @@ class Product(TimestampMixin, db.Model):
     old_price = db.Column(db.Numeric(14, 2))
     emoji = db.Column(db.String(20), nullable=False, default="💊")
     badge = db.Column(db.String(40), nullable=False, default="")
-    # Rasm kichraytirilgan data-URL ko‘rinishida bazada saqlanadi.
-    # Bu Render qayta deploy qilinganda ham rasm yo‘qolmasligini ta’minlaydi.
-    image_data = db.Column(db.Text)
     prescription_required = db.Column(db.Boolean, nullable=False, default=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
@@ -143,7 +140,6 @@ class Product(TimestampMixin, db.Model):
             "old": int(self.old_price or 0),
             "emoji": self.emoji,
             "badge": self.badge,
-            "image": self.image_data or "",
             "prescription_required": self.prescription_required,
         }
         if include_stock:

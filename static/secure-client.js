@@ -322,33 +322,18 @@
     el("platformContent").innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Savdo</span><strong>'+money(stats.sales)+'</strong><small>Bekor qilinmagan</small></div><div class="secure-stat"><span>Tannarx</span><strong>'+money(stats.cost)+'</strong><small>Mahsulot kartasidan</small></div><div class="secure-stat"><span>Foyda</span><strong>'+money(stats.profit)+'</strong><small>Server hisoblagan</small></div><div class="secure-stat"><span>Buyurtmalar</span><strong>'+esc(stats.orders)+'</strong><small>Tanlangan davr</small></div></div><div class="secure-panel"><div class="secure-panel-head"><div><h3>Moliyaviy hisobot</h3><p>Haqiqiy .xlsx fayl serverdagi ma’lumotlardan yaratiladi.</p></div><button class="secure-primary" data-secure-action="excel">Excel yuklash</button></div>'+orderTable(state.orders, "accountant")+'</div>';
   }
 
-  function productManagerRows() {
-    if (!state.products.length) return '<div class="secure-empty">Katalogda mahsulot yo‘q.</div>';
-    return state.products.map(function (product) {
-      var media = product.image ? '<img src="'+esc(product.image)+'" alt="">' : esc(product.emoji || "💊");
-      return '<div class="secure-product-row"><div class="secure-product-thumb">'+media+'</div><div><b>'+esc(product.uz)+'</b><small>'+money(product.price)+' · '+esc(product.total_stock || 0)+' dona · '+esc(product.sku)+'</small></div><button class="secure-danger secure-mini" type="button" data-secure-action="product-delete" data-id="'+product.id+'">O‘chirish</button></div>';
-    }).join("");
-  }
-
-  function productFormHtml() {
-    var branchOptions = state.branches.map(function (branch) { return '<option value="'+esc(branch.slug)+'">'+esc(branch.name)+' — '+esc(branch.city)+'</option>'; }).join("");
-    return '<div class="secure-product-layout"><section class="secure-panel"><div class="secure-panel-head"><div><h3>＋ Yangi dori qo‘shish</h3><p>Rasm, narx va qoldiq server bazasiga saqlanadi.</p></div><span class="secure-badge">KATALOG</span></div><form id="secureProductForm" class="secure-form"><div class="secure-form-row"><label><span>Dori nomi *</span><input id="secureProductName" maxlength="180" placeholder="Masalan: Paratsetamol 500 mg" required></label><label><span>Kategoriya</span><select id="secureProductCategory"><option value="cold">Shamollash</option><option value="vitamin">Vitaminlar</option><option value="pain">Og‘riq qoldiruvchi</option><option value="children">Bolalar uchun</option><option value="medical">Tibbiy jihozlar</option><option value="care">Parvarish</option><option value="other">Boshqa</option></select></label></div><div class="secure-form-row"><label><span>Sotuv narxi *</span><input id="secureProductPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="90000" required></label><label><span>Tannarxi</span><input id="secureProductCost" type="number" min="0" step="100" inputmode="numeric" placeholder="70000"></label></div><div class="secure-form-row"><label><span>Filial</span><select id="secureProductBranch">'+branchOptions+'</select></label><label><span>Qoldiq (dona) *</span><input id="secureProductQuantity" type="number" min="0" step="1" value="10" inputmode="numeric" required></label></div><div class="secure-form-row"><label><span>Belgi</span><input id="secureProductBadge" maxlength="40" value="Yangi" placeholder="Yangi / Aksiya / Top"></label><label><span>Eski narx</span><input id="secureProductOldPrice" type="number" min="0" step="100" inputmode="numeric" placeholder="Aksiya bo‘lsa"></label></div><div class="secure-product-image-field"><div id="secureProductPreview" class="secure-product-preview">Dori rasmi</div><label><span>Rasm yuklash *</span><input id="secureProductImage" type="file" accept="image/jpeg,image/png,image/webp" required><small class="secure-product-file-note">JPG, PNG yoki WEBP. Rasm avtomatik kichraytiriladi va Render bazasida saqlanadi.</small></label></div><label class="secure-check"><input id="secureProductRx" type="checkbox"><span>Retsept bilan sotiladi</span></label><button id="secureProductSubmit" class="secure-primary" type="submit">Dorini katalogga saqlash</button><div id="secureProductMessage"></div></form></section><section class="secure-panel"><div class="secure-panel-head"><div><h3>Katalog mahsulotlari</h3><p>Qo‘shilgan dori barcha mijozlarga ko‘rinadi.</p></div><span class="secure-badge">'+state.products.length+' TA</span></div><div class="secure-product-list">'+productManagerRows()+'</div></section></div>';
-  }
-
   async function renderManager() {
-    var results = await Promise.all([api("/api/orders"), api("/api/dashboard"), api("/api/stock"), api("/api/audit"), api("/api/products"), api("/api/branches")]);
+    var results = await Promise.all([api("/api/orders"), api("/api/dashboard"), api("/api/stock"), api("/api/audit")]);
     state.orders = results[0].orders || [];
     var stats = results[1].stats || {};
     var stock = results[2].stock || [];
     var logs = results[3].logs || [];
-    state.products = results[4].products || [];
-    state.branches = results[5].branches || [];
     try { state.couriers = (await api("/api/users?role=courier")).users || []; } catch (e) { state.couriers = []; }
     var stockHtml = stock.filter(function (row) { return row.low; }).slice(0, 30).map(function (row) {
       return '<div class="secure-stock-row '+(row.low?'low':'')+'"><div><b>'+esc(row.product)+'</b><small>'+esc(row.branch)+'</small></div><span>'+row.quantity+' dona</span><input type="number" min="0" value="'+row.quantity+'" data-stock-input="'+row.id+'"><button class="secure-mini" data-secure-action="stock-save" data-id="'+row.id+'">Saqlash</button></div>';
     }).join("") || '<div class="secure-empty">Kam qolgan mahsulot yo‘q.</div>';
     var auditHtml = logs.slice(0, 80).map(function (log) { return '<div class="secure-audit-row"><b>'+esc(log.action)+' · '+esc(log.user)+'</b><small>'+esc(log.entity_type)+' '+esc(log.entity_id)+' · '+esc(log.created_at)+'</small><small>'+esc(log.detail)+'</small></div>'; }).join("");
-    el("platformContent").innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Savdo</span><strong>'+money(stats.sales)+'</strong><small>Server bazasi</small></div><div class="secure-stat"><span>Foyda</span><strong>'+money(stats.profit)+'</strong><small>Haqiqiy tannarx</small></div><div class="secure-stat"><span>Kam qoldiq</span><strong>'+esc(stats.low_stock)+'</strong><small>Ombor ogohlantirishi</small></div><div class="secure-stat"><span>Yo‘ldagi kuryer</span><strong>'+esc(stats.active_delivery)+'</strong><small>Faol yetkazmalar</small></div></div>'+productFormHtml()+'<div class="secure-grid"><div class="secure-panel"><div class="secure-panel-head"><div><h3>Barcha buyurtmalar</h3><p>Holat, kuryer va to‘lovlar nazorati.</p></div><button class="secure-primary" data-secure-action="excel">Excel</button></div>'+orderTable(state.orders, "manager")+'</div><div class="secure-stack"><div class="secure-panel"><h3 class="secure-section-title">Kam qolgan ombor</h3><div class="secure-stock-list">'+stockHtml+'</div></div><div class="secure-panel"><h3 class="secure-section-title">Audit jurnali</h3><div class="secure-audit">'+auditHtml+'</div></div></div></div>';
+    el("platformContent").innerHTML = userBar() + '<div class="secure-stats"><div class="secure-stat"><span>Savdo</span><strong>'+money(stats.sales)+'</strong><small>Server bazasi</small></div><div class="secure-stat"><span>Foyda</span><strong>'+money(stats.profit)+'</strong><small>Haqiqiy tannarx</small></div><div class="secure-stat"><span>Kam qoldiq</span><strong>'+esc(stats.low_stock)+'</strong><small>Ombor ogohlantirishi</small></div><div class="secure-stat"><span>Yo‘ldagi kuryer</span><strong>'+esc(stats.active_delivery)+'</strong><small>Faol yetkazmalar</small></div></div><div class="secure-grid"><div class="secure-panel"><div class="secure-panel-head"><div><h3>Barcha buyurtmalar</h3><p>Holat, kuryer va to‘lovlar nazorati.</p></div><button class="secure-primary" data-secure-action="excel">Excel</button></div>'+orderTable(state.orders, "manager")+'</div><div class="secure-stack"><div class="secure-panel"><h3 class="secure-section-title">Kam qolgan ombor</h3><div class="secure-stock-list">'+stockHtml+'</div></div><div class="secure-panel"><h3 class="secure-section-title">Audit jurnali</h3><div class="secure-audit">'+auditHtml+'</div></div></div></div>';
   }
 
   function bindContentEvents() {
@@ -378,7 +363,6 @@
         else if (action === "gps-stop") stopGps();
         else if (action === "excel") window.location.href = "/api/reports/orders.xlsx";
         else if (action === "stock-save") await saveStock(button.getAttribute("data-id"));
-        else if (action === "product-delete") await deactivateProduct(button.getAttribute("data-id"));
         else if (action === "rx-status") await updatePrescription(button.getAttribute("data-id"), button.getAttribute("data-status"));
       } catch (error) { toast(error.message, "error"); }
     };
@@ -388,84 +372,6 @@
     if (registerForm) registerForm.onsubmit = register;
     var passwordForm = el("securePasswordForm");
     if (passwordForm) passwordForm.onsubmit = changePassword;
-    var productForm = el("secureProductForm");
-    if (productForm) productForm.onsubmit = saveProduct;
-    var productImage = el("secureProductImage");
-    if (productImage) productImage.onchange = previewProductImage;
-  }
-
-  function previewProductImage() {
-    var file = el("secureProductImage") && el("secureProductImage").files[0];
-    var preview = el("secureProductPreview");
-    if (!preview) return;
-    if (!file) { preview.textContent = "Dori rasmi"; return; }
-    var url = URL.createObjectURL(file);
-    preview.innerHTML = '<img src="'+url+'" alt="Rasm ko‘rinishi">';
-    window.setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
-  }
-
-  function compressProductImage(file) {
-    return new Promise(function (resolve, reject) {
-      if (!file) { reject(new Error("Dori rasmini tanlang.")); return; }
-      if (file.size > 8 * 1024 * 1024) { reject(new Error("Rasm 8 MB dan katta bo‘lmasin.")); return; }
-      var reader = new FileReader();
-      reader.onerror = function () { reject(new Error("Rasmni o‘qib bo‘lmadi.")); };
-      reader.onload = function () {
-        var image = new Image();
-        image.onerror = function () { reject(new Error("Rasm formati ochilmadi.")); };
-        image.onload = function () {
-          var maxSide = 900;
-          var scale = Math.min(1, maxSide / Math.max(image.width, image.height));
-          var width = Math.max(1, Math.round(image.width * scale));
-          var height = Math.max(1, Math.round(image.height * scale));
-          var canvas = document.createElement("canvas");
-          canvas.width = width; canvas.height = height;
-          var context = canvas.getContext("2d");
-          context.fillStyle = "#ffffff"; context.fillRect(0, 0, width, height);
-          context.drawImage(image, 0, 0, width, height);
-          var data = canvas.toDataURL("image/jpeg", .82);
-          if (data.length > 2_500_000) { reject(new Error("Rasm juda katta. Boshqa rasm tanlang.")); return; }
-          resolve(data);
-        };
-        image.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function saveProduct(event) {
-    event.preventDefault();
-    var message = el("secureProductMessage");
-    var submit = el("secureProductSubmit");
-    try {
-      submit.disabled = true;
-      setMessage(message, "Rasm tayyorlanmoqda…", "warn");
-      var image = await compressProductImage(el("secureProductImage").files[0]);
-      var price = Number(el("secureProductPrice").value);
-      var cost = Number(el("secureProductCost").value || price);
-      var data = await api("/api/products", {method:"POST", body:{
-        name_uz:el("secureProductName").value,
-        category:el("secureProductCategory").value,
-        price:price, cost_price:cost, old_price:Number(el("secureProductOldPrice").value || 0),
-        branch:el("secureProductBranch").value, quantity:Number(el("secureProductQuantity").value || 0),
-        badge:el("secureProductBadge").value, prescription_required:el("secureProductRx").checked, image:image
-      }});
-      toast(data.product.uz + " katalogga qo‘shildi.", "success");
-      await syncCatalog();
-      await renderManager();
-      bindContentEvents();
-    } catch (error) { setMessage(message, error.message, "error"); }
-    finally { if (submit) submit.disabled = false; }
-  }
-
-  async function deactivateProduct(productId) {
-    var product = state.products.find(function (item) { return String(item.id) === String(productId); });
-    if (!product || !confirm(product.uz + " katalogdan olib tashlansinmi?")) return;
-    await api("/api/products/"+productId, {method:"DELETE", body:{}});
-    toast("Mahsulot katalogdan olib tashlandi.", "success");
-    await syncCatalog();
-    await renderManager();
-    bindContentEvents();
   }
 
   async function login(event) {
@@ -667,8 +573,7 @@
       var name = language === "ru" ? product.ru : (language === "en" ? product.en : product.uz);
       var total = Number(product.total_stock || 0);
       var favorite = window.favorites && window.favorites[product.id];
-      var productMedia = product.image ? '<img class="secure-catalog-photo" src="'+esc(product.image)+'" alt="'+esc(name)+'">' : '<div class="product-pack"><span>'+esc(product.emoji)+'</span><small>ZAM ZAM PHARM TRADE<br>DORIXONA</small></div>';
-      return '<article class="product-card"><div class="product-image"><span class="product-badge">'+esc(product.badge)+'</span><button type="button" class="favorite-product '+(favorite?'active':'')+'" onclick="toggleFavorite('+product.id+')">'+(favorite?'♥':'♡')+'</button>'+productMedia+'</div><div class="product-info"><small>'+esc(typeof window.getCategoryName === "function" ? window.getCategoryName(product.category) : product.category)+'</small><h3>'+esc(name)+'</h3><div class="product-stock-line"><span class="'+(total<15?'stock-low':'stock-number')+'">'+total+' dona mavjud</span><button type="button" data-stock-product="'+product.id+'">Filiallar</button></div><div class="price-row"><div><strong>'+money(product.price)+'</strong>'+(product.old?'<del>'+money(product.old)+'</del>':'')+'</div><button type="button" class="add-button" onclick="addToCart('+product.id+')">+</button></div></div></article>';
+      return '<article class="product-card"><div class="product-image"><span class="product-badge">'+esc(product.badge)+'</span><button type="button" class="favorite-product '+(favorite?'active':'')+'" onclick="toggleFavorite('+product.id+')">'+(favorite?'♥':'♡')+'</button><div class="product-pack"><span>'+esc(product.emoji)+'</span><small>ZAM ZAM PHARM TRADE<br>DORIXONA</small></div></div><div class="product-info"><small>'+esc(typeof window.getCategoryName === "function" ? window.getCategoryName(product.category) : product.category)+'</small><h3>'+esc(name)+'</h3><div class="product-stock-line"><span class="'+(total<15?'stock-low':'stock-number')+'">'+total+' dona mavjud</span><button type="button" data-stock-product="'+product.id+'">Filiallar</button></div><div class="price-row"><div><strong>'+money(product.price)+'</strong>'+(product.old?'<del>'+money(product.old)+'</del>':'')+'</div><button type="button" class="add-button" onclick="addToCart('+product.id+')">+</button></div></div></article>';
     }).join("");
     if (el("emptyState")) el("emptyState").className = list.length ? "empty-state hidden" : "empty-state";
     grid.querySelectorAll("[data-stock-product]").forEach(function (button) {
@@ -885,7 +790,6 @@
     if (el("saveHealthProfile")) el("saveHealthProfile").onclick = savePassportFromLegacy;
     if (el("openHealthProfile")) el("openHealthProfile").onclick = openLegacyHealthProfile;
     if (el("refreshDashboard")) el("refreshDashboard").onclick = function () { openRole("manager"); };
-    if (el("addMedicineButton")) el("addMedicineButton").onclick = function () { openRole("manager"); };
     if (el("openCabinetTop")) el("openCabinetTop").onclick = function () { window.location.href = "/mijoz"; };
     if (el("cabinetButton")) el("cabinetButton").onclick = function () { window.location.href = "/mijoz"; };
     if (el("checkoutButton")) {
