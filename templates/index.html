@@ -1499,7 +1499,10 @@ html[data-theme="dark"] body{background:#061723;color:#dcebf1}html[data-theme="d
             <h2>Savdo, qoldiq va muddati nazoratda</h2>
             <p>Bu bo‘lim dorixona xodimlari uchun namuna boshqaruv panelidir.</p>
           </div>
-          <button id="refreshDashboard" class="soft-button" type="button">↻ Yangilash</button>
+          <div class="management-actions">
+            <button id="addMedicineButton" class="primary-button" type="button">＋ Dori qo‘shish</button>
+            <button id="refreshDashboard" class="soft-button" type="button">↻ Yangilash</button>
+          </div>
         </div>
 
         <div class="management-stats">
@@ -1884,7 +1887,8 @@ var categories = [
   {id:"pain", icon:"💊", uz:"Og‘riq qoldiruvchi", en:"Pain relief", ru:"Обезболивающие"},
   {id:"children", icon:"🧸", uz:"Bolalar uchun", en:"For children", ru:"Для детей"},
   {id:"medical", icon:"🩺", uz:"Tibbiy jihozlar", en:"Medical devices", ru:"Медтехника"},
-  {id:"care", icon:"🧴", uz:"Parvarish", en:"Personal care", ru:"Уход"}
+  {id:"care", icon:"🧴", uz:"Parvarish", en:"Personal care", ru:"Уход"},
+  {id:"other", icon:"✚", uz:"Boshqa", en:"Other", ru:"Другое"}
 ];
 
 var products = [

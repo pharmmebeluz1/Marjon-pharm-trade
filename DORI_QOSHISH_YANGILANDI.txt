@@ -1,0 +1,19 @@
+ZAM-ZAM PHARM TRADE — DORI QO‘SHISH MODULI
+
+Rahbar paneliga quyidagilar qo‘shildi:
+- Dori rasmi yuklash
+- Dori nomi
+- Sotuv narxi va tannarxi
+- Filial tanlash
+- Qoldiq soni
+- Kategoriya, aksiya belgisi va eski narx
+- Retsept bilan sotilishi belgisi
+- Mahsulotni katalogdan olib tashlash
+
+Foydalanish:
+1. Saytda “Rahbar paneli”ga o‘ting.
+2. “+ Dori qo‘shish” tugmasini bosing.
+3. Rahbar hisobiga kiring.
+4. Formani to‘ldirib “Dorini katalogga saqlash” tugmasini bosing.
+
+Rasm va ma’lumotlar server bazasiga saqlanadi va barcha mijozlarga ko‘rinadi.

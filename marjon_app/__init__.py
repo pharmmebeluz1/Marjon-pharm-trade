@@ -8,12 +8,24 @@ from cryptography.fernet import Fernet
 from flask import Flask, jsonify, render_template, request, send_file, send_from_directory
 from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
+from sqlalchemy import inspect, text
 
 from .config import Config
 from .extensions import db, login_manager
 from .models import User
 from .security import csrf_protect, normalize_phone, validate_password
 from .services import seed_catalog, seed_users
+
+
+def _ensure_runtime_schema() -> None:
+    """Kichik, orqaga mos ustun yangilanishlarini migratsiyasiz qo‘llash."""
+    inspector = inspect(db.engine)
+    if "products" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("products")}
+    if "image_data" not in columns:
+        with db.engine.begin() as connection:
+            connection.execute(text("ALTER TABLE products ADD COLUMN image_data TEXT"))
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -165,6 +177,7 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     with app.app_context():
         db.create_all()
+        _ensure_runtime_schema()
         seed_catalog()
         created = seed_users()
         if created:
