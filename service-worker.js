@@ -1,5 +1,5 @@
-const CACHE="zam-zam-mijoz-v19";
-const CORE=["/","/mijoz","/offline.html","/manifest.webmanifest","/static/secure.css","/static/secure-client.js","/static/mijoz.css?v=20260725-1","/static/mijoz.js?v=20260725-1","/assets/zam-zam-pharm-trade-logo.png","/assets/zam-zam-icon-192.png","/assets/zam-zam-icon-512.png","/assets/zam-zam-apple-touch-icon.png","/assets/zam-zam-favicon.ico","/assets/pharm360-intro.mp3"];
+const CACHE="zam-zam-mijoz-v21";
+const CORE=["/","/mijoz","/offline.html","/manifest.webmanifest","/static/secure.css","/static/secure-client.js","/static/mijoz.css?v=20260725-1","/static/mijoz.js?v=20260725-1","/assets/zam-zam-pharm-trade-logo.png?v=21","/assets/zam-zam-icon-192.png","/assets/zam-zam-icon-512.png","/assets/zam-zam-apple-touch-icon.png","/assets/zam-zam-favicon.ico","/assets/pharm360-intro.mp3"];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting();});

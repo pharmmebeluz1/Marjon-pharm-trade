@@ -1,0 +1,1 @@
+Logo o‘zgartirilmagan. Brauzer eski logoni keshdan ko‘rsatmasligi uchun logo versiyasi va service-worker keshi yangilandi.
